@@ -1,0 +1,192 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UserProfiles
+  fields:
+    - name: authUserId
+      type: String_1!
+    - name: createdAt
+      type: Timestamptz
+    - name: email
+      type: String_1
+    - name: equipment
+      type: String_1
+    - name: id
+      type: Int32!
+    - name: name
+      type: String_1!
+    - name: updatedAt
+      type: Timestamptz
+  graphql:
+    typeName: UserProfiles
+    inputTypeName: UserProfilesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: user_profiles
+      fieldMapping:
+        authUserId:
+          column:
+            name: auth_user_id
+        createdAt:
+          column:
+            name: created_at
+        email:
+          column:
+            name: email
+        equipment:
+          column:
+            name: equipment
+        id:
+          column:
+            name: id
+        name:
+          column:
+            name: name
+        updatedAt:
+          column:
+            name: updated_at
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UserProfiles
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - authUserId
+          - createdAt
+          - email
+          - equipment
+          - id
+          - name
+          - updatedAt
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: UserProfilesBoolExp
+  operand:
+    object:
+      type: UserProfiles
+      comparableFields:
+        - fieldName: authUserId
+          booleanExpressionType: TextBoolExp
+        - fieldName: createdAt
+          booleanExpressionType: TimestampWithTimeZoneBoolExp
+        - fieldName: email
+          booleanExpressionType: TextBoolExp
+        - fieldName: equipment
+          booleanExpressionType: ArrayBoolExp
+        - fieldName: id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: name
+          booleanExpressionType: TextBoolExp
+        - fieldName: updatedAt
+          booleanExpressionType: TimestampWithTimeZoneBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: UserProfilesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: UserProfilesAggExp
+  operand:
+    object:
+      aggregatedType: UserProfiles
+      aggregatableFields:
+        - fieldName: authUserId
+          aggregateExpression: TextAggExp
+        - fieldName: createdAt
+          aggregateExpression: TimestampWithTimeZoneAggExp
+        - fieldName: email
+          aggregateExpression: TextAggExp
+        - fieldName: equipment
+          aggregateExpression: ArrayAggExp
+        - fieldName: id
+          aggregateExpression: IntegerAggExp
+        - fieldName: name
+          aggregateExpression: TextAggExp
+        - fieldName: updatedAt
+          aggregateExpression: TimestampWithTimeZoneAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: UserProfilesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: UserProfilesOrderByExp
+  operand:
+    object:
+      orderedType: UserProfiles
+      orderableFields:
+        - fieldName: authUserId
+          orderByExpression: String1OrderByExp
+        - fieldName: createdAt
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: email
+          orderByExpression: String1OrderByExp
+        - fieldName: equipment
+          orderByExpression: String1OrderByExp
+        - fieldName: id
+          orderByExpression: Int32OrderByExp
+        - fieldName: name
+          orderByExpression: String1OrderByExp
+        - fieldName: updatedAt
+          orderByExpression: TimestamptzOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: UserProfilesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: UserProfiles
+  objectType: UserProfiles
+  source:
+    dataConnectorName: my_pg
+    collection: user_profiles
+  filterExpressionType: UserProfilesBoolExp
+  aggregateExpression: UserProfilesAggExp
+  orderByExpression: UserProfilesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: userProfiles
+      subscription:
+        rootField: userProfiles
+    selectUniques:
+      - queryRootField: userProfilesById
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: userProfilesById
+    filterInputTypeName: UserProfilesFilterInput
+    aggregate:
+      queryRootField: userProfilesAggregate
+      subscription:
+        rootField: userProfilesAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: UserProfiles
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

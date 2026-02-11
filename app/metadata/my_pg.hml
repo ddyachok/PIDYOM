@@ -16,14 +16,75 @@ definition:
     schema:
       collections:
         - arguments: {}
+          name: exercise_sets
+          type: exercise_sets
+          uniqueness_constraints:
+            primary_key:
+              unique_columns:
+                - id
+        - arguments: {}
+          name: exercises
+          type: exercises
+          uniqueness_constraints:
+            primary_key:
+              unique_columns:
+                - id
+        - arguments: {}
+          name: schedule_entries
+          type: schedule_entries
+          uniqueness_constraints:
+            primary_key:
+              unique_columns:
+                - id
+        - arguments: {}
+          name: user_exercise_unlocks
+          type: user_exercise_unlocks
+          uniqueness_constraints:
+            primary_key:
+              unique_columns:
+                - id
+        - arguments: {}
+          name: user_profiles
+          type: user_profiles
+          uniqueness_constraints:
+            primary_key:
+              unique_columns:
+                - id
+        - arguments: {}
           name: users
           type: users
           uniqueness_constraints:
             primary_key:
               unique_columns:
                 - id
+        - arguments: {}
+          name: workout_exercises
+          type: workout_exercises
+          uniqueness_constraints:
+            primary_key:
+              unique_columns:
+                - id
+        - arguments: {}
+          name: workouts
+          type: workouts
+          uniqueness_constraints:
+            primary_key:
+              unique_columns:
+                - id
       functions: []
       object_types:
+        array_set_input:
+          description: Wrapper for setting scalar array
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar array
+              type:
+                type: nullable
+                underlying_type:
+                  name: array
+                  type: named
+          foreign_keys: {}
         bigint_set_input:
           description: Wrapper for setting scalar bigint
           fields:
@@ -34,6 +95,30 @@ definition:
                 type: nullable
                 underlying_type:
                   name: bigint
+                  type: named
+          foreign_keys: {}
+        boolean_set_input:
+          description: Wrapper for setting scalar boolean
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar boolean
+              type:
+                type: nullable
+                underlying_type:
+                  name: boolean
+                  type: named
+          foreign_keys: {}
+        date_set_input:
+          description: Wrapper for setting scalar date
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar date
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
                   type: named
           foreign_keys: {}
         decimal_set_input:
@@ -47,6 +132,96 @@ definition:
                 underlying_type:
                   name: decimal
                   type: named
+          foreign_keys: {}
+        delete_exercise_sets_result:
+          description: delete from exercise_sets result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: exercise_sets
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_exercises_result:
+          description: delete from exercises result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: exercises
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_schedule_entries_result:
+          description: delete from schedule_entries result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: schedule_entries
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_user_exercise_unlocks_result:
+          description: delete from user_exercise_unlocks result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: user_exercise_unlocks
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_user_profiles_result:
+          description: delete from user_profiles result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: user_profiles
+                  type: named
+                type: array
           foreign_keys: {}
         delete_users_result:
           description: delete from users result
@@ -66,6 +241,577 @@ definition:
                   type: named
                 type: array
           foreign_keys: {}
+        delete_workout_exercises_result:
+          description: delete from workout_exercises result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: workout_exercises
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_workouts_result:
+          description: delete from workouts result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by delete
+              type:
+                element_type:
+                  name: workouts
+                  type: named
+                type: array
+          foreign_keys: {}
+        difficulty_level_set_input:
+          description: Wrapper for setting scalar difficulty_level
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar difficulty_level
+              type:
+                type: nullable
+                underlying_type:
+                  name: difficulty_level
+                  type: named
+          foreign_keys: {}
+        exercise_category_set_input:
+          description: Wrapper for setting scalar exercise_category
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar exercise_category
+              type:
+                type: nullable
+                underlying_type:
+                  name: exercise_category
+                  type: named
+          foreign_keys: {}
+        exercise_sets:
+          fields:
+            completed:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: boolean
+                  type: named
+            created_at:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_with_time_zone
+                  type: named
+            id:
+              arguments: {}
+              type:
+                name: text
+                type: named
+            notes:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            reps:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+            set_number:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+            weight:
+              arguments: {}
+              type:
+                name: decimal
+                type: named
+            workout_exercise_id:
+              arguments: {}
+              type:
+                name: text
+                type: named
+          foreign_keys:
+            exercise_sets_workout_exercise_id_fkey:
+              column_mapping:
+                workout_exercise_id:
+                  - id
+              foreign_collection: workout_exercises
+        exercise_sets_insert_input:
+          description: Input type for inserting into exercise_sets
+          fields:
+            completed:
+              arguments: {}
+              description: New value for exercise_sets.completed
+              type:
+                type: nullable
+                underlying_type:
+                  name: boolean
+                  type: named
+            created_at:
+              arguments: {}
+              description: New value for exercise_sets.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_with_time_zone
+                  type: named
+            id:
+              arguments: {}
+              description: New value for exercise_sets.id
+              type:
+                name: text
+                type: named
+            notes:
+              arguments: {}
+              description: New value for exercise_sets.notes
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            reps:
+              arguments: {}
+              description: New value for exercise_sets.reps
+              type:
+                name: integer
+                type: named
+            set_number:
+              arguments: {}
+              description: New value for exercise_sets.set_number
+              type:
+                name: integer
+                type: named
+            weight:
+              arguments: {}
+              description: New value for exercise_sets.weight
+              type:
+                name: decimal
+                type: named
+            workout_exercise_id:
+              arguments: {}
+              description: New value for exercise_sets.workout_exercise_id
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        exercise_sets_set_input:
+          description: Input type for updating exercise_sets
+          fields:
+            completed:
+              arguments: {}
+              description: New value wrapper for exercise_sets.completed
+              type:
+                type: nullable
+                underlying_type:
+                  name: boolean_set_input
+                  type: named
+            created_at:
+              arguments: {}
+              description: New value wrapper for exercise_sets.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_with_time_zone_set_input
+                  type: named
+            id:
+              arguments: {}
+              description: New value wrapper for exercise_sets.id
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            notes:
+              arguments: {}
+              description: New value wrapper for exercise_sets.notes
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            reps:
+              arguments: {}
+              description: New value wrapper for exercise_sets.reps
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            set_number:
+              arguments: {}
+              description: New value wrapper for exercise_sets.set_number
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            weight:
+              arguments: {}
+              description: New value wrapper for exercise_sets.weight
+              type:
+                type: nullable
+                underlying_type:
+                  name: decimal_set_input
+                  type: named
+            workout_exercise_id:
+              arguments: {}
+              description: New value wrapper for exercise_sets.workout_exercise_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+          foreign_keys: {}
+        exercises:
+          fields:
+            category:
+              arguments: {}
+              type:
+                name: exercise_category
+                type: named
+            created_at:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_with_time_zone
+                  type: named
+            cues:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: array
+                  type: named
+            description:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            difficulty:
+              arguments: {}
+              type:
+                name: difficulty_level
+                type: named
+            equipment:
+              arguments: {}
+              type:
+                name: array
+                type: named
+            focus_areas:
+              arguments: {}
+              type:
+                name: array
+                type: named
+            id:
+              arguments: {}
+              type:
+                name: text
+                type: named
+            movement_pattern:
+              arguments: {}
+              type:
+                name: movement_pattern
+                type: named
+            name:
+              arguments: {}
+              type:
+                name: text
+                type: named
+            progression_parent_id:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+          foreign_keys:
+            exercises_progression_parent_id_fkey:
+              column_mapping:
+                progression_parent_id:
+                  - id
+              foreign_collection: exercises
+        exercises_insert_input:
+          description: Input type for inserting into exercises
+          fields:
+            category:
+              arguments: {}
+              description: New value for exercises.category
+              type:
+                name: exercise_category
+                type: named
+            created_at:
+              arguments: {}
+              description: New value for exercises.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_with_time_zone
+                  type: named
+            cues:
+              arguments: {}
+              description: New value for exercises.cues
+              type:
+                type: nullable
+                underlying_type:
+                  name: array
+                  type: named
+            description:
+              arguments: {}
+              description: New value for exercises.description
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            difficulty:
+              arguments: {}
+              description: New value for exercises.difficulty
+              type:
+                name: difficulty_level
+                type: named
+            equipment:
+              arguments: {}
+              description: New value for exercises.equipment
+              type:
+                name: array
+                type: named
+            focus_areas:
+              arguments: {}
+              description: New value for exercises.focus_areas
+              type:
+                name: array
+                type: named
+            id:
+              arguments: {}
+              description: New value for exercises.id
+              type:
+                name: text
+                type: named
+            movement_pattern:
+              arguments: {}
+              description: New value for exercises.movement_pattern
+              type:
+                name: movement_pattern
+                type: named
+            name:
+              arguments: {}
+              description: New value for exercises.name
+              type:
+                name: text
+                type: named
+            progression_parent_id:
+              arguments: {}
+              description: New value for exercises.progression_parent_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+          foreign_keys: {}
+        exercises_set_input:
+          description: Input type for updating exercises
+          fields:
+            category:
+              arguments: {}
+              description: New value wrapper for exercises.category
+              type:
+                type: nullable
+                underlying_type:
+                  name: exercise_category_set_input
+                  type: named
+            created_at:
+              arguments: {}
+              description: New value wrapper for exercises.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_with_time_zone_set_input
+                  type: named
+            cues:
+              arguments: {}
+              description: New value wrapper for exercises.cues
+              type:
+                type: nullable
+                underlying_type:
+                  name: array_set_input
+                  type: named
+            description:
+              arguments: {}
+              description: New value wrapper for exercises.description
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            difficulty:
+              arguments: {}
+              description: New value wrapper for exercises.difficulty
+              type:
+                type: nullable
+                underlying_type:
+                  name: difficulty_level_set_input
+                  type: named
+            equipment:
+              arguments: {}
+              description: New value wrapper for exercises.equipment
+              type:
+                type: nullable
+                underlying_type:
+                  name: array_set_input
+                  type: named
+            focus_areas:
+              arguments: {}
+              description: New value wrapper for exercises.focus_areas
+              type:
+                type: nullable
+                underlying_type:
+                  name: array_set_input
+                  type: named
+            id:
+              arguments: {}
+              description: New value wrapper for exercises.id
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            movement_pattern:
+              arguments: {}
+              description: New value wrapper for exercises.movement_pattern
+              type:
+                type: nullable
+                underlying_type:
+                  name: movement_pattern_set_input
+                  type: named
+            name:
+              arguments: {}
+              description: New value wrapper for exercises.name
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            progression_parent_id:
+              arguments: {}
+              description: New value wrapper for exercises.progression_parent_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+          foreign_keys: {}
+        insert_exercise_sets_result:
+          description: insert from exercise_sets result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: exercise_sets
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_exercises_result:
+          description: insert from exercises result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: exercises
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_schedule_entries_result:
+          description: insert from schedule_entries result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: schedule_entries
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_user_exercise_unlocks_result:
+          description: insert from user_exercise_unlocks result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: user_exercise_unlocks
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_user_profiles_result:
+          description: insert from user_profiles result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: user_profiles
+                  type: named
+                type: array
+          foreign_keys: {}
         insert_users_result:
           description: insert from users result
           fields:
@@ -81,6 +827,42 @@ definition:
               type:
                 element_type:
                   name: users
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_workout_exercises_result:
+          description: insert from workout_exercises result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: workout_exercises
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_workouts_result:
+          description: insert from workouts result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by insert
+              type:
+                element_type:
+                  name: workouts
                   type: named
                 type: array
           foreign_keys: {}
@@ -108,6 +890,184 @@ definition:
                   name: integer
                   type: named
           foreign_keys: {}
+        movement_pattern_set_input:
+          description: Wrapper for setting scalar movement_pattern
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar movement_pattern
+              type:
+                type: nullable
+                underlying_type:
+                  name: movement_pattern
+                  type: named
+          foreign_keys: {}
+        schedule_entries:
+          fields:
+            completed:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: boolean
+                  type: named
+            created_at:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_with_time_zone
+                  type: named
+            date:
+              arguments: {}
+              type:
+                name: date
+                type: named
+            id:
+              arguments: {}
+              type:
+                name: text
+                type: named
+            user_id:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+            workout_id:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            workout_type:
+              arguments: {}
+              type:
+                name: workout_type
+                type: named
+          foreign_keys:
+            schedule_entries_user_id_fkey:
+              column_mapping:
+                user_id:
+                  - id
+              foreign_collection: user_profiles
+            schedule_entries_workout_id_fkey:
+              column_mapping:
+                workout_id:
+                  - id
+              foreign_collection: workouts
+        schedule_entries_insert_input:
+          description: Input type for inserting into schedule_entries
+          fields:
+            completed:
+              arguments: {}
+              description: New value for schedule_entries.completed
+              type:
+                type: nullable
+                underlying_type:
+                  name: boolean
+                  type: named
+            created_at:
+              arguments: {}
+              description: New value for schedule_entries.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_with_time_zone
+                  type: named
+            date:
+              arguments: {}
+              description: New value for schedule_entries.date
+              type:
+                name: date
+                type: named
+            id:
+              arguments: {}
+              description: New value for schedule_entries.id
+              type:
+                name: text
+                type: named
+            user_id:
+              arguments: {}
+              description: New value for schedule_entries.user_id
+              type:
+                name: integer
+                type: named
+            workout_id:
+              arguments: {}
+              description: New value for schedule_entries.workout_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            workout_type:
+              arguments: {}
+              description: New value for schedule_entries.workout_type
+              type:
+                name: workout_type
+                type: named
+          foreign_keys: {}
+        schedule_entries_set_input:
+          description: Input type for updating schedule_entries
+          fields:
+            completed:
+              arguments: {}
+              description: New value wrapper for schedule_entries.completed
+              type:
+                type: nullable
+                underlying_type:
+                  name: boolean_set_input
+                  type: named
+            created_at:
+              arguments: {}
+              description: New value wrapper for schedule_entries.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_with_time_zone_set_input
+                  type: named
+            date:
+              arguments: {}
+              description: New value wrapper for schedule_entries.date
+              type:
+                type: nullable
+                underlying_type:
+                  name: date_set_input
+                  type: named
+            id:
+              arguments: {}
+              description: New value wrapper for schedule_entries.id
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            user_id:
+              arguments: {}
+              description: New value wrapper for schedule_entries.user_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            workout_id:
+              arguments: {}
+              description: New value wrapper for schedule_entries.workout_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            workout_type:
+              arguments: {}
+              description: New value wrapper for schedule_entries.workout_type
+              type:
+                type: nullable
+                underlying_type:
+                  name: workout_type_set_input
+                  type: named
+          foreign_keys: {}
         string_set_input:
           description: Wrapper for setting scalar string
           fields:
@@ -132,6 +1092,18 @@ definition:
                   name: text
                   type: named
           foreign_keys: {}
+        timestamp_with_time_zone_set_input:
+          description: Wrapper for setting scalar timestamp_with_time_zone
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar timestamp_with_time_zone
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_with_time_zone
+                  type: named
+          foreign_keys: {}
         timestamp_without_time_zone_set_input:
           description: Wrapper for setting scalar timestamp_without_time_zone
           fields:
@@ -143,6 +1115,96 @@ definition:
                 underlying_type:
                   name: timestamp_without_time_zone
                   type: named
+          foreign_keys: {}
+        update_exercise_sets_result:
+          description: update from exercise_sets result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: exercise_sets
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_exercises_result:
+          description: update from exercises result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: exercises
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_schedule_entries_result:
+          description: update from schedule_entries result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: schedule_entries
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_user_exercise_unlocks_result:
+          description: update from user_exercise_unlocks result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: user_exercise_unlocks
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_user_profiles_result:
+          description: update from user_profiles result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: user_profiles
+                  type: named
+                type: array
           foreign_keys: {}
         update_users_result:
           description: update from users result
@@ -161,6 +1223,307 @@ definition:
                   name: users
                   type: named
                 type: array
+          foreign_keys: {}
+        update_workout_exercises_result:
+          description: update from workout_exercises result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: workout_exercises
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_workouts_result:
+          description: update from workouts result
+          fields:
+            affected_rows:
+              arguments: {}
+              description: Number of affected rows
+              type:
+                name: int
+                type: named
+            returning:
+              arguments: {}
+              description: Objects that were affected by update
+              type:
+                element_type:
+                  name: workouts
+                  type: named
+                type: array
+          foreign_keys: {}
+        user_exercise_unlocks:
+          fields:
+            exercise_id:
+              arguments: {}
+              type:
+                name: text
+                type: named
+            id:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+            unlocked_at:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_with_time_zone
+                  type: named
+            user_id:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+          foreign_keys:
+            user_exercise_unlocks_exercise_id_fkey:
+              column_mapping:
+                exercise_id:
+                  - id
+              foreign_collection: exercises
+            user_exercise_unlocks_user_id_fkey:
+              column_mapping:
+                user_id:
+                  - id
+              foreign_collection: user_profiles
+        user_exercise_unlocks_insert_input:
+          description: Input type for inserting into user_exercise_unlocks
+          fields:
+            exercise_id:
+              arguments: {}
+              description: New value for user_exercise_unlocks.exercise_id
+              type:
+                name: text
+                type: named
+            id:
+              arguments: {}
+              description: New value for user_exercise_unlocks.id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            unlocked_at:
+              arguments: {}
+              description: New value for user_exercise_unlocks.unlocked_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_with_time_zone
+                  type: named
+            user_id:
+              arguments: {}
+              description: New value for user_exercise_unlocks.user_id
+              type:
+                name: integer
+                type: named
+          foreign_keys: {}
+        user_exercise_unlocks_set_input:
+          description: Input type for updating user_exercise_unlocks
+          fields:
+            exercise_id:
+              arguments: {}
+              description: New value wrapper for user_exercise_unlocks.exercise_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            id:
+              arguments: {}
+              description: New value wrapper for user_exercise_unlocks.id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            unlocked_at:
+              arguments: {}
+              description: New value wrapper for user_exercise_unlocks.unlocked_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_with_time_zone_set_input
+                  type: named
+            user_id:
+              arguments: {}
+              description: New value wrapper for user_exercise_unlocks.user_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+          foreign_keys: {}
+        user_profiles:
+          fields:
+            auth_user_id:
+              arguments: {}
+              type:
+                name: text
+                type: named
+            created_at:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_with_time_zone
+                  type: named
+            email:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            equipment:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: array
+                  type: named
+            id:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+            name:
+              arguments: {}
+              type:
+                name: text
+                type: named
+            updated_at:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_with_time_zone
+                  type: named
+          foreign_keys: {}
+        user_profiles_insert_input:
+          description: Input type for inserting into user_profiles
+          fields:
+            auth_user_id:
+              arguments: {}
+              description: New value for user_profiles.auth_user_id
+              type:
+                name: text
+                type: named
+            created_at:
+              arguments: {}
+              description: New value for user_profiles.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_with_time_zone
+                  type: named
+            email:
+              arguments: {}
+              description: New value for user_profiles.email
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            equipment:
+              arguments: {}
+              description: New value for user_profiles.equipment
+              type:
+                type: nullable
+                underlying_type:
+                  name: array
+                  type: named
+            id:
+              arguments: {}
+              description: New value for user_profiles.id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            name:
+              arguments: {}
+              description: New value for user_profiles.name
+              type:
+                name: text
+                type: named
+            updated_at:
+              arguments: {}
+              description: New value for user_profiles.updated_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_with_time_zone
+                  type: named
+          foreign_keys: {}
+        user_profiles_set_input:
+          description: Input type for updating user_profiles
+          fields:
+            auth_user_id:
+              arguments: {}
+              description: New value wrapper for user_profiles.auth_user_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            created_at:
+              arguments: {}
+              description: New value wrapper for user_profiles.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_with_time_zone_set_input
+                  type: named
+            email:
+              arguments: {}
+              description: New value wrapper for user_profiles.email
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            equipment:
+              arguments: {}
+              description: New value wrapper for user_profiles.equipment
+              type:
+                type: nullable
+                underlying_type:
+                  name: array_set_input
+                  type: named
+            id:
+              arguments: {}
+              description: New value wrapper for user_profiles.id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            name:
+              arguments: {}
+              description: New value wrapper for user_profiles.name
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            updated_at:
+              arguments: {}
+              description: New value wrapper for user_profiles.updated_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_with_time_zone_set_input
+                  type: named
           foreign_keys: {}
         users:
           fields:
@@ -255,7 +1618,838 @@ definition:
                   name: text_set_input
                   type: named
           foreign_keys: {}
+        workout_exercises:
+          fields:
+            created_at:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_with_time_zone
+                  type: named
+            exercise_id:
+              arguments: {}
+              type:
+                name: text
+                type: named
+            exercise_order:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+            id:
+              arguments: {}
+              type:
+                name: text
+                type: named
+            notes:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            rest_seconds:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            workout_id:
+              arguments: {}
+              type:
+                name: text
+                type: named
+          foreign_keys:
+            workout_exercises_exercise_id_fkey:
+              column_mapping:
+                exercise_id:
+                  - id
+              foreign_collection: exercises
+            workout_exercises_workout_id_fkey:
+              column_mapping:
+                workout_id:
+                  - id
+              foreign_collection: workouts
+        workout_exercises_insert_input:
+          description: Input type for inserting into workout_exercises
+          fields:
+            created_at:
+              arguments: {}
+              description: New value for workout_exercises.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_with_time_zone
+                  type: named
+            exercise_id:
+              arguments: {}
+              description: New value for workout_exercises.exercise_id
+              type:
+                name: text
+                type: named
+            exercise_order:
+              arguments: {}
+              description: New value for workout_exercises.exercise_order
+              type:
+                name: integer
+                type: named
+            id:
+              arguments: {}
+              description: New value for workout_exercises.id
+              type:
+                name: text
+                type: named
+            notes:
+              arguments: {}
+              description: New value for workout_exercises.notes
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            rest_seconds:
+              arguments: {}
+              description: New value for workout_exercises.rest_seconds
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            workout_id:
+              arguments: {}
+              description: New value for workout_exercises.workout_id
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        workout_exercises_set_input:
+          description: Input type for updating workout_exercises
+          fields:
+            created_at:
+              arguments: {}
+              description: New value wrapper for workout_exercises.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_with_time_zone_set_input
+                  type: named
+            exercise_id:
+              arguments: {}
+              description: New value wrapper for workout_exercises.exercise_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            exercise_order:
+              arguments: {}
+              description: New value wrapper for workout_exercises.exercise_order
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            id:
+              arguments: {}
+              description: New value wrapper for workout_exercises.id
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            notes:
+              arguments: {}
+              description: New value wrapper for workout_exercises.notes
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            rest_seconds:
+              arguments: {}
+              description: New value wrapper for workout_exercises.rest_seconds
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            workout_id:
+              arguments: {}
+              description: New value wrapper for workout_exercises.workout_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+          foreign_keys: {}
+        workout_type_set_input:
+          description: Wrapper for setting scalar workout_type
+          fields:
+            value:
+              arguments: {}
+              description: New value for scalar workout_type
+              type:
+                type: nullable
+                underlying_type:
+                  name: workout_type
+                  type: named
+          foreign_keys: {}
+        workouts:
+          fields:
+            completed:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: boolean
+                  type: named
+            created_at:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_with_time_zone
+                  type: named
+            date:
+              arguments: {}
+              type:
+                name: date
+                type: named
+            duration_minutes:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            equipment:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: array
+                  type: named
+            focus_areas:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: array
+                  type: named
+            id:
+              arguments: {}
+              type:
+                name: text
+                type: named
+            name:
+              arguments: {}
+              type:
+                name: text
+                type: named
+            notes:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            place:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            type:
+              arguments: {}
+              type:
+                name: workout_type
+                type: named
+            updated_at:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_with_time_zone
+                  type: named
+            user_id:
+              arguments: {}
+              type:
+                name: integer
+                type: named
+            warmup:
+              arguments: {}
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+          foreign_keys:
+            workouts_user_id_fkey:
+              column_mapping:
+                user_id:
+                  - id
+              foreign_collection: user_profiles
+        workouts_insert_input:
+          description: Input type for inserting into workouts
+          fields:
+            completed:
+              arguments: {}
+              description: New value for workouts.completed
+              type:
+                type: nullable
+                underlying_type:
+                  name: boolean
+                  type: named
+            created_at:
+              arguments: {}
+              description: New value for workouts.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_with_time_zone
+                  type: named
+            date:
+              arguments: {}
+              description: New value for workouts.date
+              type:
+                name: date
+                type: named
+            duration_minutes:
+              arguments: {}
+              description: New value for workouts.duration_minutes
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer
+                  type: named
+            equipment:
+              arguments: {}
+              description: New value for workouts.equipment
+              type:
+                type: nullable
+                underlying_type:
+                  name: array
+                  type: named
+            focus_areas:
+              arguments: {}
+              description: New value for workouts.focus_areas
+              type:
+                type: nullable
+                underlying_type:
+                  name: array
+                  type: named
+            id:
+              arguments: {}
+              description: New value for workouts.id
+              type:
+                name: text
+                type: named
+            name:
+              arguments: {}
+              description: New value for workouts.name
+              type:
+                name: text
+                type: named
+            notes:
+              arguments: {}
+              description: New value for workouts.notes
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            place:
+              arguments: {}
+              description: New value for workouts.place
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            type:
+              arguments: {}
+              description: New value for workouts.type
+              type:
+                name: workout_type
+                type: named
+            updated_at:
+              arguments: {}
+              description: New value for workouts.updated_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_with_time_zone
+                  type: named
+            user_id:
+              arguments: {}
+              description: New value for workouts.user_id
+              type:
+                name: integer
+                type: named
+            warmup:
+              arguments: {}
+              description: New value for workouts.warmup
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+          foreign_keys: {}
+        workouts_set_input:
+          description: Input type for updating workouts
+          fields:
+            completed:
+              arguments: {}
+              description: New value wrapper for workouts.completed
+              type:
+                type: nullable
+                underlying_type:
+                  name: boolean_set_input
+                  type: named
+            created_at:
+              arguments: {}
+              description: New value wrapper for workouts.created_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_with_time_zone_set_input
+                  type: named
+            date:
+              arguments: {}
+              description: New value wrapper for workouts.date
+              type:
+                type: nullable
+                underlying_type:
+                  name: date_set_input
+                  type: named
+            duration_minutes:
+              arguments: {}
+              description: New value wrapper for workouts.duration_minutes
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            equipment:
+              arguments: {}
+              description: New value wrapper for workouts.equipment
+              type:
+                type: nullable
+                underlying_type:
+                  name: array_set_input
+                  type: named
+            focus_areas:
+              arguments: {}
+              description: New value wrapper for workouts.focus_areas
+              type:
+                type: nullable
+                underlying_type:
+                  name: array_set_input
+                  type: named
+            id:
+              arguments: {}
+              description: New value wrapper for workouts.id
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            name:
+              arguments: {}
+              description: New value wrapper for workouts.name
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            notes:
+              arguments: {}
+              description: New value wrapper for workouts.notes
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            place:
+              arguments: {}
+              description: New value wrapper for workouts.place
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+            type:
+              arguments: {}
+              description: New value wrapper for workouts.type
+              type:
+                type: nullable
+                underlying_type:
+                  name: workout_type_set_input
+                  type: named
+            updated_at:
+              arguments: {}
+              description: New value wrapper for workouts.updated_at
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamp_with_time_zone_set_input
+                  type: named
+            user_id:
+              arguments: {}
+              description: New value wrapper for workouts.user_id
+              type:
+                type: nullable
+                underlying_type:
+                  name: integer_set_input
+                  type: named
+            warmup:
+              arguments: {}
+              description: New value wrapper for workouts.warmup
+              type:
+                type: nullable
+                underlying_type:
+                  name: text_set_input
+                  type: named
+          foreign_keys: {}
       procedures:
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: exercise_sets_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into exercise_sets
+          name: insert_exercise_sets
+          result_type:
+            name: insert_exercise_sets_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: exercise_sets_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: exercise_sets
+                type: predicate
+          description: Update exercise_sets
+          name: update_exercise_sets
+          result_type:
+            name: update_exercise_sets_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: exercise_sets
+                type: predicate
+          description: Delete from exercise_sets
+          name: delete_exercise_sets
+          result_type:
+            name: delete_exercise_sets_result
+            type: named
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: exercises_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into exercises
+          name: insert_exercises
+          result_type:
+            name: insert_exercises_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: exercises_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: exercises
+                type: predicate
+          description: Update exercises
+          name: update_exercises
+          result_type:
+            name: update_exercises_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: exercises
+                type: predicate
+          description: Delete from exercises
+          name: delete_exercises
+          result_type:
+            name: delete_exercises_result
+            type: named
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: schedule_entries_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into schedule_entries
+          name: insert_schedule_entries
+          result_type:
+            name: insert_schedule_entries_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: schedule_entries_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: schedule_entries
+                type: predicate
+          description: Update schedule_entries
+          name: update_schedule_entries
+          result_type:
+            name: update_schedule_entries_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: schedule_entries
+                type: predicate
+          description: Delete from schedule_entries
+          name: delete_schedule_entries
+          result_type:
+            name: delete_schedule_entries_result
+            type: named
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: user_exercise_unlocks_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into user_exercise_unlocks
+          name: insert_user_exercise_unlocks
+          result_type:
+            name: insert_user_exercise_unlocks_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: user_exercise_unlocks_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: user_exercise_unlocks
+                type: predicate
+          description: Update user_exercise_unlocks
+          name: update_user_exercise_unlocks
+          result_type:
+            name: update_user_exercise_unlocks_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: user_exercise_unlocks
+                type: predicate
+          description: Delete from user_exercise_unlocks
+          name: delete_user_exercise_unlocks
+          result_type:
+            name: delete_user_exercise_unlocks_result
+            type: named
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: user_profiles_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into user_profiles
+          name: insert_user_profiles
+          result_type:
+            name: insert_user_profiles_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: user_profiles_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: user_profiles
+                type: predicate
+          description: Update user_profiles
+          name: update_user_profiles
+          result_type:
+            name: update_user_profiles_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: user_profiles
+                type: predicate
+          description: Delete from user_profiles
+          name: delete_user_profiles
+          result_type:
+            name: delete_user_profiles_result
+            type: named
         - arguments:
             objects:
               description: Objects to insert
@@ -323,7 +2517,201 @@ definition:
           result_type:
             name: delete_users_result
             type: named
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: workout_exercises_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into workout_exercises
+          name: insert_workout_exercises
+          result_type:
+            name: insert_workout_exercises_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: workout_exercises_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: workout_exercises
+                type: predicate
+          description: Update workout_exercises
+          name: update_workout_exercises
+          result_type:
+            name: update_workout_exercises_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: workout_exercises
+                type: predicate
+          description: Delete from workout_exercises
+          name: delete_workout_exercises
+          result_type:
+            name: delete_workout_exercises_result
+            type: named
+        - arguments:
+            objects:
+              description: Objects to insert
+              type:
+                element_type:
+                  name: workouts_insert_input
+                  type: named
+                type: array
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+          description: Insert into workouts
+          name: insert_workouts
+          result_type:
+            name: insert_workouts_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            set:
+              description: Values to set
+              type:
+                name: workouts_set_input
+                type: named
+            where:
+              description: Filter for rows to update
+              type:
+                object_type_name: workouts
+                type: predicate
+          description: Update workouts
+          name: update_workouts
+          result_type:
+            name: update_workouts_result
+            type: named
+        - arguments:
+            returning:
+              description: Fields to return
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: string
+                    type: named
+                  type: array
+            where:
+              description: Filter for rows to delete
+              type:
+                object_type_name: workouts
+                type: predicate
+          description: Delete from workouts
+          name: delete_workouts
+          result_type:
+            name: delete_workouts_result
+            type: named
       scalar_types:
+        array:
+          aggregate_functions:
+            max:
+              type: max
+            min:
+              type: min
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _ilike:
+              type: contains_insensitive
+            _in:
+              type: in
+            _iregex:
+              argument_type:
+                name: array
+                type: named
+              type: custom
+            _like:
+              type: contains
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: array
+                type: named
+              type: custom
+            _nilike:
+              argument_type:
+                name: array
+                type: named
+              type: custom
+            _niregex:
+              argument_type:
+                name: array
+                type: named
+              type: custom
+            _nlike:
+              argument_type:
+                name: array
+                type: named
+              type: custom
+            _nregex:
+              argument_type:
+                name: array
+                type: named
+              type: custom
+            _regex:
+              argument_type:
+                name: array
+                type: named
+              type: custom
+          representation:
+            type: string
         bigint:
           aggregate_functions:
             avg:
@@ -376,6 +2764,50 @@ definition:
               type: custom
           representation:
             type: biginteger
+        boolean:
+          aggregate_functions:
+            max:
+              type: max
+            min:
+              type: min
+          comparison_operators:
+            _eq:
+              type: equal
+            _in:
+              type: in
+            _neq:
+              argument_type:
+                name: boolean
+                type: named
+              type: custom
+          representation:
+            type: boolean
+        date:
+          aggregate_functions:
+            max:
+              type: max
+            min:
+              type: min
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _in:
+              type: in
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: date
+                type: named
+              type: custom
+          representation:
+            type: date
         decimal:
           aggregate_functions:
             avg:
@@ -428,6 +2860,126 @@ definition:
               type: custom
           representation:
             type: bigdecimal
+        difficulty_level:
+          aggregate_functions:
+            max:
+              type: max
+            min:
+              type: min
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _ilike:
+              type: contains_insensitive
+            _in:
+              type: in
+            _iregex:
+              argument_type:
+                name: difficulty_level
+                type: named
+              type: custom
+            _like:
+              type: contains
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: difficulty_level
+                type: named
+              type: custom
+            _nilike:
+              argument_type:
+                name: difficulty_level
+                type: named
+              type: custom
+            _niregex:
+              argument_type:
+                name: difficulty_level
+                type: named
+              type: custom
+            _nlike:
+              argument_type:
+                name: difficulty_level
+                type: named
+              type: custom
+            _nregex:
+              argument_type:
+                name: difficulty_level
+                type: named
+              type: custom
+            _regex:
+              argument_type:
+                name: difficulty_level
+                type: named
+              type: custom
+          representation:
+            type: string
+        exercise_category:
+          aggregate_functions:
+            max:
+              type: max
+            min:
+              type: min
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _ilike:
+              type: contains_insensitive
+            _in:
+              type: in
+            _iregex:
+              argument_type:
+                name: exercise_category
+                type: named
+              type: custom
+            _like:
+              type: contains
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: exercise_category
+                type: named
+              type: custom
+            _nilike:
+              argument_type:
+                name: exercise_category
+                type: named
+              type: custom
+            _niregex:
+              argument_type:
+                name: exercise_category
+                type: named
+              type: custom
+            _nlike:
+              argument_type:
+                name: exercise_category
+                type: named
+              type: custom
+            _nregex:
+              argument_type:
+                name: exercise_category
+                type: named
+              type: custom
+            _regex:
+              argument_type:
+                name: exercise_category
+                type: named
+              type: custom
+          representation:
+            type: string
         int:
           aggregate_functions:
             avg:
@@ -532,6 +3084,66 @@ definition:
               type: custom
           representation:
             type: int32
+        movement_pattern:
+          aggregate_functions:
+            max:
+              type: max
+            min:
+              type: min
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _ilike:
+              type: contains_insensitive
+            _in:
+              type: in
+            _iregex:
+              argument_type:
+                name: movement_pattern
+                type: named
+              type: custom
+            _like:
+              type: contains
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: movement_pattern
+                type: named
+              type: custom
+            _nilike:
+              argument_type:
+                name: movement_pattern
+                type: named
+              type: custom
+            _niregex:
+              argument_type:
+                name: movement_pattern
+                type: named
+              type: custom
+            _nlike:
+              argument_type:
+                name: movement_pattern
+                type: named
+              type: custom
+            _nregex:
+              argument_type:
+                name: movement_pattern
+                type: named
+              type: custom
+            _regex:
+              argument_type:
+                name: movement_pattern
+                type: named
+              type: custom
+          representation:
+            type: string
         string:
           aggregate_functions:
             max:
@@ -652,6 +3264,32 @@ definition:
               type: custom
           representation:
             type: string
+        timestamp_with_time_zone:
+          aggregate_functions:
+            max:
+              type: max
+            min:
+              type: min
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _in:
+              type: in
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: timestamp_with_time_zone
+                type: named
+              type: custom
+          representation:
+            type: timestamptz
         timestamp_without_time_zone:
           aggregate_functions:
             max:
@@ -678,6 +3316,66 @@ definition:
               type: custom
           representation:
             type: timestamp
+        workout_type:
+          aggregate_functions:
+            max:
+              type: max
+            min:
+              type: min
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _ilike:
+              type: contains_insensitive
+            _in:
+              type: in
+            _iregex:
+              argument_type:
+                name: workout_type
+                type: named
+              type: custom
+            _like:
+              type: contains
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: workout_type
+                type: named
+              type: custom
+            _nilike:
+              argument_type:
+                name: workout_type
+                type: named
+              type: custom
+            _niregex:
+              argument_type:
+                name: workout_type
+                type: named
+              type: custom
+            _nlike:
+              argument_type:
+                name: workout_type
+                type: named
+              type: custom
+            _nregex:
+              argument_type:
+                name: workout_type
+                type: named
+              type: custom
+            _regex:
+              argument_type:
+                name: workout_type
+                type: named
+              type: custom
+          representation:
+            type: string
     capabilities:
       capabilities:
         mutation:

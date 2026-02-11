@@ -1,0 +1,276 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: Workouts
+  fields:
+    - name: completed
+      type: Boolean_1
+    - name: createdAt
+      type: Timestamptz
+    - name: date
+      type: Date!
+    - name: durationMinutes
+      type: Int32
+    - name: equipment
+      type: String_1
+    - name: focusAreas
+      type: String_1
+    - name: id
+      type: String_1!
+    - name: name
+      type: String_1!
+    - name: notes
+      type: String_1
+    - name: place
+      type: String_1
+    - name: type
+      type: String_1!
+    - name: updatedAt
+      type: Timestamptz
+    - name: userId
+      type: Int32!
+    - name: warmup
+      type: String_1
+  graphql:
+    typeName: Workouts
+    inputTypeName: WorkoutsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: workouts
+      fieldMapping:
+        completed:
+          column:
+            name: completed
+        createdAt:
+          column:
+            name: created_at
+        date:
+          column:
+            name: date
+        durationMinutes:
+          column:
+            name: duration_minutes
+        equipment:
+          column:
+            name: equipment
+        focusAreas:
+          column:
+            name: focus_areas
+        id:
+          column:
+            name: id
+        name:
+          column:
+            name: name
+        notes:
+          column:
+            name: notes
+        place:
+          column:
+            name: place
+        type:
+          column:
+            name: type
+        updatedAt:
+          column:
+            name: updated_at
+        userId:
+          column:
+            name: user_id
+        warmup:
+          column:
+            name: warmup
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: Workouts
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - completed
+          - createdAt
+          - date
+          - durationMinutes
+          - equipment
+          - focusAreas
+          - id
+          - name
+          - notes
+          - place
+          - type
+          - updatedAt
+          - userId
+          - warmup
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: WorkoutsBoolExp
+  operand:
+    object:
+      type: Workouts
+      comparableFields:
+        - fieldName: completed
+          booleanExpressionType: BooleanBoolExp
+        - fieldName: createdAt
+          booleanExpressionType: TimestampWithTimeZoneBoolExp
+        - fieldName: date
+          booleanExpressionType: DateBoolExp
+        - fieldName: durationMinutes
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: equipment
+          booleanExpressionType: ArrayBoolExp
+        - fieldName: focusAreas
+          booleanExpressionType: ArrayBoolExp
+        - fieldName: id
+          booleanExpressionType: TextBoolExp
+        - fieldName: name
+          booleanExpressionType: TextBoolExp
+        - fieldName: notes
+          booleanExpressionType: TextBoolExp
+        - fieldName: place
+          booleanExpressionType: TextBoolExp
+        - fieldName: type
+          booleanExpressionType: WorkoutTypeBoolExp
+        - fieldName: updatedAt
+          booleanExpressionType: TimestampWithTimeZoneBoolExp
+        - fieldName: userId
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: warmup
+          booleanExpressionType: TextBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: WorkoutsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: WorkoutsAggExp
+  operand:
+    object:
+      aggregatedType: Workouts
+      aggregatableFields:
+        - fieldName: completed
+          aggregateExpression: BooleanAggExp
+        - fieldName: createdAt
+          aggregateExpression: TimestampWithTimeZoneAggExp
+        - fieldName: date
+          aggregateExpression: DateAggExp
+        - fieldName: durationMinutes
+          aggregateExpression: IntegerAggExp
+        - fieldName: equipment
+          aggregateExpression: ArrayAggExp
+        - fieldName: focusAreas
+          aggregateExpression: ArrayAggExp
+        - fieldName: id
+          aggregateExpression: TextAggExp
+        - fieldName: name
+          aggregateExpression: TextAggExp
+        - fieldName: notes
+          aggregateExpression: TextAggExp
+        - fieldName: place
+          aggregateExpression: TextAggExp
+        - fieldName: type
+          aggregateExpression: WorkoutTypeAggExp
+        - fieldName: updatedAt
+          aggregateExpression: TimestampWithTimeZoneAggExp
+        - fieldName: userId
+          aggregateExpression: IntegerAggExp
+        - fieldName: warmup
+          aggregateExpression: TextAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: WorkoutsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: WorkoutsOrderByExp
+  operand:
+    object:
+      orderedType: Workouts
+      orderableFields:
+        - fieldName: completed
+          orderByExpression: Boolean1OrderByExp
+        - fieldName: createdAt
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: date
+          orderByExpression: DateOrderByExp
+        - fieldName: durationMinutes
+          orderByExpression: Int32OrderByExp
+        - fieldName: equipment
+          orderByExpression: String1OrderByExp
+        - fieldName: focusAreas
+          orderByExpression: String1OrderByExp
+        - fieldName: id
+          orderByExpression: String1OrderByExp
+        - fieldName: name
+          orderByExpression: String1OrderByExp
+        - fieldName: notes
+          orderByExpression: String1OrderByExp
+        - fieldName: place
+          orderByExpression: String1OrderByExp
+        - fieldName: type
+          orderByExpression: String1OrderByExp
+        - fieldName: updatedAt
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: userId
+          orderByExpression: Int32OrderByExp
+        - fieldName: warmup
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: WorkoutsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: Workouts
+  objectType: Workouts
+  source:
+    dataConnectorName: my_pg
+    collection: workouts
+  filterExpressionType: WorkoutsBoolExp
+  aggregateExpression: WorkoutsAggExp
+  orderByExpression: WorkoutsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: workouts
+      subscription:
+        rootField: workouts
+    selectUniques:
+      - queryRootField: workoutsById
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: workoutsById
+    filterInputTypeName: WorkoutsFilterInput
+    aggregate:
+      queryRootField: workoutsAggregate
+      subscription:
+        rootField: workoutsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: Workouts
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

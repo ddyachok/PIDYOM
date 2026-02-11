@@ -1,23 +1,105 @@
-# PIDYOM - Hasura DB Content Management
+# PIDYOM — Setup & Run Guide
 
-## Setup
+## Prerequisites
 
-1. **Run migrations** on your Neon PostgreSQL database:
-   ```bash
-   psql $DATABASE_URL -f sql/001_create_tables.sql
-   psql $DATABASE_URL -f sql/002_seed_exercises.sql
-   ```
-
-2. **Connect to Hasura DDN**: Add your Neon connection string in the Hasura DDN console under your connector configuration.
-
-3. **Track tables** in Hasura: Go to your Hasura console → Data → Track all tables (exercises, workouts, user_profiles, etc.)
+You already have installed:
+- **Hasura DDN CLI** v3.9.4 (`ddn`)
+- **Docker** 29.2.0
+- **Node.js** + npm
 
 ---
 
-## Managing Content via SQL
+## Step 1: Create Tables in Neon
 
-### Add a New Exercise
+Your Neon database connection string (from `.env`):
+```
+postgresql://neondb_owner:npg_BMige52pCvGZ@ep-plain-art-ag9lypls-pooler.c-2.eu-central-1.aws.neon.tech/neondb?sslmode=require
+```
 
+Open **Neon Console** → your project → **SQL Editor** at:
+https://console.neon.tech/app/projects/bitter-glitter-39321941/branches/br-soft-hat-agkyslor/sql-editor
+
+Paste and run these files **in order**:
+
+1. Copy contents of `sql/001_create_tables.sql` → paste → **Run**
+2. Copy contents of `sql/002_seed_exercises.sql` → paste → **Run**
+
+This creates all tables (exercises, workouts, user_profiles, etc.) and seeds 45+ exercises.
+
+> **Alternative — use psql from terminal:**
+> ```bash
+> # Install psql if needed: brew install libpq
+> export DATABASE_URL="postgresql://neondb_owner:npg_BMige52pCvGZ@ep-plain-art-ag9lypls-pooler.c-2.eu-central-1.aws.neon.tech/neondb?sslmode=require"
+> psql $DATABASE_URL -f kettlebell-tracker/sql/001_create_tables.sql
+> psql $DATABASE_URL -f kettlebell-tracker/sql/002_seed_exercises.sql
+> ```
+
+---
+
+## Step 2: Update Hasura DDN Metadata
+
+After creating tables, Hasura needs to know about them.
+
+```bash
+cd /Users/danylodyachok/Dev/web/pidyom
+
+# Introspect your Neon DB and update the connector schema
+ddn connector introspect my_pg
+
+# Add all new tables to Hasura metadata
+ddn model add my_pg "*"
+
+# Create a local Hasura DDN build
+ddn supergraph build local
+```
+
+This generates `.hml` metadata files for each table (exercises, workouts, user_profiles, etc.).
+
+---
+
+## Step 3: Run Hasura DDN Locally
+
+```bash
+cd /Users/danylodyachok/Dev/web/pidyom
+
+# Start the local Hasura engine + connector (requires Docker running)
+ddn run docker-start
+```
+
+This starts:
+- **Hasura Engine** at `http://localhost:3000` (GraphQL API)
+- **Connector** at `http://localhost:8437` (PostgreSQL proxy)
+
+Open the **local console** to explore your API:
+```bash
+ddn console --local
+```
+
+---
+
+## Step 4: Run the Frontend
+
+```bash
+cd /Users/danylodyachok/Dev/web/pidyom/kettlebell-tracker
+
+# Install dependencies (if not done)
+npm install
+
+# Start dev server
+npx vite --host
+```
+
+Open http://localhost:5173 — you'll see the Auth page (powered by Neon Auth).
+
+---
+
+## Quick Reference: Adding Data
+
+### Via Neon SQL Editor
+
+Go to: https://console.neon.tech → SQL Editor
+
+**Add a new exercise:**
 ```sql
 INSERT INTO exercises (id, name, category, movement_pattern, equipment, focus_areas, difficulty, description, cues, progression_parent_id)
 VALUES (
@@ -30,152 +112,76 @@ VALUES (
   'advanced',
   'Full-body explosive movement. KB from floor to overhead in one motion.',
   ARRAY['Hike the bell back', 'Punch through at the top', 'Soft lockout overhead'],
-  'kb-clean'  -- parent exercise (must exist already)
+  'kb-clean'  -- parent exercise (must already exist)
 );
 ```
 
-### Add a New Equipment Type
-
-If you need a new equipment type, alter the enum:
+**Create a user profile (after signing up via Neon Auth):**
 ```sql
-ALTER TYPE equipment_type ADD VALUE 'mace';
+INSERT INTO user_profiles (auth_user_id, name, email, equipment)
+VALUES (
+  'neon-auth-user-id-here',
+  'Danylo',
+  'danylo@example.com',
+  ARRAY['kettlebell', 'rings', 'bodyweight']::equipment_type[]
+);
 ```
 
-### Add a New Workout
-
+**Add a workout:**
 ```sql
-INSERT INTO workouts (id, user_id, name, type, date, warmup, notes, focus_areas, equipment)
+INSERT INTO workouts (user_id, name, type, date, warmup, focus_areas, equipment)
 VALUES (
-  gen_random_uuid()::text,
   1,  -- user_profiles.id
-  'Heavy Day',
+  'Heavy Hinge Day',
   'A',
-  '2025-03-01',
+  '2025-06-01',
   'KB Halo x8 → Goblet Squat x5',
-  'Focus on slow reps with heavy bell',
-  ARRAY['strength']::focus_area[],
+  ARRAY['strength', 'power']::focus_area[],
   ARRAY['kettlebell']::equipment_type[]
 );
 ```
 
-### Add Exercises to a Workout
-
+**Schedule workouts (Mon/Wed/Fri A-B pattern):**
 ```sql
-INSERT INTO workout_exercises (id, workout_id, exercise_id, rest_seconds, exercise_order)
-VALUES (
-  gen_random_uuid()::text,
-  '<workout_id>',
-  'kb-swing',
-  60,
-  1
-);
+INSERT INTO schedule_entries (user_id, date, workout_type) VALUES
+  (1, '2025-06-02', 'A'),
+  (1, '2025-06-04', 'B'),
+  (1, '2025-06-06', 'A');
 ```
 
-### Add Sets to a Workout Exercise
+### Via Hasura Console (GraphQL)
 
-```sql
-INSERT INTO exercise_sets (id, workout_exercise_id, reps, weight, completed)
-VALUES
-  (gen_random_uuid()::text, '<workout_exercise_id>', 10, 24, false),
-  (gen_random_uuid()::text, '<workout_exercise_id>', 10, 24, false),
-  (gen_random_uuid()::text, '<workout_exercise_id>', 10, 24, false);
-```
+After `ddn console --local`, use the API Explorer:
 
-### Create a Progression Tree
-
-Exercises form trees via `progression_parent_id`. To create a chain:
-
-```sql
--- Root exercise (no parent)
-INSERT INTO exercises (id, name, category, movement_pattern, equipment, difficulty, description)
-VALUES ('deadlift-basic', 'Kettlebell Deadlift', 'grind', 'hinge', ARRAY['kettlebell']::equipment_type[], 'beginner', 'Foundation hinge pattern.');
-
--- Level 2 (child of root)
-INSERT INTO exercises (id, name, category, movement_pattern, equipment, difficulty, progression_parent_id)
-VALUES ('single-leg-dl', 'Single Leg Deadlift', 'grind', 'hinge', ARRAY['kettlebell']::equipment_type[], 'intermediate', 'deadlift-basic');
-
--- Level 3 (child of level 2)
-INSERT INTO exercises (id, name, category, movement_pattern, equipment, difficulty, progression_parent_id)
-VALUES ('pistol-dl', 'Pistol Deadlift', 'grind', 'hinge', ARRAY['kettlebell']::equipment_type[], 'advanced', 'single-leg-dl');
-```
-
-### Unlock an Exercise for a User
-
-```sql
-INSERT INTO user_exercise_unlocks (user_id, exercise_id)
-VALUES (1, 'kb-clean')
-ON CONFLICT DO NOTHING;
-```
-
-### Schedule Workouts
-
-```sql
-INSERT INTO schedule_entries (id, user_id, date, workout_type)
-VALUES
-  (gen_random_uuid()::text, 1, '2025-03-03', 'A'),
-  (gen_random_uuid()::text, 1, '2025-03-05', 'B'),
-  (gen_random_uuid()::text, 1, '2025-03-07', 'A');
-```
-
----
-
-## Managing Content via Hasura Console
-
-1. Go to your Hasura DDN console
-2. Navigate to **API Explorer**
-3. Use GraphQL mutations:
-
-### Add Exercise via GraphQL
-
-```graphql
-mutation {
-  insert_exercises_one(object: {
-    id: "kb-windmill"
-    name: "Kettlebell Windmill"
-    category: "grind"
-    movement_pattern: "core"
-    equipment: "{kettlebell}"
-    focus_areas: "{strength,mobility}"
-    difficulty: "intermediate"
-    description: "Overhead KB with lateral hip hinge"
-    cues: "{\"Lock arm overhead\",\"Push hip out\",\"Reach to floor\"}"
-    progression_parent_id: "turkish-getup"
-  }) {
-    id
-    name
-  }
-}
-```
-
-### Query All Exercises
-
+**Query all exercises:**
 ```graphql
 query {
-  exercises(order_by: { movement_pattern: asc }) {
+  exercises(order_by: { movementPattern: Asc }) {
     id
     name
     difficulty
-    movement_pattern
-    progression_parent_id
+    movementPattern
+    progressionParentId
   }
 }
 ```
 
-### Query Progression Tree
-
+**Add exercise via mutation:**
 ```graphql
-query {
-  exercises(where: { progression_parent_id: { _is_null: true }}) {
-    id
-    name
-    children: exercises_by_progression_parent_id {
-      id
-      name
-      children: exercises_by_progression_parent_id {
-        id
-        name
-      }
-    }
+mutation {
+  insertExercises(objects: [{
+    id: "kb-windmill"
+    name: "Kettlebell Windmill"
+    category: "grind"
+    movementPattern: "core"
+    equipment: "{kettlebell}"
+    focusAreas: "{strength,mobility}"
+    difficulty: "intermediate"
+    description: "Overhead KB with lateral hip hinge"
+    cues: "{\"Lock arm overhead\",\"Push hip out\",\"Reach to floor\"}"
+    progressionParentId: "tgu-full"
+  }]) {
+    returning { id name }
   }
 }
 ```
@@ -186,9 +192,53 @@ query {
 
 | Type | Values |
 |------|--------|
-| equipment_type | kettlebell, rings, rope, bodyweight, pullup_bar, parallettes, resistance_band |
-| focus_area | strength, conditioning, mobility, power, coordination |
-| workout_type | A, B |
-| exercise_category | ballistic, grind, hybrid |
-| movement_pattern | hinge, squat, push, pull, carry, core, flow |
-| difficulty_level | beginner, intermediate, advanced, elite |
+| equipment_type | `kettlebell` `rings` `rope` `bodyweight` `pullup_bar` `parallettes` `resistance_band` |
+| focus_area | `strength` `conditioning` `mobility` `power` `coordination` |
+| workout_type | `A` `B` |
+| exercise_category | `ballistic` `grind` `hybrid` |
+| movement_pattern | `hinge` `squat` `push` `pull` `carry` `core` `flow` |
+| difficulty_level | `beginner` `intermediate` `advanced` `elite` |
+
+---
+
+## Architecture Overview
+
+```
+┌─────────────────┐     ┌──────────────────┐     ┌─────────────┐
+│  React Frontend │────▶│  Neon Auth        │     │ Neon         │
+│  localhost:5173  │     │  (sign in/up)     │     │ PostgreSQL   │
+│                  │     └──────────────────┘     │              │
+│  Vite + React   │                               │ Tables:      │
+│  + Tailwind     │──GraphQL──▶┌──────────┐──SQL──▶│ exercises    │
+│  + Framer Motion│            │ Hasura   │       │ workouts     │
+│  + Zustand      │◀───JSON────│ DDN v3   │◀──────│ user_profiles│
+└─────────────────┘            │ :3000    │       │ schedule     │
+                               └──────────┘       └─────────────┘
+```
+
+---
+
+## Troubleshooting
+
+**"Tables already exist" error when running SQL:**
+Tables were already created. This is fine — skip to seeding or drop and recreate:
+```sql
+DROP SCHEMA public CASCADE;
+CREATE SCHEMA public;
+-- Then re-run both SQL files
+```
+
+**Hasura DDN can't connect to Neon:**
+Check that `APP_MY_PG_JDBC_URL` in `.env` is correct and the Neon project is awake (Neon suspends idle databases — visit the console to wake it).
+
+**Auth 404 errors:**
+Make sure `VITE_NEON_AUTH_URL` in `kettlebell-tracker/.env` is set to:
+```
+https://ep-plain-art-ag9lypls.neonauth.c-2.eu-central-1.aws.neon.tech/neondb/auth
+```
+
+**Port 5173 already in use:**
+```bash
+lsof -i :5173    # find the PID
+kill -9 <PID>    # kill it
+```

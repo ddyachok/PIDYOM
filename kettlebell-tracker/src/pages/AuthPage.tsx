@@ -234,10 +234,11 @@ export default function AuthPage() {
                       exit={{ opacity: 0, height: 0 }}
                       transition={{ duration: 0.2 }}
                     >
-                      <label className="text-[9px] tracking-[0.2em] text-white/25 uppercase block mb-2">
+                      <label htmlFor="auth-name" className="text-[9px] tracking-[0.2em] text-white/25 uppercase block mb-2">
                         Name
                       </label>
                       <input
+                        id="auth-name"
                         type="text"
                         value={name}
                         onChange={e => setName(e.target.value)}
@@ -250,10 +251,11 @@ export default function AuthPage() {
                 </AnimatePresence>
 
                 <div>
-                  <label className="text-[9px] tracking-[0.2em] text-white/25 uppercase block mb-2">
+                  <label htmlFor="auth-email" className="text-[9px] tracking-[0.2em] text-white/25 uppercase block mb-2">
                     Email
                   </label>
                   <input
+                    id="auth-email"
                     type="email"
                     value={email}
                     onChange={e => setEmail(e.target.value)}
@@ -265,10 +267,11 @@ export default function AuthPage() {
                 </div>
 
                 <div>
-                  <label className="text-[9px] tracking-[0.2em] text-white/25 uppercase block mb-2">
+                  <label htmlFor="auth-password" className="text-[9px] tracking-[0.2em] text-white/25 uppercase block mb-2">
                     Password
                   </label>
                   <input
+                    id="auth-password"
                     type="password"
                     value={password}
                     onChange={e => setPassword(e.target.value)}
@@ -283,7 +286,7 @@ export default function AuthPage() {
                 <motion.button
                   type="submit"
                   disabled={isLoading || !email.trim() || !password.trim()}
-                  className="btn btn-full mt-6 relative overflow-hidden disabled:opacity-30"
+                  className="btn btn-primary btn-full mt-6 relative overflow-hidden disabled:opacity-30"
                   whileTap={{ scale: 0.98 }}
                 >
                   {isLoading ? (

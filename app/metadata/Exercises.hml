@@ -1,0 +1,240 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: Exercises
+  fields:
+    - name: category
+      type: String_1!
+    - name: createdAt
+      type: Timestamptz
+    - name: cues
+      type: String_1
+    - name: description
+      type: String_1
+    - name: difficulty
+      type: String_1!
+    - name: equipment
+      type: String_1!
+    - name: focusAreas
+      type: String_1!
+    - name: id
+      type: String_1!
+    - name: movementPattern
+      type: String_1!
+    - name: name
+      type: String_1!
+    - name: progressionParentId
+      type: String_1
+  graphql:
+    typeName: Exercises
+    inputTypeName: ExercisesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: exercises
+      fieldMapping:
+        category:
+          column:
+            name: category
+        createdAt:
+          column:
+            name: created_at
+        cues:
+          column:
+            name: cues
+        description:
+          column:
+            name: description
+        difficulty:
+          column:
+            name: difficulty
+        equipment:
+          column:
+            name: equipment
+        focusAreas:
+          column:
+            name: focus_areas
+        id:
+          column:
+            name: id
+        movementPattern:
+          column:
+            name: movement_pattern
+        name:
+          column:
+            name: name
+        progressionParentId:
+          column:
+            name: progression_parent_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: Exercises
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - category
+          - createdAt
+          - cues
+          - description
+          - difficulty
+          - equipment
+          - focusAreas
+          - id
+          - movementPattern
+          - name
+          - progressionParentId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ExercisesBoolExp
+  operand:
+    object:
+      type: Exercises
+      comparableFields:
+        - fieldName: category
+          booleanExpressionType: ExerciseCategoryBoolExp
+        - fieldName: createdAt
+          booleanExpressionType: TimestampWithTimeZoneBoolExp
+        - fieldName: cues
+          booleanExpressionType: ArrayBoolExp
+        - fieldName: description
+          booleanExpressionType: TextBoolExp
+        - fieldName: difficulty
+          booleanExpressionType: DifficultyLevelBoolExp
+        - fieldName: equipment
+          booleanExpressionType: ArrayBoolExp
+        - fieldName: focusAreas
+          booleanExpressionType: ArrayBoolExp
+        - fieldName: id
+          booleanExpressionType: TextBoolExp
+        - fieldName: movementPattern
+          booleanExpressionType: MovementPatternBoolExp
+        - fieldName: name
+          booleanExpressionType: TextBoolExp
+        - fieldName: progressionParentId
+          booleanExpressionType: TextBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ExercisesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ExercisesAggExp
+  operand:
+    object:
+      aggregatedType: Exercises
+      aggregatableFields:
+        - fieldName: category
+          aggregateExpression: ExerciseCategoryAggExp
+        - fieldName: createdAt
+          aggregateExpression: TimestampWithTimeZoneAggExp
+        - fieldName: cues
+          aggregateExpression: ArrayAggExp
+        - fieldName: description
+          aggregateExpression: TextAggExp
+        - fieldName: difficulty
+          aggregateExpression: DifficultyLevelAggExp
+        - fieldName: equipment
+          aggregateExpression: ArrayAggExp
+        - fieldName: focusAreas
+          aggregateExpression: ArrayAggExp
+        - fieldName: id
+          aggregateExpression: TextAggExp
+        - fieldName: movementPattern
+          aggregateExpression: MovementPatternAggExp
+        - fieldName: name
+          aggregateExpression: TextAggExp
+        - fieldName: progressionParentId
+          aggregateExpression: TextAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ExercisesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ExercisesOrderByExp
+  operand:
+    object:
+      orderedType: Exercises
+      orderableFields:
+        - fieldName: category
+          orderByExpression: String1OrderByExp
+        - fieldName: createdAt
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: cues
+          orderByExpression: String1OrderByExp
+        - fieldName: description
+          orderByExpression: String1OrderByExp
+        - fieldName: difficulty
+          orderByExpression: String1OrderByExp
+        - fieldName: equipment
+          orderByExpression: String1OrderByExp
+        - fieldName: focusAreas
+          orderByExpression: String1OrderByExp
+        - fieldName: id
+          orderByExpression: String1OrderByExp
+        - fieldName: movementPattern
+          orderByExpression: String1OrderByExp
+        - fieldName: name
+          orderByExpression: String1OrderByExp
+        - fieldName: progressionParentId
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: ExercisesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: Exercises
+  objectType: Exercises
+  source:
+    dataConnectorName: my_pg
+    collection: exercises
+  filterExpressionType: ExercisesBoolExp
+  aggregateExpression: ExercisesAggExp
+  orderByExpression: ExercisesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: exercises
+      subscription:
+        rootField: exercises
+    selectUniques:
+      - queryRootField: exercisesById
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: exercisesById
+    filterInputTypeName: ExercisesFilterInput
+    aggregate:
+      queryRootField: exercisesAggregate
+      subscription:
+        rootField: exercisesAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: Exercises
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

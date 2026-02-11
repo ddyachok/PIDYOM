@@ -1,0 +1,192 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ScheduleEntries
+  fields:
+    - name: completed
+      type: Boolean_1
+    - name: createdAt
+      type: Timestamptz
+    - name: date
+      type: Date!
+    - name: id
+      type: String_1!
+    - name: userId
+      type: Int32!
+    - name: workoutId
+      type: String_1
+    - name: workoutType
+      type: String_1!
+  graphql:
+    typeName: ScheduleEntries
+    inputTypeName: ScheduleEntriesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: schedule_entries
+      fieldMapping:
+        completed:
+          column:
+            name: completed
+        createdAt:
+          column:
+            name: created_at
+        date:
+          column:
+            name: date
+        id:
+          column:
+            name: id
+        userId:
+          column:
+            name: user_id
+        workoutId:
+          column:
+            name: workout_id
+        workoutType:
+          column:
+            name: workout_type
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ScheduleEntries
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - completed
+          - createdAt
+          - date
+          - id
+          - userId
+          - workoutId
+          - workoutType
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ScheduleEntriesBoolExp
+  operand:
+    object:
+      type: ScheduleEntries
+      comparableFields:
+        - fieldName: completed
+          booleanExpressionType: BooleanBoolExp
+        - fieldName: createdAt
+          booleanExpressionType: TimestampWithTimeZoneBoolExp
+        - fieldName: date
+          booleanExpressionType: DateBoolExp
+        - fieldName: id
+          booleanExpressionType: TextBoolExp
+        - fieldName: userId
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: workoutId
+          booleanExpressionType: TextBoolExp
+        - fieldName: workoutType
+          booleanExpressionType: WorkoutTypeBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ScheduleEntriesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ScheduleEntriesAggExp
+  operand:
+    object:
+      aggregatedType: ScheduleEntries
+      aggregatableFields:
+        - fieldName: completed
+          aggregateExpression: BooleanAggExp
+        - fieldName: createdAt
+          aggregateExpression: TimestampWithTimeZoneAggExp
+        - fieldName: date
+          aggregateExpression: DateAggExp
+        - fieldName: id
+          aggregateExpression: TextAggExp
+        - fieldName: userId
+          aggregateExpression: IntegerAggExp
+        - fieldName: workoutId
+          aggregateExpression: TextAggExp
+        - fieldName: workoutType
+          aggregateExpression: WorkoutTypeAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ScheduleEntriesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ScheduleEntriesOrderByExp
+  operand:
+    object:
+      orderedType: ScheduleEntries
+      orderableFields:
+        - fieldName: completed
+          orderByExpression: Boolean1OrderByExp
+        - fieldName: createdAt
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: date
+          orderByExpression: DateOrderByExp
+        - fieldName: id
+          orderByExpression: String1OrderByExp
+        - fieldName: userId
+          orderByExpression: Int32OrderByExp
+        - fieldName: workoutId
+          orderByExpression: String1OrderByExp
+        - fieldName: workoutType
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: ScheduleEntriesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ScheduleEntries
+  objectType: ScheduleEntries
+  source:
+    dataConnectorName: my_pg
+    collection: schedule_entries
+  filterExpressionType: ScheduleEntriesBoolExp
+  aggregateExpression: ScheduleEntriesAggExp
+  orderByExpression: ScheduleEntriesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: scheduleEntries
+      subscription:
+        rootField: scheduleEntries
+    selectUniques:
+      - queryRootField: scheduleEntriesById
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: scheduleEntriesById
+    filterInputTypeName: ScheduleEntriesFilterInput
+    aggregate:
+      queryRootField: scheduleEntriesAggregate
+      subscription:
+        rootField: scheduleEntriesAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ScheduleEntries
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

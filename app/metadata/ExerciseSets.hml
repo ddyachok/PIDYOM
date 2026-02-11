@@ -1,0 +1,204 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ExerciseSets
+  fields:
+    - name: completed
+      type: Boolean_1
+    - name: createdAt
+      type: Timestamptz
+    - name: id
+      type: String_1!
+    - name: notes
+      type: String_1
+    - name: reps
+      type: Int32!
+    - name: setNumber
+      type: Int32!
+    - name: weight
+      type: Bigdecimal!
+    - name: workoutExerciseId
+      type: String_1!
+  graphql:
+    typeName: ExerciseSets
+    inputTypeName: ExerciseSetsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: exercise_sets
+      fieldMapping:
+        completed:
+          column:
+            name: completed
+        createdAt:
+          column:
+            name: created_at
+        id:
+          column:
+            name: id
+        notes:
+          column:
+            name: notes
+        reps:
+          column:
+            name: reps
+        setNumber:
+          column:
+            name: set_number
+        weight:
+          column:
+            name: weight
+        workoutExerciseId:
+          column:
+            name: workout_exercise_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ExerciseSets
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - completed
+          - createdAt
+          - id
+          - notes
+          - reps
+          - setNumber
+          - weight
+          - workoutExerciseId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ExerciseSetsBoolExp
+  operand:
+    object:
+      type: ExerciseSets
+      comparableFields:
+        - fieldName: completed
+          booleanExpressionType: BooleanBoolExp
+        - fieldName: createdAt
+          booleanExpressionType: TimestampWithTimeZoneBoolExp
+        - fieldName: id
+          booleanExpressionType: TextBoolExp
+        - fieldName: notes
+          booleanExpressionType: TextBoolExp
+        - fieldName: reps
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: setNumber
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: weight
+          booleanExpressionType: DecimalBoolExp
+        - fieldName: workoutExerciseId
+          booleanExpressionType: TextBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ExerciseSetsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ExerciseSetsAggExp
+  operand:
+    object:
+      aggregatedType: ExerciseSets
+      aggregatableFields:
+        - fieldName: completed
+          aggregateExpression: BooleanAggExp
+        - fieldName: createdAt
+          aggregateExpression: TimestampWithTimeZoneAggExp
+        - fieldName: id
+          aggregateExpression: TextAggExp
+        - fieldName: notes
+          aggregateExpression: TextAggExp
+        - fieldName: reps
+          aggregateExpression: IntegerAggExp
+        - fieldName: setNumber
+          aggregateExpression: IntegerAggExp
+        - fieldName: weight
+          aggregateExpression: DecimalAggExp
+        - fieldName: workoutExerciseId
+          aggregateExpression: TextAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ExerciseSetsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ExerciseSetsOrderByExp
+  operand:
+    object:
+      orderedType: ExerciseSets
+      orderableFields:
+        - fieldName: completed
+          orderByExpression: Boolean1OrderByExp
+        - fieldName: createdAt
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: id
+          orderByExpression: String1OrderByExp
+        - fieldName: notes
+          orderByExpression: String1OrderByExp
+        - fieldName: reps
+          orderByExpression: Int32OrderByExp
+        - fieldName: setNumber
+          orderByExpression: Int32OrderByExp
+        - fieldName: weight
+          orderByExpression: BigdecimalOrderByExp
+        - fieldName: workoutExerciseId
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: ExerciseSetsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ExerciseSets
+  objectType: ExerciseSets
+  source:
+    dataConnectorName: my_pg
+    collection: exercise_sets
+  filterExpressionType: ExerciseSetsBoolExp
+  aggregateExpression: ExerciseSetsAggExp
+  orderByExpression: ExerciseSetsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: exerciseSets
+      subscription:
+        rootField: exerciseSets
+    selectUniques:
+      - queryRootField: exerciseSetsById
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: exerciseSetsById
+    filterInputTypeName: ExerciseSetsFilterInput
+    aggregate:
+      queryRootField: exerciseSetsAggregate
+      subscription:
+        rootField: exerciseSetsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ExerciseSets
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

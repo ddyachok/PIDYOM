@@ -24,16 +24,16 @@ export default function DesktopSidebar() {
   return (
     <nav className="desktop-sidebar desktop-only">
       {/* Logo */}
-      <div className="flex items-center gap-3 mb-12">
-        <Logo size={32} animate={false} />
+      <div className="flex items-center gap-5 mb-18">
+        <Logo size={54} animate={false} />
         <div>
-          <div className="text-[11px] tracking-[0.25em] font-bold">PIDYOM</div>
-          <div className="text-[8px] tracking-[0.2em] text-white/20 uppercase">Framework</div>
+          <div className="text-[20px] tracking-[0.38em] font-bold">PIDYOM</div>
+          <div className="text-[14px] tracking-[0.33em] text-white/20 uppercase">Framework</div>
         </div>
       </div>
 
       {/* Navigation */}
-      <div className="flex flex-col gap-1 flex-1">
+      <div className="flex flex-col gap-2 flex-1">
         {tabs.map((tab) => {
           const isActive = currentTab === tab.id;
           const Icon = tab.icon;
@@ -41,11 +41,13 @@ export default function DesktopSidebar() {
             <button
               key={tab.id}
               onClick={() => setCurrentTab(tab.id)}
-              className={`relative flex items-center gap-3 px-3 py-2.5 text-left transition-all duration-200 ${
+              className={`relative flex items-center gap-5 px-5 py-4 text-left transition-all duration-200 ${
                 isActive
                   ? 'text-white bg-white/[0.04]'
                   : 'text-white/25 hover:text-white/50 hover:bg-white/[0.02]'
               }`}
+              aria-current={isActive ? 'page' : undefined}
+              aria-label={tab.label}
             >
               {isActive && (
                 <motion.div
@@ -54,23 +56,24 @@ export default function DesktopSidebar() {
                   transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                 />
               )}
-              <Icon size={16} className="transition-colors" />
-              <span className="text-[10px] tracking-[0.2em] uppercase">{tab.label}</span>
+              <Icon size={27} className="transition-colors" />
+              <span className="text-[18px] tracking-[0.33em] uppercase">{tab.label}</span>
             </button>
           );
         })}
       </div>
 
       {/* User */}
-      <div className="pt-6 border-t border-white/[0.06]">
+      <div className="pt-9 border-t border-white/[0.06]">
         {userName && (
-          <div className="text-[9px] tracking-[0.15em] text-white/30 mb-2 truncate uppercase">
+          <div className="text-[15px] tracking-[0.27em] text-white/30 mb-3 truncate uppercase">
             {userName}
           </div>
         )}
         <button
           onClick={handleSignOut}
-          className="text-[9px] tracking-[0.15em] text-white/15 hover:text-white/40 transition-colors uppercase"
+          className="text-[15px] tracking-[0.27em] text-white/15 hover:text-white/40 transition-colors uppercase"
+          aria-label="Sign out"
         >
           Sign Out
         </button>

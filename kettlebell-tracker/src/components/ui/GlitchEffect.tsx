@@ -55,7 +55,7 @@ export default function GlitchEffect() {
               }}
             />
           ))}
-          {/* Screen flash */}
+          {/* Screen flash (Watch Dogs cyan tint) */}
           <motion.div
             className="absolute inset-0 bg-white"
             initial={{ opacity: 0 }}

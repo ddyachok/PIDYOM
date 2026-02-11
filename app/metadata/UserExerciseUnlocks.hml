@@ -1,0 +1,156 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UserExerciseUnlocks
+  fields:
+    - name: exerciseId
+      type: String_1!
+    - name: id
+      type: Int32!
+    - name: unlockedAt
+      type: Timestamptz
+    - name: userId
+      type: Int32!
+  graphql:
+    typeName: UserExerciseUnlocks
+    inputTypeName: UserExerciseUnlocksInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: user_exercise_unlocks
+      fieldMapping:
+        exerciseId:
+          column:
+            name: exercise_id
+        id:
+          column:
+            name: id
+        unlockedAt:
+          column:
+            name: unlocked_at
+        userId:
+          column:
+            name: user_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UserExerciseUnlocks
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - exerciseId
+          - id
+          - unlockedAt
+          - userId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: UserExerciseUnlocksBoolExp
+  operand:
+    object:
+      type: UserExerciseUnlocks
+      comparableFields:
+        - fieldName: exerciseId
+          booleanExpressionType: TextBoolExp
+        - fieldName: id
+          booleanExpressionType: IntegerBoolExp
+        - fieldName: unlockedAt
+          booleanExpressionType: TimestampWithTimeZoneBoolExp
+        - fieldName: userId
+          booleanExpressionType: IntegerBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: UserExerciseUnlocksBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: UserExerciseUnlocksAggExp
+  operand:
+    object:
+      aggregatedType: UserExerciseUnlocks
+      aggregatableFields:
+        - fieldName: exerciseId
+          aggregateExpression: TextAggExp
+        - fieldName: id
+          aggregateExpression: IntegerAggExp
+        - fieldName: unlockedAt
+          aggregateExpression: TimestampWithTimeZoneAggExp
+        - fieldName: userId
+          aggregateExpression: IntegerAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: UserExerciseUnlocksAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: UserExerciseUnlocksOrderByExp
+  operand:
+    object:
+      orderedType: UserExerciseUnlocks
+      orderableFields:
+        - fieldName: exerciseId
+          orderByExpression: String1OrderByExp
+        - fieldName: id
+          orderByExpression: Int32OrderByExp
+        - fieldName: unlockedAt
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: userId
+          orderByExpression: Int32OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: UserExerciseUnlocksOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: UserExerciseUnlocks
+  objectType: UserExerciseUnlocks
+  source:
+    dataConnectorName: my_pg
+    collection: user_exercise_unlocks
+  filterExpressionType: UserExerciseUnlocksBoolExp
+  aggregateExpression: UserExerciseUnlocksAggExp
+  orderByExpression: UserExerciseUnlocksOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: userExerciseUnlocks
+      subscription:
+        rootField: userExerciseUnlocks
+    selectUniques:
+      - queryRootField: userExerciseUnlocksById
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: userExerciseUnlocksById
+    filterInputTypeName: UserExerciseUnlocksFilterInput
+    aggregate:
+      queryRootField: userExerciseUnlocksAggregate
+      subscription:
+        rootField: userExerciseUnlocksAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: UserExerciseUnlocks
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

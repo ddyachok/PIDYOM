@@ -5,6 +5,463 @@
     },
     "tables": [
         {
+            "name": "exercise_sets",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "workout_exercise_id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "set_number",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "reps",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "weight",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "numeric",
+                        "metadata": {
+                            "type": "numeric",
+                            "precision": 6,
+                            "scale": 2
+                        }
+                    }
+                },
+                {
+                    "name": "completed",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "boolean"
+                    }
+                },
+                {
+                    "name": "notes",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "created_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_with_time_zone"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": {
+                "exercise_sets_workout_exercise_id_fkey": {
+                    "column_mapping": {
+                        "workout_exercise_id": "id"
+                    },
+                    "foreign_collection": "workout_exercises"
+                }
+            }
+        },
+        {
+            "name": "exercises",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "name",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "category",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "exercise_category"
+                    }
+                },
+                {
+                    "name": "movement_pattern",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "movement_pattern"
+                    }
+                },
+                {
+                    "name": "equipment",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "array",
+                        "metadata": {
+                            "type": "array",
+                            "array_types": {
+                                "database_type": "equipment_type"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "focus_areas",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "array",
+                        "metadata": {
+                            "type": "array",
+                            "array_types": {
+                                "database_type": "focus_area"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "difficulty",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "difficulty_level"
+                    }
+                },
+                {
+                    "name": "description",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "cues",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "array",
+                        "metadata": {
+                            "type": "array",
+                            "array_types": {
+                                "database_type": "text"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "progression_parent_id",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "created_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_with_time_zone"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": {
+                "exercises_progression_parent_id_fkey": {
+                    "column_mapping": {
+                        "progression_parent_id": "id"
+                    },
+                    "foreign_collection": "exercises"
+                }
+            }
+        },
+        {
+            "name": "schedule_entries",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "user_id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "date",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "workout_type",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "workout_type"
+                    }
+                },
+                {
+                    "name": "workout_id",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "completed",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "boolean"
+                    }
+                },
+                {
+                    "name": "created_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_with_time_zone"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": {
+                "schedule_entries_user_id_fkey": {
+                    "column_mapping": {
+                        "user_id": "id"
+                    },
+                    "foreign_collection": "user_profiles"
+                },
+                "schedule_entries_workout_id_fkey": {
+                    "column_mapping": {
+                        "workout_id": "id"
+                    },
+                    "foreign_collection": "workouts"
+                }
+            }
+        },
+        {
+            "name": "user_exercise_unlocks",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "user_id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "exercise_id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "unlocked_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_with_time_zone"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": {
+                "user_exercise_unlocks_exercise_id_fkey": {
+                    "column_mapping": {
+                        "exercise_id": "id"
+                    },
+                    "foreign_collection": "exercises"
+                },
+                "user_exercise_unlocks_user_id_fkey": {
+                    "column_mapping": {
+                        "user_id": "id"
+                    },
+                    "foreign_collection": "user_profiles"
+                }
+            }
+        },
+        {
+            "name": "user_profiles",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "id",
+                    "nullable": false,
+                    "auto_increment": true,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "auth_user_id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "name",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "email",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "equipment",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "array",
+                        "metadata": {
+                            "type": "array",
+                            "array_types": {
+                                "database_type": "equipment_type"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "created_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_with_time_zone"
+                    }
+                },
+                {
+                    "name": "updated_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_with_time_zone"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": {}
+        },
+        {
             "name": "users",
             "description": null,
             "category": "TABLE",
@@ -50,6 +507,249 @@
                 "id"
             ],
             "foreign_keys": {}
+        },
+        {
+            "name": "workout_exercises",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "workout_id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "exercise_id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "rest_seconds",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "notes",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "exercise_order",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "created_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_with_time_zone"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": {
+                "workout_exercises_exercise_id_fkey": {
+                    "column_mapping": {
+                        "exercise_id": "id"
+                    },
+                    "foreign_collection": "exercises"
+                },
+                "workout_exercises_workout_id_fkey": {
+                    "column_mapping": {
+                        "workout_id": "id"
+                    },
+                    "foreign_collection": "workouts"
+                }
+            }
+        },
+        {
+            "name": "workouts",
+            "description": null,
+            "category": "TABLE",
+            "columns": [
+                {
+                    "name": "id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": true,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "user_id",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "name",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "type",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "workout_type"
+                    }
+                },
+                {
+                    "name": "date",
+                    "nullable": false,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "date"
+                    }
+                },
+                {
+                    "name": "warmup",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "notes",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "focus_areas",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "array",
+                        "metadata": {
+                            "type": "array",
+                            "array_types": {
+                                "database_type": "focus_area"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "equipment",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "array",
+                        "metadata": {
+                            "type": "array",
+                            "array_types": {
+                                "database_type": "equipment_type"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "duration_minutes",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "integer"
+                    }
+                },
+                {
+                    "name": "place",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "text"
+                    }
+                },
+                {
+                    "name": "completed",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "boolean"
+                    }
+                },
+                {
+                    "name": "created_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_with_time_zone"
+                    }
+                },
+                {
+                    "name": "updated_at",
+                    "nullable": true,
+                    "auto_increment": false,
+                    "is_primarykey": false,
+                    "data": {
+                        "database_type": "timestamp_with_time_zone"
+                    }
+                }
+            ],
+            "primary_keys": [
+                "id"
+            ],
+            "foreign_keys": {
+                "workouts_user_id_fkey": {
+                    "column_mapping": {
+                        "user_id": "id"
+                    },
+                    "foreign_collection": "user_profiles"
+                }
+            }
         }
     ]
 }

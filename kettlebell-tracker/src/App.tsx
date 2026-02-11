@@ -2,8 +2,9 @@ import { useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { useStore } from './store/useStore';
 import { authClient } from './lib/auth';
-import GrainOverlay from './components/ui/GrainOverlay';
 import GlitchEffect from './components/ui/GlitchEffect';
+import Toast from './components/ui/Toast';
+import ErrorBoundary from './components/ui/ErrorBoundary';
 import BottomNav from './components/ui/BottomNav';
 import DesktopSidebar from './components/ui/DesktopSidebar';
 import HomePage from './pages/HomePage';
@@ -43,10 +44,9 @@ export default function App() {
   if (session.isPending) {
     return (
       <div className="relative min-h-screen bg-black text-white flex items-center justify-center">
-        <GrainOverlay />
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-5 h-5 border border-white/30 border-t-transparent rounded-full animate-spin" />
-          <span className="text-[9px] tracking-[0.3em] text-white/20 uppercase">Loading</span>
+        <div className="flex flex-col items-center gap-4 md:gap-6">
+          <div className="w-6 h-6 md:w-8 md:h-8 border border-white/30 border-t-transparent rounded-full animate-spin" />
+          <span className="text-[11px] md:text-[17px] tracking-[0.3em] md:tracking-[0.45em] text-white/40 uppercase">Loading</span>
         </div>
       </div>
     );
@@ -55,25 +55,26 @@ export default function App() {
   if (!session.data?.user) {
     return (
       <div className="relative min-h-screen bg-black text-white">
-        <GrainOverlay />
         <AuthPage />
       </div>
     );
   }
 
   return (
-    <div className="relative min-h-screen bg-black text-white">
-      <GrainOverlay />
-      <GlitchEffect />
-      <DesktopSidebar />
-      <div className="desktop-main">
-        <AnimatePresence mode="wait">
-          <CurrentPage />
-        </AnimatePresence>
+    <ErrorBoundary>
+      <div className="relative min-h-screen bg-black text-white">
+        <GlitchEffect />
+        <DesktopSidebar />
+        <div className="desktop-main">
+          <AnimatePresence mode="wait">
+            <CurrentPage />
+          </AnimatePresence>
+        </div>
+        <div className="mobile-only">
+          <BottomNav />
+        </div>
+        <Toast />
       </div>
-      <div className="mobile-only">
-        <BottomNav />
-      </div>
-    </div>
+    </ErrorBoundary>
   );
 }
