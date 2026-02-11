@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Auth + Hasura Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            background: #0066cc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0052a3;
+        }
+        #output {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Neon Auth + Hasura Integration Example</h1>
+
+    <div class="section">
+        <h2>1. Neon Auth Configuration</h2>
+        <p>Enter your Neon Auth credentials:</p>
+        <input type="text" id="neonProjectId" placeholder="Neon Project ID">
+        <input type="text" id="neonApiEndpoint" placeholder="Neon Auth API Endpoint">
+    </div>
+
+    <div class="section">
+        <h2>2. Authentication</h2>
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="login()">Login</button>
+        <button onclick="signup()">Sign Up</button>
+        <button onclick="logout()">Logout</button>
+        <p id="authStatus">Not authenticated</p>
+    </div>
+
+    <div class="section">
+        <h2>3. Test Hasura Queries</h2>
+        <button onclick="queryAsAnonymous()">Query as Anonymous</button>
+        <button onclick="queryAsUser()">Query as Authenticated User</button>
+        <button onclick="queryCurrentUser()">Get My Profile</button>
+    </div>
+
+    <div class="section">
+        <h2>Output:</h2>
+        <div id="output">Results will appear here...</div>
+    </div>
+
+    <script type="module">
+        // Note: In a real application, you would import @neondatabase/auth
+        // import { NeonAuth } from '@neondatabase/auth';
+
+        let currentToken = null;
+        const HASURA_ENDPOINT = 'http://localhost:3280/graphql';
+
+        window.login = async function() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                // This is a placeholder - replace with actual Neon Auth SDK calls
+                output('Logging in with Neon Auth...');
+
+                // Example of what the Neon Auth SDK would do:
+                // const auth = new NeonAuth({
+                //     projectId: document.getElementById('neonProjectId').value,
+                //     endpoint: document.getElementById('neonApiEndpoint').value
+                // });
+                // const result = await auth.signIn({ email, password });
+                // currentToken = result.token;
+
+                output('Login would happen here with Neon Auth SDK.\n\nFor testing, you can manually set a token below:');
+
+                // For demo purposes, simulate a token
+                currentToken = 'DEMO_TOKEN_REPLACE_WITH_REAL_TOKEN';
+                document.getElementById('authStatus').textContent = `Authenticated as ${email}`;
+            } catch (error) {
+                output(`Error: ${error.message}`);
+            }
+        };
+
+        window.signup = async function() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                output('Signing up with Neon Auth...');
+
+                // Placeholder for Neon Auth signup
+                // const auth = new NeonAuth({...});
+                // const result = await auth.signUp({ email, password });
+                // currentToken = result.token;
+
+                output('Signup would happen here with Neon Auth SDK');
+            } catch (error) {
+                output(`Error: ${error.message}`);
+            }
+        };
+
+        window.logout = function() {
+            currentToken = null;
+            document.getElementById('authStatus').textContent = 'Not authenticated';
+            output('Logged out');
+        };
+
+        window.queryAsAnonymous = async function() {
+            const query = `
+                query GetUsers {
+                    users {
+                        id
+                        name
+                    }
+                }
+            `;
+
+            try {
+                const response = await fetch(HASURA_ENDPOINT, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ query })
+                });
+
+                const result = await response.json();
+                output(JSON.stringify(result, null, 2));
+            } catch (error) {
+                output(`Error: ${error.message}`);
+            }
+        };
+
+        window.queryAsUser = async function() {
+            if (!currentToken) {
+                output('Please login first!');
+                return;
+            }
+
+            const query = `
+                query GetUsers {
+                    users {
+                        id
+                        name
+                        email
+                        createdAt
+                    }
+                }
+            `;
+
+            try {
+                const response = await fetch(HASURA_ENDPOINT, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${currentToken}`
+                    },
+                    body: JSON.stringify({ query })
+                });
+
+                const result = await response.json();
+                output(JSON.stringify(result, null, 2));
+            } catch (error) {
+                output(`Error: ${error.message}`);
+            }
+        };
+
+        window.queryCurrentUser = async function() {
+            if (!currentToken) {
+                output('Please login first!');
+                return;
+            }
+
+            const query = `
+                query GetMyProfile {
+                    users {
+                        id
+                        name
+                        email
+                        createdAt
+                    }
+                }
+            `;
+
+            try {
+                const response = await fetch(HASURA_ENDPOINT, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${currentToken}`
+                    },
+                    body: JSON.stringify({ query })
+                });
+
+                const result = await response.json();
+                output(JSON.stringify(result, null, 2));
+            } catch (error) {
+                output(`Error: ${error.message}`);
+            }
+        };
+
+        function output(text) {
+            document.getElementById('output').textContent = text;
+        }
+    </script>
+</body>
+</html>

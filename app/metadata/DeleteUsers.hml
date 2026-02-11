@@ -1,0 +1,70 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: DeleteUsersResult
+  description: delete from users result
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: Number of affected rows
+    - name: returning
+      type: "[Users!]!"
+      description: Objects that were affected by delete
+  graphql:
+    typeName: DeleteUsersResult
+    inputTypeName: DeleteUsersResultInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: delete_users_result
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: DeleteUsersResult
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: DeleteUsers
+  outputType: DeleteUsersResult!
+  arguments:
+    - name: returning
+      type: "[String_1!]"
+      description: Fields to return
+    - name: where
+      type: UsersBoolExp!
+      description: Filter for rows to delete
+  source:
+    dataConnectorName: my_pg
+    dataConnectorCommand:
+      procedure: delete_users
+  graphql:
+    rootFieldName: deleteUsers
+    rootFieldKind: Mutation
+  description: Delete from users
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: DeleteUsers
+  permissions:
+    - role: admin
+      allowExecution: true
+

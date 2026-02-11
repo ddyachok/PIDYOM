@@ -1,0 +1,210 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: TimestampWithoutTimeZoneSetInput
+  description: Wrapper for setting scalar timestamp_without_time_zone
+  fields:
+    - name: value
+      type: Timestamp
+      description: New value for scalar timestamp_without_time_zone
+  graphql:
+    typeName: TimestampWithoutTimeZoneSetInput
+    inputTypeName: TimestampWithoutTimeZoneSetInputInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: timestamp_without_time_zone_set_input
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: TimestampWithoutTimeZoneSetInput
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - value
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: TextSetInput
+  description: Wrapper for setting scalar text
+  fields:
+    - name: value
+      type: String_1
+      description: New value for scalar text
+  graphql:
+    typeName: TextSetInput
+    inputTypeName: TextSetInputInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: text_set_input
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: TextSetInput
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - value
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: IntegerSetInput
+  description: Wrapper for setting scalar integer
+  fields:
+    - name: value
+      type: Int32
+      description: New value for scalar integer
+  graphql:
+    typeName: IntegerSetInput
+    inputTypeName: IntegerSetInputInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: integer_set_input
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: IntegerSetInput
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - value
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UsersSetInput
+  description: Input type for updating users
+  fields:
+    - name: createdAt
+      type: TimestampWithoutTimeZoneSetInput
+      description: New value wrapper for users.created_at
+    - name: email
+      type: TextSetInput
+      description: New value wrapper for users.email
+    - name: id
+      type: IntegerSetInput
+      description: New value wrapper for users.id
+    - name: name
+      type: TextSetInput
+      description: New value wrapper for users.name
+  graphql:
+    typeName: UsersSetInput
+    inputTypeName: UsersSetInputInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: users_set_input
+      fieldMapping:
+        createdAt:
+          column:
+            name: created_at
+        email:
+          column:
+            name: email
+        id:
+          column:
+            name: id
+        name:
+          column:
+            name: name
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UsersSetInput
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - createdAt
+          - email
+          - id
+          - name
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateUsersResult
+  description: update from users result
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: Number of affected rows
+    - name: returning
+      type: "[Users!]!"
+      description: Objects that were affected by update
+  graphql:
+    typeName: UpdateUsersResult
+    inputTypeName: UpdateUsersResultInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: update_users_result
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateUsersResult
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: UpdateUsers
+  outputType: UpdateUsersResult!
+  arguments:
+    - name: returning
+      type: "[String_1!]"
+      description: Fields to return
+    - name: set
+      type: UsersSetInput!
+      description: Values to set
+    - name: where
+      type: UsersBoolExp!
+      description: Filter for rows to update
+  source:
+    dataConnectorName: my_pg
+    dataConnectorCommand:
+      procedure: update_users
+  graphql:
+    rootFieldName: updateUsers
+    rootFieldKind: Mutation
+  description: Update users
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: UpdateUsers
+  permissions:
+    - role: admin
+      allowExecution: true
+

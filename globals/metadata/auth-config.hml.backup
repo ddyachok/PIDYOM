@@ -1,0 +1,8 @@
+kind: AuthConfig
+version: v3
+definition:
+  mode:
+    webhook:
+      url:
+        value: http://local.hasura.dev:3001/webhook
+      method: POST

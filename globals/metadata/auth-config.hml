@@ -1,0 +1,13 @@
+kind: AuthConfig
+version: v4
+definition:
+  mode:
+    jwt:
+      key:
+        jwkFromUrl: https://ep-plain-art-ag9lypls.neonauth.c-2.eu-central-1.aws.neon.tech/neondb/auth/.well-known/jwks.json
+      claimsConfig:
+        namespace:
+          claimsFormat: Json
+          location: /https://hasura.io/jwt/claims
+      tokenLocation:
+        type: BearerAuthorization

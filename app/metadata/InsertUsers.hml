@@ -1,0 +1,123 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UsersInsertInput
+  description: Input type for inserting into users
+  fields:
+    - name: createdAt
+      type: Timestamp
+      description: New value for users.created_at
+    - name: email
+      type: String_1!
+      description: New value for users.email
+    - name: id
+      type: Int32
+      description: New value for users.id
+    - name: name
+      type: String_1!
+      description: New value for users.name
+  graphql:
+    typeName: UsersInsertInput
+    inputTypeName: UsersInsertInputInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: users_insert_input
+      fieldMapping:
+        createdAt:
+          column:
+            name: created_at
+        email:
+          column:
+            name: email
+        id:
+          column:
+            name: id
+        name:
+          column:
+            name: name
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UsersInsertInput
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - createdAt
+          - email
+          - id
+          - name
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: InsertUsersResult
+  description: insert from users result
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: Number of affected rows
+    - name: returning
+      type: "[Users!]!"
+      description: Objects that were affected by insert
+  graphql:
+    typeName: InsertUsersResult
+    inputTypeName: InsertUsersResultInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: insert_users_result
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: InsertUsersResult
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: InsertUsers
+  outputType: InsertUsersResult!
+  arguments:
+    - name: objects
+      type: "[UsersInsertInput!]!"
+      description: Objects to insert
+    - name: returning
+      type: "[String_1!]"
+      description: Fields to return
+  source:
+    dataConnectorName: my_pg
+    dataConnectorCommand:
+      procedure: insert_users
+  graphql:
+    rootFieldName: insertUsers
+    rootFieldKind: Mutation
+  description: Insert into users
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: InsertUsers
+  permissions:
+    - role: admin
+      allowExecution: true
+
