@@ -183,35 +183,46 @@ function MiniBar({ value, max, label, unit }: { value: number; max: number; labe
 }
 
 function VolumeChart({ data, onBarHover, hoveredIndex }: { data: { label: string; value: number; date?: string }[]; onBarHover: (index: number | null) => void; hoveredIndex: number | null }) {
-  const max = Math.max(...data.map(d => d.value), 1);
+  const max = data.length ? Math.max(...data.map(d => d.value), 1) : 1;
+  if (!data.length) {
+    return (
+      <div className="h-24 md:h-32 flex items-center justify-center text-[11px] md:text-[13px] text-white/20">
+        No volume data for this period
+      </div>
+    );
+  }
   return (
     <div className="overflow-x-auto overflow-y-visible pb-2 -mx-1 md:mx-0">
-      <div className="flex items-end gap-1 md:gap-2 h-24 md:h-32 min-w-0" style={{ minWidth: data.length * 24 }}>
+      <div className="flex items-end gap-1.5 md:gap-2 h-28 md:h-36" style={{ minWidth: data.length * 22 }}>
         {data.map((d, i) => {
-          const height = max > 0 ? (d.value / max) * 100 : 0;
+          const heightPct = max > 0 ? (d.value / max) * 100 : 0;
           const isHovered = hoveredIndex === i;
           return (
             <div
               key={i}
-              className="relative flex flex-col items-center gap-1 md:gap-2 group cursor-pointer flex-shrink-0 w-6 md:w-auto md:flex-1 min-w-[20px] md:min-w-0"
+              className="relative flex flex-col items-center gap-1.5 md:gap-2 flex-shrink-0 w-5 md:flex-1 md:min-w-0 cursor-pointer"
+              style={{ minWidth: 18 }}
               onMouseEnter={() => onBarHover(i)}
               onMouseLeave={() => onBarHover(null)}
             >
-              <motion.div
-                className={`w-full max-w-[20px] md:max-w-none bg-white/20 min-h-[2px] rounded-t transition-all ${
-                  isHovered ? 'bg-white/40' : ''
-                }`}
-                initial={{ height: 0 }}
-                animate={{ height: `${height}%` }}
-                transition={{ duration: 0.5, delay: i * 0.05 }}
-                whileHover={{ scale: 1.05 }}
-              />
-              <span className={`text-[7px] md:text-[10px] text-white/20 transition-colors truncate max-w-[28px] md:max-w-none ${isHovered ? 'text-white/70' : ''}`}>{d.label}</span>
+              <div className="w-full h-20 md:h-24 flex flex-col justify-end flex-shrink-0">
+                <motion.div
+                  className={`w-full max-w-[16px] md:max-w-none mx-auto bg-white/20 rounded-t transition-colors ${
+                    isHovered ? 'bg-white/40' : ''
+                  }`}
+                  style={{ minHeight: 2 }}
+                  initial={{ height: 0 }}
+                  animate={{ height: `${heightPct}%` }}
+                  transition={{ duration: 0.5, delay: i * 0.03 }}
+                  whileHover={{ scale: 1.05 }}
+                />
+              </div>
+              <span className={`text-[7px] md:text-[10px] text-white/25 truncate max-w-[24px] md:max-w-none text-center ${isHovered ? 'text-white/70' : ''}`}>{d.label}</span>
               {isHovered && (
                 <motion.div
-                  initial={{ opacity: 0, y: -5 }}
+                  initial={{ opacity: 0, y: -4 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="absolute -top-10 left-1/2 -translate-x-1/2 bg-black/95 border border-white/20 px-2 py-1.5 text-[9px] md:text-[10px] text-white/90 whitespace-nowrap z-10"
+                  className="absolute -top-9 left-1/2 -translate-x-1/2 bg-black/95 border border-white/20 px-2 py-1.5 text-[9px] md:text-[10px] text-white/90 whitespace-nowrap z-10"
                 >
                   {d.value} kg{d.date ? ` · ${format(parseISO(d.date), 'MMM d')}` : ''}
                 </motion.div>

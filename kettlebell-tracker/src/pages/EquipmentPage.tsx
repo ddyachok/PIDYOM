@@ -18,25 +18,6 @@ const EQUIPMENT_INFO: Record<Equipment, { label: string; icon: typeof IconKettle
   resistance_band: { label: 'Resistance Band', icon: IconResistanceBand, description: 'Assistance and mobility.', category: 'TOOLS' },
 };
 
-function SelectionIndicator({ isSelected }: { isSelected: boolean }) {
-  return (
-    <div className="flex items-center gap-1.5">
-      {[0, 1, 2].map((i) => (
-        <motion.div
-          key={i}
-          className={`w-2 h-2 md:w-2.5 md:h-2.5 rounded-full border transition-all ${
-            isSelected ? 'bg-white/30 border-white/50' : 'bg-transparent border-white/10'
-          }`}
-          animate={{
-            scale: isSelected ? [1, 1.2, 1] : 1,
-          }}
-          transition={{ delay: i * 0.1, duration: 0.3 }}
-        />
-      ))}
-    </div>
-  );
-}
-
 export default function EquipmentPage() {
   const { userEquipment, toggleEquipment, unlockedExercises } = useStore();
   const addToast = useToastStore((s) => s.addToast);
@@ -186,7 +167,6 @@ export default function EquipmentPage() {
                       </div>
                     </div>
                   </div>
-                  <SelectionIndicator isSelected={isSelected} />
                 </div>
               </motion.button>
             );
