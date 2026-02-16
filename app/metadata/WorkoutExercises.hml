@@ -63,6 +63,16 @@ definition:
           - notes
           - restSeconds
           - workoutId
+    - role: user
+      output:
+        allowedFields:
+          - createdAt
+          - exerciseId
+          - exerciseOrder
+          - id
+          - notes
+          - restSeconds
+          - workoutId
 
 ---
 kind: BooleanExpressionType
@@ -186,6 +196,10 @@ definition:
   modelName: WorkoutExercises
   permissions:
     - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+    - role: user
       select:
         filter: null
         allowSubscriptions: true

@@ -1,0 +1,164 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: WorkoutExercisesSetInput
+  description: Input type for updating workout_exercises
+  fields:
+    - name: createdAt
+      type: TimestampWithTimeZoneSetInput
+      description: New value wrapper for workout_exercises.created_at
+    - name: exerciseId
+      type: TextSetInput
+      description: New value wrapper for workout_exercises.exercise_id
+    - name: exerciseOrder
+      type: IntegerSetInput
+      description: New value wrapper for workout_exercises.exercise_order
+    - name: id
+      type: TextSetInput
+      description: New value wrapper for workout_exercises.id
+    - name: notes
+      type: TextSetInput
+      description: New value wrapper for workout_exercises.notes
+    - name: restSeconds
+      type: IntegerSetInput
+      description: New value wrapper for workout_exercises.rest_seconds
+    - name: workoutId
+      type: TextSetInput
+      description: New value wrapper for workout_exercises.workout_id
+  graphql:
+    typeName: WorkoutExercisesSetInput
+    inputTypeName: WorkoutExercisesSetInputInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: workout_exercises_set_input
+      fieldMapping:
+        createdAt:
+          column:
+            name: created_at
+        exerciseId:
+          column:
+            name: exercise_id
+        exerciseOrder:
+          column:
+            name: exercise_order
+        id:
+          column:
+            name: id
+        notes:
+          column:
+            name: notes
+        restSeconds:
+          column:
+            name: rest_seconds
+        workoutId:
+          column:
+            name: workout_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: WorkoutExercisesSetInput
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - createdAt
+          - exerciseId
+          - exerciseOrder
+          - id
+          - notes
+          - restSeconds
+          - workoutId
+    - role: user
+      output:
+        allowedFields:
+          - createdAt
+          - exerciseId
+          - exerciseOrder
+          - id
+          - notes
+          - restSeconds
+          - workoutId
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateWorkoutExercisesResult
+  description: update from workout_exercises result
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: Number of affected rows
+    - name: returning
+      type: "[WorkoutExercises!]!"
+      description: Objects that were affected by update
+  graphql:
+    typeName: UpdateWorkoutExercisesResult
+    inputTypeName: UpdateWorkoutExercisesResultInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: update_workout_exercises_result
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateWorkoutExercisesResult
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+    - role: user
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: UpdateWorkoutExercises
+  outputType: UpdateWorkoutExercisesResult!
+  arguments:
+    - name: returning
+      type: "[String_1!]"
+      description: Fields to return
+    - name: set
+      type: WorkoutExercisesSetInput!
+      description: Values to set
+    - name: where
+      type: WorkoutExercisesBoolExp!
+      description: Filter for rows to update
+  source:
+    dataConnectorName: my_pg
+    dataConnectorCommand:
+      procedure: update_workout_exercises
+  graphql:
+    rootFieldName: updateWorkoutExercises
+    rootFieldKind: Mutation
+  description: Update workout_exercises
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: UpdateWorkoutExercises
+  permissions:
+    - role: admin
+      allowExecution: true
+    - role: user
+      allowExecution: true
+

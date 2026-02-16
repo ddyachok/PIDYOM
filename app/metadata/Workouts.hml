@@ -105,6 +105,23 @@ definition:
           - updatedAt
           - userId
           - warmup
+    - role: user
+      output:
+        allowedFields:
+          - completed
+          - createdAt
+          - date
+          - durationMinutes
+          - equipment
+          - focusAreas
+          - id
+          - name
+          - notes
+          - place
+          - type
+          - updatedAt
+          - userId
+          - warmup
 
 ---
 kind: BooleanExpressionType
@@ -270,6 +287,10 @@ definition:
   modelName: Workouts
   permissions:
     - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+    - role: user
       select:
         filter: null
         allowSubscriptions: true

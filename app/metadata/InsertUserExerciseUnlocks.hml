@@ -1,0 +1,137 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UserExerciseUnlocksInsertInput
+  description: Input type for inserting into user_exercise_unlocks
+  fields:
+    - name: exerciseId
+      type: String_1!
+      description: New value for user_exercise_unlocks.exercise_id
+    - name: id
+      type: Int32
+      description: New value for user_exercise_unlocks.id
+    - name: unlockedAt
+      type: Timestamptz
+      description: New value for user_exercise_unlocks.unlocked_at
+    - name: userId
+      type: Int32!
+      description: New value for user_exercise_unlocks.user_id
+  graphql:
+    typeName: UserExerciseUnlocksInsertInput
+    inputTypeName: UserExerciseUnlocksInsertInputInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: user_exercise_unlocks_insert_input
+      fieldMapping:
+        exerciseId:
+          column:
+            name: exercise_id
+        id:
+          column:
+            name: id
+        unlockedAt:
+          column:
+            name: unlocked_at
+        userId:
+          column:
+            name: user_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UserExerciseUnlocksInsertInput
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - exerciseId
+          - id
+          - unlockedAt
+          - userId
+    - role: user
+      output:
+        allowedFields:
+          - exerciseId
+          - id
+          - unlockedAt
+          - userId
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: InsertUserExerciseUnlocksResult
+  description: insert from user_exercise_unlocks result
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: Number of affected rows
+    - name: returning
+      type: "[UserExerciseUnlocks!]!"
+      description: Objects that were affected by insert
+  graphql:
+    typeName: InsertUserExerciseUnlocksResult
+    inputTypeName: InsertUserExerciseUnlocksResultInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: insert_user_exercise_unlocks_result
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: InsertUserExerciseUnlocksResult
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+    - role: user
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: InsertUserExerciseUnlocks
+  outputType: InsertUserExerciseUnlocksResult!
+  arguments:
+    - name: objects
+      type: "[UserExerciseUnlocksInsertInput!]!"
+      description: Objects to insert
+    - name: returning
+      type: "[String_1!]"
+      description: Fields to return
+  source:
+    dataConnectorName: my_pg
+    dataConnectorCommand:
+      procedure: insert_user_exercise_unlocks
+  graphql:
+    rootFieldName: insertUserExerciseUnlocks
+    rootFieldKind: Mutation
+  description: Insert into user_exercise_unlocks
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: InsertUserExerciseUnlocks
+  permissions:
+    - role: admin
+      allowExecution: true
+    - role: user
+      allowExecution: true
+

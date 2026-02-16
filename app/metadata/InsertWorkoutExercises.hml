@@ -1,0 +1,161 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: WorkoutExercisesInsertInput
+  description: Input type for inserting into workout_exercises
+  fields:
+    - name: createdAt
+      type: Timestamptz
+      description: New value for workout_exercises.created_at
+    - name: exerciseId
+      type: String_1!
+      description: New value for workout_exercises.exercise_id
+    - name: exerciseOrder
+      type: Int32!
+      description: New value for workout_exercises.exercise_order
+    - name: id
+      type: String_1!
+      description: New value for workout_exercises.id
+    - name: notes
+      type: String_1
+      description: New value for workout_exercises.notes
+    - name: restSeconds
+      type: Int32
+      description: New value for workout_exercises.rest_seconds
+    - name: workoutId
+      type: String_1!
+      description: New value for workout_exercises.workout_id
+  graphql:
+    typeName: WorkoutExercisesInsertInput
+    inputTypeName: WorkoutExercisesInsertInputInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: workout_exercises_insert_input
+      fieldMapping:
+        createdAt:
+          column:
+            name: created_at
+        exerciseId:
+          column:
+            name: exercise_id
+        exerciseOrder:
+          column:
+            name: exercise_order
+        id:
+          column:
+            name: id
+        notes:
+          column:
+            name: notes
+        restSeconds:
+          column:
+            name: rest_seconds
+        workoutId:
+          column:
+            name: workout_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: WorkoutExercisesInsertInput
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - createdAt
+          - exerciseId
+          - exerciseOrder
+          - id
+          - notes
+          - restSeconds
+          - workoutId
+    - role: user
+      output:
+        allowedFields:
+          - createdAt
+          - exerciseId
+          - exerciseOrder
+          - id
+          - notes
+          - restSeconds
+          - workoutId
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: InsertWorkoutExercisesResult
+  description: insert from workout_exercises result
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: Number of affected rows
+    - name: returning
+      type: "[WorkoutExercises!]!"
+      description: Objects that were affected by insert
+  graphql:
+    typeName: InsertWorkoutExercisesResult
+    inputTypeName: InsertWorkoutExercisesResultInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: insert_workout_exercises_result
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: InsertWorkoutExercisesResult
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+    - role: user
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: InsertWorkoutExercises
+  outputType: InsertWorkoutExercisesResult!
+  arguments:
+    - name: objects
+      type: "[WorkoutExercisesInsertInput!]!"
+      description: Objects to insert
+    - name: returning
+      type: "[String_1!]"
+      description: Fields to return
+  source:
+    dataConnectorName: my_pg
+    dataConnectorCommand:
+      procedure: insert_workout_exercises
+  graphql:
+    rootFieldName: insertWorkoutExercises
+    rootFieldKind: Mutation
+  description: Insert into workout_exercises
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: InsertWorkoutExercises
+  permissions:
+    - role: admin
+      allowExecution: true
+    - role: user
+      allowExecution: true
+

@@ -1,0 +1,77 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: DeleteUserProfilesResult
+  description: delete from user_profiles result
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: Number of affected rows
+    - name: returning
+      type: "[UserProfiles!]!"
+      description: Objects that were affected by delete
+  graphql:
+    typeName: DeleteUserProfilesResult
+    inputTypeName: DeleteUserProfilesResultInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: delete_user_profiles_result
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: DeleteUserProfilesResult
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+    - role: user
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: DeleteUserProfiles
+  outputType: DeleteUserProfilesResult!
+  arguments:
+    - name: returning
+      type: "[String_1!]"
+      description: Fields to return
+    - name: where
+      type: UserProfilesBoolExp!
+      description: Filter for rows to delete
+  source:
+    dataConnectorName: my_pg
+    dataConnectorCommand:
+      procedure: delete_user_profiles
+  graphql:
+    rootFieldName: deleteUserProfiles
+    rootFieldKind: Mutation
+  description: Delete from user_profiles
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: DeleteUserProfiles
+  permissions:
+    - role: admin
+      allowExecution: true
+    - role: user
+      allowExecution: true
+

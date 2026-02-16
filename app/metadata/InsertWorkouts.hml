@@ -1,0 +1,217 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: WorkoutsInsertInput
+  description: Input type for inserting into workouts
+  fields:
+    - name: completed
+      type: Boolean_1
+      description: New value for workouts.completed
+    - name: createdAt
+      type: Timestamptz
+      description: New value for workouts.created_at
+    - name: date
+      type: Date!
+      description: New value for workouts.date
+    - name: durationMinutes
+      type: Int32
+      description: New value for workouts.duration_minutes
+    - name: equipment
+      type: String_1
+      description: New value for workouts.equipment
+    - name: focusAreas
+      type: String_1
+      description: New value for workouts.focus_areas
+    - name: id
+      type: String_1!
+      description: New value for workouts.id
+    - name: name
+      type: String_1!
+      description: New value for workouts.name
+    - name: notes
+      type: String_1
+      description: New value for workouts.notes
+    - name: place
+      type: String_1
+      description: New value for workouts.place
+    - name: type
+      type: String_1!
+      description: New value for workouts.type
+    - name: updatedAt
+      type: Timestamptz
+      description: New value for workouts.updated_at
+    - name: userId
+      type: Int32!
+      description: New value for workouts.user_id
+    - name: warmup
+      type: String_1
+      description: New value for workouts.warmup
+  graphql:
+    typeName: WorkoutsInsertInput
+    inputTypeName: WorkoutsInsertInputInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: workouts_insert_input
+      fieldMapping:
+        completed:
+          column:
+            name: completed
+        createdAt:
+          column:
+            name: created_at
+        date:
+          column:
+            name: date
+        durationMinutes:
+          column:
+            name: duration_minutes
+        equipment:
+          column:
+            name: equipment
+        focusAreas:
+          column:
+            name: focus_areas
+        id:
+          column:
+            name: id
+        name:
+          column:
+            name: name
+        notes:
+          column:
+            name: notes
+        place:
+          column:
+            name: place
+        type:
+          column:
+            name: type
+        updatedAt:
+          column:
+            name: updated_at
+        userId:
+          column:
+            name: user_id
+        warmup:
+          column:
+            name: warmup
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: WorkoutsInsertInput
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - completed
+          - createdAt
+          - date
+          - durationMinutes
+          - equipment
+          - focusAreas
+          - id
+          - name
+          - notes
+          - place
+          - type
+          - updatedAt
+          - userId
+          - warmup
+    - role: user
+      output:
+        allowedFields:
+          - completed
+          - createdAt
+          - date
+          - durationMinutes
+          - equipment
+          - focusAreas
+          - id
+          - name
+          - notes
+          - place
+          - type
+          - updatedAt
+          - userId
+          - warmup
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: InsertWorkoutsResult
+  description: insert from workouts result
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: Number of affected rows
+    - name: returning
+      type: "[Workouts!]!"
+      description: Objects that were affected by insert
+  graphql:
+    typeName: InsertWorkoutsResult
+    inputTypeName: InsertWorkoutsResultInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: insert_workouts_result
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: InsertWorkoutsResult
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+    - role: user
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: InsertWorkouts
+  outputType: InsertWorkoutsResult!
+  arguments:
+    - name: objects
+      type: "[WorkoutsInsertInput!]!"
+      description: Objects to insert
+    - name: returning
+      type: "[String_1!]"
+      description: Fields to return
+  source:
+    dataConnectorName: my_pg
+    dataConnectorCommand:
+      procedure: insert_workouts
+  graphql:
+    rootFieldName: insertWorkouts
+    rootFieldKind: Mutation
+  description: Insert into workouts
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: InsertWorkouts
+  permissions:
+    - role: admin
+      allowExecution: true
+    - role: user
+      allowExecution: true
+

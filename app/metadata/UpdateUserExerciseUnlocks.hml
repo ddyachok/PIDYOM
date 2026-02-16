@@ -1,0 +1,140 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UserExerciseUnlocksSetInput
+  description: Input type for updating user_exercise_unlocks
+  fields:
+    - name: exerciseId
+      type: TextSetInput
+      description: New value wrapper for user_exercise_unlocks.exercise_id
+    - name: id
+      type: IntegerSetInput
+      description: New value wrapper for user_exercise_unlocks.id
+    - name: unlockedAt
+      type: TimestampWithTimeZoneSetInput
+      description: New value wrapper for user_exercise_unlocks.unlocked_at
+    - name: userId
+      type: IntegerSetInput
+      description: New value wrapper for user_exercise_unlocks.user_id
+  graphql:
+    typeName: UserExerciseUnlocksSetInput
+    inputTypeName: UserExerciseUnlocksSetInputInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: user_exercise_unlocks_set_input
+      fieldMapping:
+        exerciseId:
+          column:
+            name: exercise_id
+        id:
+          column:
+            name: id
+        unlockedAt:
+          column:
+            name: unlocked_at
+        userId:
+          column:
+            name: user_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UserExerciseUnlocksSetInput
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - exerciseId
+          - id
+          - unlockedAt
+          - userId
+    - role: user
+      output:
+        allowedFields:
+          - exerciseId
+          - id
+          - unlockedAt
+          - userId
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateUserExerciseUnlocksResult
+  description: update from user_exercise_unlocks result
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: Number of affected rows
+    - name: returning
+      type: "[UserExerciseUnlocks!]!"
+      description: Objects that were affected by update
+  graphql:
+    typeName: UpdateUserExerciseUnlocksResult
+    inputTypeName: UpdateUserExerciseUnlocksResultInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: update_user_exercise_unlocks_result
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateUserExerciseUnlocksResult
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+    - role: user
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: UpdateUserExerciseUnlocks
+  outputType: UpdateUserExerciseUnlocksResult!
+  arguments:
+    - name: returning
+      type: "[String_1!]"
+      description: Fields to return
+    - name: set
+      type: UserExerciseUnlocksSetInput!
+      description: Values to set
+    - name: where
+      type: UserExerciseUnlocksBoolExp!
+      description: Filter for rows to update
+  source:
+    dataConnectorName: my_pg
+    dataConnectorCommand:
+      procedure: update_user_exercise_unlocks
+  graphql:
+    rootFieldName: updateUserExerciseUnlocks
+    rootFieldKind: Mutation
+  description: Update user_exercise_unlocks
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: UpdateUserExerciseUnlocks
+  permissions:
+    - role: admin
+      allowExecution: true
+    - role: user
+      allowExecution: true
+

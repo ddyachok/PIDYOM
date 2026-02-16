@@ -1,0 +1,77 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: DeleteExerciseSetsResult
+  description: delete from exercise_sets result
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: Number of affected rows
+    - name: returning
+      type: "[ExerciseSets!]!"
+      description: Objects that were affected by delete
+  graphql:
+    typeName: DeleteExerciseSetsResult
+    inputTypeName: DeleteExerciseSetsResultInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: delete_exercise_sets_result
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: DeleteExerciseSetsResult
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+    - role: user
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: DeleteExerciseSets
+  outputType: DeleteExerciseSetsResult!
+  arguments:
+    - name: returning
+      type: "[String_1!]"
+      description: Fields to return
+    - name: where
+      type: ExerciseSetsBoolExp!
+      description: Filter for rows to delete
+  source:
+    dataConnectorName: my_pg
+    dataConnectorCommand:
+      procedure: delete_exercise_sets
+  graphql:
+    rootFieldName: deleteExerciseSets
+    rootFieldKind: Mutation
+  description: Delete from exercise_sets
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: DeleteExerciseSets
+  permissions:
+    - role: admin
+      allowExecution: true
+    - role: user
+      allowExecution: true
+

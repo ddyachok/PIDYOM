@@ -1,0 +1,172 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ExercisesInsertInput
+  description: Input type for inserting into exercises
+  fields:
+    - name: category
+      type: String_1!
+      description: New value for exercises.category
+    - name: createdAt
+      type: Timestamptz
+      description: New value for exercises.created_at
+    - name: cues
+      type: String_1
+      description: New value for exercises.cues
+    - name: description
+      type: String_1
+      description: New value for exercises.description
+    - name: difficulty
+      type: String_1!
+      description: New value for exercises.difficulty
+    - name: equipment
+      type: String_1!
+      description: New value for exercises.equipment
+    - name: focusAreas
+      type: String_1!
+      description: New value for exercises.focus_areas
+    - name: id
+      type: String_1!
+      description: New value for exercises.id
+    - name: movementPattern
+      type: String_1!
+      description: New value for exercises.movement_pattern
+    - name: name
+      type: String_1!
+      description: New value for exercises.name
+    - name: progressionParentId
+      type: String_1
+      description: New value for exercises.progression_parent_id
+  graphql:
+    typeName: ExercisesInsertInput
+    inputTypeName: ExercisesInsertInputInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: exercises_insert_input
+      fieldMapping:
+        category:
+          column:
+            name: category
+        createdAt:
+          column:
+            name: created_at
+        cues:
+          column:
+            name: cues
+        description:
+          column:
+            name: description
+        difficulty:
+          column:
+            name: difficulty
+        equipment:
+          column:
+            name: equipment
+        focusAreas:
+          column:
+            name: focus_areas
+        id:
+          column:
+            name: id
+        movementPattern:
+          column:
+            name: movement_pattern
+        name:
+          column:
+            name: name
+        progressionParentId:
+          column:
+            name: progression_parent_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ExercisesInsertInput
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - category
+          - createdAt
+          - cues
+          - description
+          - difficulty
+          - equipment
+          - focusAreas
+          - id
+          - movementPattern
+          - name
+          - progressionParentId
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: InsertExercisesResult
+  description: insert from exercises result
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: Number of affected rows
+    - name: returning
+      type: "[Exercises!]!"
+      description: Objects that were affected by insert
+  graphql:
+    typeName: InsertExercisesResult
+    inputTypeName: InsertExercisesResultInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: insert_exercises_result
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: InsertExercisesResult
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: InsertExercises
+  outputType: InsertExercisesResult!
+  arguments:
+    - name: objects
+      type: "[ExercisesInsertInput!]!"
+      description: Objects to insert
+    - name: returning
+      type: "[String_1!]"
+      description: Fields to return
+  source:
+    dataConnectorName: my_pg
+    dataConnectorCommand:
+      procedure: insert_exercises
+  graphql:
+    rootFieldName: insertExercises
+    rootFieldKind: Mutation
+  description: Insert into exercises
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: InsertExercises
+  permissions:
+    - role: admin
+      allowExecution: true
+

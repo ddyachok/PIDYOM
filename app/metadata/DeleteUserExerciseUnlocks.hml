@@ -1,0 +1,77 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: DeleteUserExerciseUnlocksResult
+  description: delete from user_exercise_unlocks result
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: Number of affected rows
+    - name: returning
+      type: "[UserExerciseUnlocks!]!"
+      description: Objects that were affected by delete
+  graphql:
+    typeName: DeleteUserExerciseUnlocksResult
+    inputTypeName: DeleteUserExerciseUnlocksResultInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: delete_user_exercise_unlocks_result
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: DeleteUserExerciseUnlocksResult
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+    - role: user
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: DeleteUserExerciseUnlocks
+  outputType: DeleteUserExerciseUnlocksResult!
+  arguments:
+    - name: returning
+      type: "[String_1!]"
+      description: Fields to return
+    - name: where
+      type: UserExerciseUnlocksBoolExp!
+      description: Filter for rows to delete
+  source:
+    dataConnectorName: my_pg
+    dataConnectorCommand:
+      procedure: delete_user_exercise_unlocks
+  graphql:
+    rootFieldName: deleteUserExerciseUnlocks
+    rootFieldKind: Mutation
+  description: Delete from user_exercise_unlocks
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: DeleteUserExerciseUnlocks
+  permissions:
+    - role: admin
+      allowExecution: true
+    - role: user
+      allowExecution: true
+

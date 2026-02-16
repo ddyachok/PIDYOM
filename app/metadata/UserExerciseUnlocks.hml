@@ -45,6 +45,13 @@ definition:
           - id
           - unlockedAt
           - userId
+    - role: user
+      output:
+        allowedFields:
+          - exerciseId
+          - id
+          - unlockedAt
+          - userId
 
 ---
 kind: BooleanExpressionType
@@ -150,6 +157,10 @@ definition:
   modelName: UserExerciseUnlocks
   permissions:
     - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+    - role: user
       select:
         filter: null
         allowSubscriptions: true

@@ -4,9 +4,10 @@ import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInte
 import PageTransition from '../components/ui/PageTransition';
 import { useStore } from '../store/useStore';
 import { useToastStore } from '../store/toastStore';
-import { WORKOUT_TYPE_INFO, generateSchedule } from '../data/workouts';
-import { WorkoutType, ScheduleEntry } from '../lib/types';
+import { WORKOUT_TYPE_INFO, WORKOUT_TEMPLATES, generateSchedule } from '../data/workouts';
+import { WorkoutType, ScheduleEntry, typeToGoal, TRAINING_GOAL_INFO } from '../lib/types';
 import { IconChevronLeft, IconChevronRight, IconPlus, IconGoogle, IconClose } from '../components/icons/Icons';
+import { EXERCISES } from '../data/exercises';
 
 function generateId() {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
@@ -51,7 +52,7 @@ export default function SchedulePage() {
       workoutType: scheduleType,
       completed: false,
     });
-    addToast('Added to schedule');
+    addToast('Workout scheduled');
     setShowScheduleModal(false);
   };
 
@@ -72,7 +73,7 @@ export default function SchedulePage() {
       }
     });
     if (added > 0) {
-      addToast('Schedule generated');
+      addToast(`${added} workouts scheduled`);
       setTimeout(() => upcomingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
     }
   };
@@ -100,73 +101,106 @@ export default function SchedulePage() {
     setCurrentTab('workouts');
   };
 
+  /** Build a detailed workout description for Google Calendar */
+  const buildCalendarDescription = (entry: ScheduleEntry): string => {
+    const info = WORKOUT_TYPE_INFO[entry.workoutType];
+    const goal = typeToGoal(entry.workoutType);
+    const goalInfo = TRAINING_GOAL_INFO[goal];
+
+    // Find a matching template for the goal
+    const matchingTemplates = Object.values(WORKOUT_TEMPLATES).filter(t => t.trainingGoal === goal);
+    const template = matchingTemplates[0];
+
+    let desc = `🏋️ PIDYOM Workout\n\n`;
+    desc += `Type: ${info.label} - ${info.subtitle}\n`;
+    desc += `Goal: ${goalInfo.description}\n\n`;
+
+    if (template) {
+      desc += `📋 Plan: ${template.name}\n`;
+      if (template.warmup) {
+        desc += `\n🔥 Warmup:\n${template.warmup}\n`;
+      }
+      desc += `\n💪 Exercises:\n`;
+      template.exerciseIds.forEach((exId, i) => {
+        const exercise = EXERCISES.find(e => e.id === exId);
+        if (exercise) {
+          desc += `${i + 1}. ${exercise.name} — ${template.defaultSets}x${template.defaultReps} @ ${template.defaultWeight}kg\n`;
+          desc += `   ${exercise.description}\n`;
+        }
+      });
+      desc += `\n⏱️ Duration: ~${template.durationMinutes} min\n`;
+      if (template.notes) {
+        desc += `\n📝 Notes: ${template.notes}\n`;
+      }
+    } else {
+      desc += info.description;
+    }
+
+    return desc;
+  };
+
   const handleGoogleCalendarExport = () => {
-    if (schedule.length === 0) {
-      addToast('No events to add to calendar');
+    if (!selectedDate) {
+      addToast('Select a day first');
       return;
     }
-    const events = schedule.slice(0, 10).map(s => {
-      const info = WORKOUT_TYPE_INFO[s.workoutType];
-      const title = `PIDYOM ${info.label}: ${info.subtitle}`;
-      const date = s.date.replace(/-/g, '');
-      return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${date}/${date}&details=${encodeURIComponent(info.description)}`;
-    });
-    if (events[0]) {
-      window.open(events[0], '_blank');
-      addToast('Opening Google Calendar');
+    const entry = scheduleMap[selectedDate];
+    if (!entry) {
+      addToast('No workout on selected day');
+      return;
     }
+    const info = WORKOUT_TYPE_INFO[entry.workoutType];
+    const title = `PIDYOM: ${info.label} — ${info.subtitle}`;
+    const date = entry.date.replace(/-/g, '');
+    const description = buildCalendarDescription(entry);
+    const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${date}/${date}&details=${encodeURIComponent(description)}`;
+    window.open(url, '_blank');
+    addToast('Opening Google Calendar');
   };
 
   const today = format(new Date(), 'yyyy-MM-dd');
+  const hasSelectedSchedule = selectedDate ? !!scheduleMap[selectedDate] : false;
 
   return (
     <PageTransition className="page">
-      <div className="flex items-center justify-between mb-8 md:mb-12">
-        <h1 className="page-title mb-0">Schedule</h1>
-        <div className="flex items-center gap-3 md:gap-5">
+      <div className="flex items-center justify-between mb-8 md:mb-10">
+        <div>
+          <div className="coord-stamp mb-2">SEC-3 // SCHEDULE</div>
+          <h1 className="page-title mb-0">Schedule</h1>
+        </div>
+        <div className="flex items-center gap-3">
           <button
             onClick={handleGoogleCalendarExport}
-            className="p-2.5 md:p-3 min-w-[44px] min-h-[44px] md:min-w-0 md:min-h-0 border border-white/[0.08] hover:bg-white/5 transition-colors flex items-center justify-center"
-            title="Add first upcoming workout to Google Calendar"
+            className={`btn btn-ghost btn-sm ${!hasSelectedSchedule ? 'opacity-30 pointer-events-none' : ''}`}
+            title={hasSelectedSchedule ? 'Add to Google Calendar' : 'Select a day with a workout first'}
             aria-label="Add to Google Calendar"
+            disabled={!hasSelectedSchedule}
           >
-            <IconGoogle size={16} className="text-white/30 md:w-5 md:h-5" />
+            <IconGoogle size={14} />
           </button>
-          <button onClick={handleAutoSchedule} className="btn btn-sm" aria-label="Generate 4-week A/B schedule">
-            Auto A/B
+          <button onClick={handleAutoSchedule} className="btn btn-sm" aria-label="Auto-generate schedule">
+            Auto
           </button>
-        </div>
-      </div>
-
-      {/* A/B Legend */}
-      <div className="flex items-center gap-6 md:gap-8 mb-4 md:mb-6">
-        <div className="flex items-center gap-2">
-          <div className="w-2 h-2 md:w-2.5 md:h-2.5 bg-white/60" />
-          <span className="text-[8px] md:text-[11px] tracking-[0.15em] md:tracking-[0.18em] text-white/30 uppercase">Type A · Strength</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-2 h-2 md:w-2.5 md:h-2.5 bg-white/20" />
-          <span className="text-[8px] md:text-[11px] tracking-[0.15em] md:tracking-[0.18em] text-white/30 uppercase">Type B · Conditioning</span>
         </div>
       </div>
 
       {/* Calendar Header */}
-      <div className="flex items-center justify-between mb-4 md:mb-6">
-        <button onClick={() => setCurrentMonth(subMonths(currentMonth, 1))} className="p-2.5 md:p-3 min-h-[44px] min-w-[44px] md:min-h-0 md:min-w-0 flex items-center justify-center hover:bg-white/5 transition-colors" aria-label="Previous month">
-          <IconChevronLeft size={18} className="text-white/30 md:w-5 md:h-5" />
+      <div className="flex items-center justify-between mb-5">
+        <button onClick={() => setCurrentMonth(subMonths(currentMonth, 1))} className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center hover:bg-white/5 transition-colors" aria-label="Previous month">
+          <IconChevronLeft size={16} className="text-white/40" />
         </button>
-        <span className="text-[11px] md:text-[15px] tracking-[0.25em] md:tracking-[0.3em] uppercase">
+        <span className="text-[11px] md:text-[13px] tracking-[0.25em] uppercase">
           {format(currentMonth, 'MMMM yyyy')}
         </span>
-        <button onClick={() => setCurrentMonth(addMonths(currentMonth, 1))} className="p-2.5 md:p-3 min-h-[44px] min-w-[44px] md:min-h-0 md:min-w-0 flex items-center justify-center hover:bg-white/5 transition-colors" aria-label="Next month">
-          <IconChevronRight size={18} className="text-white/30 md:w-5 md:h-5" />
+        <button onClick={() => setCurrentMonth(addMonths(currentMonth, 1))} className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center hover:bg-white/5 transition-colors" aria-label="Next month">
+          <IconChevronRight size={16} className="text-white/40" />
         </button>
       </div>
 
       {/* Day names */}
-      <div className="grid grid-cols-7 gap-0 mb-2 md:mb-3">
-        {['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'].map(d => (
-          <div key={d} className="text-center text-[7px] md:text-[9px] tracking-[0.15em] text-white/15 py-1 md:py-2">{d}</div>
+      <div className="grid grid-cols-7 gap-0 mb-2">
+        {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d, i) => (
+          <div key={i} className="text-center text-[8px] tracking-[0.15em] text-white/25 py-1">{d}</div>
         ))}
       </div>
 
@@ -185,45 +219,48 @@ export default function SchedulePage() {
               key={dateStr}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: i * 0.006 }}
+              transition={{ delay: i * 0.004 }}
               onClick={() => {
                 setSelectedDate(dateStr);
                 if (!entry) setShowScheduleModal(true);
               }}
-              className={`relative aspect-square min-h-[44px] flex flex-col items-center justify-center bg-black transition-colors ${
-                isSelected ? 'ring-1 ring-white/25' :
+              className={`relative aspect-square min-h-[40px] flex flex-col items-center justify-center bg-black transition-colors ${
+                isSelected ? 'ring-1 ring-[#ff9500]/40' :
                 isToday ? 'bg-white/[0.03]' :
                 'hover:bg-white/[0.02]'
-              } ${!isCurrentMonth ? 'opacity-15' : ''}`}
+              } ${!isCurrentMonth ? 'opacity-20' : ''}`}
             >
-              <span className={`text-[10px] md:text-[12px] ${isToday ? 'text-white font-bold' : 'text-white/40'}`}>
+              <span className={`text-[10px] md:text-[11px] tabular-nums ${isToday ? 'text-[#ff9500] font-bold' : 'text-white/50'}`}>
                 {format(day, 'd')}
               </span>
               {entry && (
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  className={`mt-1 w-1.5 h-1.5 ${entry.workoutType === 'A' ? 'bg-white/60' : 'bg-white/20'}`}
+                  className={`mt-0.5 w-[5px] h-[5px] ${
+                    entry.workoutType === 'A' ? 'bg-[#ff9500]/60' : 'bg-[#00d9ff]/60'
+                  }`}
+                  style={{ borderRadius: '50%' }}
                 />
               )}
               {workout?.completed && (
-                <span className="absolute top-1 right-1 text-[5px] text-green-400/40">&#x25CF;</span>
+                <span className="absolute top-0.5 right-0.5 w-[4px] h-[4px] bg-green-400/50" style={{ borderRadius: '50%' }} />
               )}
             </motion.button>
           );
         })}
       </div>
-      <p className="text-[9px] md:text-[11px] text-white/15 mt-2 md:mt-3 text-center tracking-[0.1em] uppercase">Tap a day to schedule</p>
+      <p className="text-[8px] text-white/25 mt-3 text-center tracking-[0.1em] uppercase">Tap day to schedule</p>
 
       {/* Selected Day Detail */}
       {selectedDate && (
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="card mt-6 md:mt-9"
+          className="bracket-card mt-8"
         >
-          <div className="flex items-center justify-between mb-4 md:mb-6">
-            <span className="text-[11px] md:text-[15px] tracking-[0.08em] md:tracking-[0.1em] font-bold">
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-[11px] tracking-[0.08em] font-bold">
               {format(new Date(selectedDate + 'T12:00:00'), 'EEEE, MMMM d')}
             </span>
             {scheduleMap[selectedDate] && (
@@ -231,44 +268,41 @@ export default function SchedulePage() {
                 onClick={() => {
                   removeScheduleEntry(scheduleMap[selectedDate].id);
                   setSelectedDate(null);
-                  addToast('Removed from schedule');
+                  addToast('Workout removed');
                 }}
-                className="btn btn-ghost btn-sm min-h-[44px] md:min-h-0 py-2 px-4 text-[9px] md:text-[11px] text-white/25 hover:text-white/60 uppercase tracking-[0.1em] md:tracking-[0.15em]"
-                aria-label="Remove workout from this day"
+                className="text-[8px] tracking-[0.1em] text-white/30 hover:text-white/60 transition-colors uppercase"
+                aria-label="Remove"
               >
-                Remove workout
+                Remove
               </button>
             )}
           </div>
 
           {scheduleMap[selectedDate] ? (
             <div>
-              <div className="flex items-center gap-3 md:gap-5 mb-3 md:mb-4">
+              <div className="flex items-center gap-3 mb-3">
                 <span className="tag">
                   {WORKOUT_TYPE_INFO[scheduleMap[selectedDate].workoutType].label}
                 </span>
-                <span className="text-[10px] md:text-[13px] text-white/35">
+                <span className="text-[10px] text-white/40">
                   {WORKOUT_TYPE_INFO[scheduleMap[selectedDate].workoutType].subtitle}
                 </span>
               </div>
-              <p className="text-[9px] md:text-[12px] text-white/20 leading-relaxed mb-5 md:mb-6">
-                {WORKOUT_TYPE_INFO[scheduleMap[selectedDate].workoutType].description}
-              </p>
               <button
                 onClick={() => handleStartWorkout(scheduleMap[selectedDate])}
-                className="btn btn-primary btn-full"
+                className="btn btn-primary btn-full mt-4"
               >
                 {workoutMap[selectedDate] ? 'View Workout' : 'Start Workout'}
               </button>
             </div>
           ) : (
             <div>
-              <p className="text-[10px] md:text-[12px] text-white/20 mb-5 md:mb-6">No workout scheduled.</p>
+              <p className="text-[9px] text-white/30 mb-4">No workout scheduled.</p>
               <button
                 onClick={() => setShowScheduleModal(true)}
                 className="btn btn-ghost btn-full"
               >
-                <IconPlus size={14} className="md:w-5 md:h-5" /> Schedule Workout
+                <IconPlus size={12} /> Schedule Workout
               </button>
             </div>
           )}
@@ -276,36 +310,37 @@ export default function SchedulePage() {
       )}
 
       {/* Upcoming list */}
-      <div ref={upcomingRef} className="mt-8 md:mt-12">
+      <div ref={upcomingRef} className="mt-10 md:mt-12">
         <div className="section-label">Upcoming</div>
-        <div className="space-y-2 md:space-y-3">
+        <div className="flex flex-col gap-0">
           {schedule
             .filter(s => s.date >= today)
             .sort((a, b) => a.date.localeCompare(b.date))
             .slice(0, 6)
             .map((s, i) => (
-              <motion.div
+              <motion.button
                 key={s.id}
-                initial={{ opacity: 0, x: -10 }}
+                initial={{ opacity: 0, x: -6 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: i * 0.05 }}
-                className="card card-interactive flex items-center justify-between py-4 px-4 md:py-5 md:px-6"
+                transition={{ delay: i * 0.04 }}
+                className="flex items-center gap-3 py-3.5 px-2 text-left hover:bg-white/[0.02] transition-colors group"
                 onClick={() => setSelectedDate(s.date)}
               >
-                <div className="flex items-center gap-3 md:gap-5">
-                  <span className="tag">{s.workoutType}</span>
-                  <span className="text-[10px] md:text-[13px] text-white/40">
-                    {format(new Date(s.date + 'T12:00:00'), 'EEE, MMM d')}
-                  </span>
-                </div>
-                <span className="text-[9px] md:text-[11px] text-white/15">
-                  {WORKOUT_TYPE_INFO[s.workoutType].subtitle}
+                <span className={`status-dot ${
+                  s.workoutType === 'A' ? 'status-dot--active' : 'status-dot--info'
+                }`} />
+                <span className="text-[10px] text-white/50 group-hover:text-white/80 transition-colors tabular-nums">
+                  {format(new Date(s.date + 'T12:00:00'), 'EEE, MMM d')}
                 </span>
-              </motion.div>
+                <span className="dot-leader" />
+                <span className="text-[9px] text-white/30">
+                  {WORKOUT_TYPE_INFO[s.workoutType].label}
+                </span>
+              </motion.button>
             ))}
           {schedule.filter(s => s.date >= today).length === 0 && (
-            <p className="text-[10px] md:text-[12px] text-white/10 text-center py-8 md:py-12">
-              No upcoming workouts. Tap "Auto A/B" to generate a schedule.
+            <p className="text-[9px] text-white/20 text-center py-8">
+              No upcoming workouts. Tap "Auto" to generate.
             </p>
           )}
         </div>
@@ -325,7 +360,6 @@ export default function SchedulePage() {
             <motion.div
               role="dialog"
               aria-modal="true"
-              aria-labelledby="schedule-modal-title"
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
@@ -333,27 +367,27 @@ export default function SchedulePage() {
               style={{ maxWidth: '380px', borderTop: 'none', border: '1px solid rgba(255,255,255,0.06)' }}
               onClick={e => e.stopPropagation()}
             >
-              <div className="flex items-center justify-between mb-2 md:mb-4">
-                <h3 id="schedule-modal-title" className="text-[12px] md:text-[15px] tracking-[0.2em] md:tracking-[0.25em] uppercase font-bold">Schedule</h3>
-                <button onClick={() => setShowScheduleModal(false)} className="p-2.5 md:p-3 min-h-[44px] min-w-[44px] md:min-h-0 md:min-w-0 flex items-center justify-center hover:bg-white/5 transition-colors" aria-label="Close">
-                  <IconClose size={18} className="text-white/30 md:w-5 md:h-5" />
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-[12px] tracking-[0.2em] uppercase font-bold">Schedule Workout</h3>
+                <button onClick={() => setShowScheduleModal(false)} className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center hover:bg-white/5 transition-colors" aria-label="Close">
+                  <IconClose size={16} className="text-white/40" />
                 </button>
               </div>
-              <p className="text-[9px] md:text-[12px] text-white/25 mb-6 md:mb-8">
+              <p className="text-[9px] text-white/35 mb-6">
                 {format(new Date(selectedDate + 'T12:00:00'), 'EEEE, MMMM d')}
               </p>
 
-              <div className="grid grid-cols-2 gap-3 md:gap-5 mb-6 md:mb-8">
+              <div className="grid grid-cols-2 gap-3 mb-6">
                 {(['A', 'B'] as const).map(type => (
                   <button
                     key={type}
                     onClick={() => setScheduleType(type)}
-                    className={`card text-left transition-colors py-4 px-4 md:py-5 md:px-6 ${
-                      scheduleType === type ? 'border-white/20 bg-white/[0.04]' : ''
+                    className={`bracket-card bracket-card-interactive text-left py-4 px-4 ${
+                      scheduleType === type ? 'bg-white/[0.03]' : ''
                     }`}
                   >
-                    <div className="text-[10px] md:text-[12px] tracking-[0.15em] md:tracking-[0.18em] font-bold mb-1 md:mb-2">{WORKOUT_TYPE_INFO[type].label}</div>
-                    <div className="text-[8px] md:text-[10px] text-white/25">{WORKOUT_TYPE_INFO[type].subtitle}</div>
+                    <div className="text-[10px] tracking-[0.12em] font-bold mb-2">{WORKOUT_TYPE_INFO[type].label}</div>
+                    <div className="text-[8px] text-white/35">{WORKOUT_TYPE_INFO[type].subtitle}</div>
                   </button>
                 ))}
               </div>

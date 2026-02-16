@@ -1,0 +1,220 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: WorkoutsSetInput
+  description: Input type for updating workouts
+  fields:
+    - name: completed
+      type: BooleanSetInput
+      description: New value wrapper for workouts.completed
+    - name: createdAt
+      type: TimestampWithTimeZoneSetInput
+      description: New value wrapper for workouts.created_at
+    - name: date
+      type: DateSetInput
+      description: New value wrapper for workouts.date
+    - name: durationMinutes
+      type: IntegerSetInput
+      description: New value wrapper for workouts.duration_minutes
+    - name: equipment
+      type: ArraySetInput
+      description: New value wrapper for workouts.equipment
+    - name: focusAreas
+      type: ArraySetInput
+      description: New value wrapper for workouts.focus_areas
+    - name: id
+      type: TextSetInput
+      description: New value wrapper for workouts.id
+    - name: name
+      type: TextSetInput
+      description: New value wrapper for workouts.name
+    - name: notes
+      type: TextSetInput
+      description: New value wrapper for workouts.notes
+    - name: place
+      type: TextSetInput
+      description: New value wrapper for workouts.place
+    - name: type
+      type: WorkoutTypeSetInput
+      description: New value wrapper for workouts.type
+    - name: updatedAt
+      type: TimestampWithTimeZoneSetInput
+      description: New value wrapper for workouts.updated_at
+    - name: userId
+      type: IntegerSetInput
+      description: New value wrapper for workouts.user_id
+    - name: warmup
+      type: TextSetInput
+      description: New value wrapper for workouts.warmup
+  graphql:
+    typeName: WorkoutsSetInput
+    inputTypeName: WorkoutsSetInputInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: workouts_set_input
+      fieldMapping:
+        completed:
+          column:
+            name: completed
+        createdAt:
+          column:
+            name: created_at
+        date:
+          column:
+            name: date
+        durationMinutes:
+          column:
+            name: duration_minutes
+        equipment:
+          column:
+            name: equipment
+        focusAreas:
+          column:
+            name: focus_areas
+        id:
+          column:
+            name: id
+        name:
+          column:
+            name: name
+        notes:
+          column:
+            name: notes
+        place:
+          column:
+            name: place
+        type:
+          column:
+            name: type
+        updatedAt:
+          column:
+            name: updated_at
+        userId:
+          column:
+            name: user_id
+        warmup:
+          column:
+            name: warmup
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: WorkoutsSetInput
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - completed
+          - createdAt
+          - date
+          - durationMinutes
+          - equipment
+          - focusAreas
+          - id
+          - name
+          - notes
+          - place
+          - type
+          - updatedAt
+          - userId
+          - warmup
+    - role: user
+      output:
+        allowedFields:
+          - completed
+          - createdAt
+          - date
+          - durationMinutes
+          - equipment
+          - focusAreas
+          - id
+          - name
+          - notes
+          - place
+          - type
+          - updatedAt
+          - userId
+          - warmup
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateWorkoutsResult
+  description: update from workouts result
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: Number of affected rows
+    - name: returning
+      type: "[Workouts!]!"
+      description: Objects that were affected by update
+  graphql:
+    typeName: UpdateWorkoutsResult
+    inputTypeName: UpdateWorkoutsResultInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: update_workouts_result
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateWorkoutsResult
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+    - role: user
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: UpdateWorkouts
+  outputType: UpdateWorkoutsResult!
+  arguments:
+    - name: returning
+      type: "[String_1!]"
+      description: Fields to return
+    - name: set
+      type: WorkoutsSetInput!
+      description: Values to set
+    - name: where
+      type: WorkoutsBoolExp!
+      description: Filter for rows to update
+  source:
+    dataConnectorName: my_pg
+    dataConnectorCommand:
+      procedure: update_workouts
+  graphql:
+    rootFieldName: updateWorkouts
+    rootFieldKind: Mutation
+  description: Update workouts
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: UpdateWorkouts
+  permissions:
+    - role: admin
+      allowExecution: true
+    - role: user
+      allowExecution: true
+

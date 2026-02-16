@@ -1,0 +1,287 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ExerciseCategorySetInput
+  description: Wrapper for setting scalar exercise_category
+  fields:
+    - name: value
+      type: String_1
+      description: New value for scalar exercise_category
+  graphql:
+    typeName: ExerciseCategorySetInput
+    inputTypeName: ExerciseCategorySetInputInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: exercise_category_set_input
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ExerciseCategorySetInput
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - value
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ArraySetInput
+  description: Wrapper for setting scalar array
+  fields:
+    - name: value
+      type: String_1
+      description: New value for scalar array
+  graphql:
+    typeName: ArraySetInput
+    inputTypeName: ArraySetInputInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: array_set_input
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ArraySetInput
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - value
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: DifficultyLevelSetInput
+  description: Wrapper for setting scalar difficulty_level
+  fields:
+    - name: value
+      type: String_1
+      description: New value for scalar difficulty_level
+  graphql:
+    typeName: DifficultyLevelSetInput
+    inputTypeName: DifficultyLevelSetInputInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: difficulty_level_set_input
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: DifficultyLevelSetInput
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - value
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: MovementPatternSetInput
+  description: Wrapper for setting scalar movement_pattern
+  fields:
+    - name: value
+      type: String_1
+      description: New value for scalar movement_pattern
+  graphql:
+    typeName: MovementPatternSetInput
+    inputTypeName: MovementPatternSetInputInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: movement_pattern_set_input
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: MovementPatternSetInput
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - value
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ExercisesSetInput
+  description: Input type for updating exercises
+  fields:
+    - name: category
+      type: ExerciseCategorySetInput
+      description: New value wrapper for exercises.category
+    - name: createdAt
+      type: TimestampWithTimeZoneSetInput
+      description: New value wrapper for exercises.created_at
+    - name: cues
+      type: ArraySetInput
+      description: New value wrapper for exercises.cues
+    - name: description
+      type: TextSetInput
+      description: New value wrapper for exercises.description
+    - name: difficulty
+      type: DifficultyLevelSetInput
+      description: New value wrapper for exercises.difficulty
+    - name: equipment
+      type: ArraySetInput
+      description: New value wrapper for exercises.equipment
+    - name: focusAreas
+      type: ArraySetInput
+      description: New value wrapper for exercises.focus_areas
+    - name: id
+      type: TextSetInput
+      description: New value wrapper for exercises.id
+    - name: movementPattern
+      type: MovementPatternSetInput
+      description: New value wrapper for exercises.movement_pattern
+    - name: name
+      type: TextSetInput
+      description: New value wrapper for exercises.name
+    - name: progressionParentId
+      type: TextSetInput
+      description: New value wrapper for exercises.progression_parent_id
+  graphql:
+    typeName: ExercisesSetInput
+    inputTypeName: ExercisesSetInputInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: exercises_set_input
+      fieldMapping:
+        category:
+          column:
+            name: category
+        createdAt:
+          column:
+            name: created_at
+        cues:
+          column:
+            name: cues
+        description:
+          column:
+            name: description
+        difficulty:
+          column:
+            name: difficulty
+        equipment:
+          column:
+            name: equipment
+        focusAreas:
+          column:
+            name: focus_areas
+        id:
+          column:
+            name: id
+        movementPattern:
+          column:
+            name: movement_pattern
+        name:
+          column:
+            name: name
+        progressionParentId:
+          column:
+            name: progression_parent_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ExercisesSetInput
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - category
+          - createdAt
+          - cues
+          - description
+          - difficulty
+          - equipment
+          - focusAreas
+          - id
+          - movementPattern
+          - name
+          - progressionParentId
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateExercisesResult
+  description: update from exercises result
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: Number of affected rows
+    - name: returning
+      type: "[Exercises!]!"
+      description: Objects that were affected by update
+  graphql:
+    typeName: UpdateExercisesResult
+    inputTypeName: UpdateExercisesResultInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: update_exercises_result
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateExercisesResult
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: UpdateExercises
+  outputType: UpdateExercisesResult!
+  arguments:
+    - name: returning
+      type: "[String_1!]"
+      description: Fields to return
+    - name: set
+      type: ExercisesSetInput!
+      description: Values to set
+    - name: where
+      type: ExercisesBoolExp!
+      description: Filter for rows to update
+  source:
+    dataConnectorName: my_pg
+    dataConnectorCommand:
+      procedure: update_exercises
+  graphql:
+    rootFieldName: updateExercises
+    rootFieldKind: Mutation
+  description: Update exercises
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: UpdateExercises
+  permissions:
+    - role: admin
+      allowExecution: true
+

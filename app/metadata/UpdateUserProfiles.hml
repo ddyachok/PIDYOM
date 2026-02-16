@@ -1,0 +1,164 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UserProfilesSetInput
+  description: Input type for updating user_profiles
+  fields:
+    - name: authUserId
+      type: TextSetInput
+      description: New value wrapper for user_profiles.auth_user_id
+    - name: createdAt
+      type: TimestampWithTimeZoneSetInput
+      description: New value wrapper for user_profiles.created_at
+    - name: email
+      type: TextSetInput
+      description: New value wrapper for user_profiles.email
+    - name: equipment
+      type: ArraySetInput
+      description: New value wrapper for user_profiles.equipment
+    - name: id
+      type: IntegerSetInput
+      description: New value wrapper for user_profiles.id
+    - name: name
+      type: TextSetInput
+      description: New value wrapper for user_profiles.name
+    - name: updatedAt
+      type: TimestampWithTimeZoneSetInput
+      description: New value wrapper for user_profiles.updated_at
+  graphql:
+    typeName: UserProfilesSetInput
+    inputTypeName: UserProfilesSetInputInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: user_profiles_set_input
+      fieldMapping:
+        authUserId:
+          column:
+            name: auth_user_id
+        createdAt:
+          column:
+            name: created_at
+        email:
+          column:
+            name: email
+        equipment:
+          column:
+            name: equipment
+        id:
+          column:
+            name: id
+        name:
+          column:
+            name: name
+        updatedAt:
+          column:
+            name: updated_at
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UserProfilesSetInput
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - authUserId
+          - createdAt
+          - email
+          - equipment
+          - id
+          - name
+          - updatedAt
+    - role: user
+      output:
+        allowedFields:
+          - authUserId
+          - createdAt
+          - email
+          - equipment
+          - id
+          - name
+          - updatedAt
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateUserProfilesResult
+  description: update from user_profiles result
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: Number of affected rows
+    - name: returning
+      type: "[UserProfiles!]!"
+      description: Objects that were affected by update
+  graphql:
+    typeName: UpdateUserProfilesResult
+    inputTypeName: UpdateUserProfilesResultInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: update_user_profiles_result
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateUserProfilesResult
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+    - role: user
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: UpdateUserProfiles
+  outputType: UpdateUserProfilesResult!
+  arguments:
+    - name: returning
+      type: "[String_1!]"
+      description: Fields to return
+    - name: set
+      type: UserProfilesSetInput!
+      description: Values to set
+    - name: where
+      type: UserProfilesBoolExp!
+      description: Filter for rows to update
+  source:
+    dataConnectorName: my_pg
+    dataConnectorCommand:
+      procedure: update_user_profiles
+  graphql:
+    rootFieldName: updateUserProfiles
+    rootFieldKind: Mutation
+  description: Update user_profiles
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: UpdateUserProfiles
+  permissions:
+    - role: admin
+      allowExecution: true
+    - role: user
+      allowExecution: true
+

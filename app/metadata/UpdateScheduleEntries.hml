@@ -1,0 +1,228 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: DateSetInput
+  description: Wrapper for setting scalar date
+  fields:
+    - name: value
+      type: Date
+      description: New value for scalar date
+  graphql:
+    typeName: DateSetInput
+    inputTypeName: DateSetInputInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: date_set_input
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: DateSetInput
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - value
+    - role: user
+      output:
+        allowedFields:
+          - value
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: WorkoutTypeSetInput
+  description: Wrapper for setting scalar workout_type
+  fields:
+    - name: value
+      type: String_1
+      description: New value for scalar workout_type
+  graphql:
+    typeName: WorkoutTypeSetInput
+    inputTypeName: WorkoutTypeSetInputInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: workout_type_set_input
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: WorkoutTypeSetInput
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - value
+    - role: user
+      output:
+        allowedFields:
+          - value
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ScheduleEntriesSetInput
+  description: Input type for updating schedule_entries
+  fields:
+    - name: completed
+      type: BooleanSetInput
+      description: New value wrapper for schedule_entries.completed
+    - name: createdAt
+      type: TimestampWithTimeZoneSetInput
+      description: New value wrapper for schedule_entries.created_at
+    - name: date
+      type: DateSetInput
+      description: New value wrapper for schedule_entries.date
+    - name: id
+      type: TextSetInput
+      description: New value wrapper for schedule_entries.id
+    - name: userId
+      type: IntegerSetInput
+      description: New value wrapper for schedule_entries.user_id
+    - name: workoutId
+      type: TextSetInput
+      description: New value wrapper for schedule_entries.workout_id
+    - name: workoutType
+      type: WorkoutTypeSetInput
+      description: New value wrapper for schedule_entries.workout_type
+  graphql:
+    typeName: ScheduleEntriesSetInput
+    inputTypeName: ScheduleEntriesSetInputInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: schedule_entries_set_input
+      fieldMapping:
+        completed:
+          column:
+            name: completed
+        createdAt:
+          column:
+            name: created_at
+        date:
+          column:
+            name: date
+        id:
+          column:
+            name: id
+        userId:
+          column:
+            name: user_id
+        workoutId:
+          column:
+            name: workout_id
+        workoutType:
+          column:
+            name: workout_type
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ScheduleEntriesSetInput
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - completed
+          - createdAt
+          - date
+          - id
+          - userId
+          - workoutId
+          - workoutType
+    - role: user
+      output:
+        allowedFields:
+          - completed
+          - createdAt
+          - date
+          - id
+          - userId
+          - workoutId
+          - workoutType
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateScheduleEntriesResult
+  description: update from schedule_entries result
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: Number of affected rows
+    - name: returning
+      type: "[ScheduleEntries!]!"
+      description: Objects that were affected by update
+  graphql:
+    typeName: UpdateScheduleEntriesResult
+    inputTypeName: UpdateScheduleEntriesResultInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: update_schedule_entries_result
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateScheduleEntriesResult
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+    - role: user
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: UpdateScheduleEntries
+  outputType: UpdateScheduleEntriesResult!
+  arguments:
+    - name: returning
+      type: "[String_1!]"
+      description: Fields to return
+    - name: set
+      type: ScheduleEntriesSetInput!
+      description: Values to set
+    - name: where
+      type: ScheduleEntriesBoolExp!
+      description: Filter for rows to update
+  source:
+    dataConnectorName: my_pg
+    dataConnectorCommand:
+      procedure: update_schedule_entries
+  graphql:
+    rootFieldName: updateScheduleEntries
+    rootFieldKind: Mutation
+  description: Update schedule_entries
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: UpdateScheduleEntries
+  permissions:
+    - role: admin
+      allowExecution: true
+    - role: user
+      allowExecution: true
+

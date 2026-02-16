@@ -63,6 +63,16 @@ definition:
           - id
           - name
           - updatedAt
+    - role: user
+      output:
+        allowedFields:
+          - authUserId
+          - createdAt
+          - email
+          - equipment
+          - id
+          - name
+          - updatedAt
 
 ---
 kind: BooleanExpressionType
@@ -188,5 +198,14 @@ definition:
     - role: admin
       select:
         filter: null
+        allowSubscriptions: true
+    - role: user
+      select:
+        filter:
+          fieldComparison:
+            field: authUserId
+            operator: _eq
+            value:
+              sessionVariable: x-hasura-user-id
         allowSubscriptions: true
 

@@ -69,6 +69,17 @@ definition:
           - setNumber
           - weight
           - workoutExerciseId
+    - role: user
+      output:
+        allowedFields:
+          - completed
+          - createdAt
+          - id
+          - notes
+          - reps
+          - setNumber
+          - weight
+          - workoutExerciseId
 
 ---
 kind: BooleanExpressionType
@@ -198,6 +209,10 @@ definition:
   modelName: ExerciseSets
   permissions:
     - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+    - role: user
       select:
         filter: null
         allowSubscriptions: true

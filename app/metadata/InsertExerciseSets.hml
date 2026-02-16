@@ -1,0 +1,169 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ExerciseSetsInsertInput
+  description: Input type for inserting into exercise_sets
+  fields:
+    - name: completed
+      type: Boolean_1
+      description: New value for exercise_sets.completed
+    - name: createdAt
+      type: Timestamptz
+      description: New value for exercise_sets.created_at
+    - name: id
+      type: String_1!
+      description: New value for exercise_sets.id
+    - name: notes
+      type: String_1
+      description: New value for exercise_sets.notes
+    - name: reps
+      type: Int32!
+      description: New value for exercise_sets.reps
+    - name: setNumber
+      type: Int32!
+      description: New value for exercise_sets.set_number
+    - name: weight
+      type: Bigdecimal!
+      description: New value for exercise_sets.weight
+    - name: workoutExerciseId
+      type: String_1!
+      description: New value for exercise_sets.workout_exercise_id
+  graphql:
+    typeName: ExerciseSetsInsertInput
+    inputTypeName: ExerciseSetsInsertInputInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: exercise_sets_insert_input
+      fieldMapping:
+        completed:
+          column:
+            name: completed
+        createdAt:
+          column:
+            name: created_at
+        id:
+          column:
+            name: id
+        notes:
+          column:
+            name: notes
+        reps:
+          column:
+            name: reps
+        setNumber:
+          column:
+            name: set_number
+        weight:
+          column:
+            name: weight
+        workoutExerciseId:
+          column:
+            name: workout_exercise_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ExerciseSetsInsertInput
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - completed
+          - createdAt
+          - id
+          - notes
+          - reps
+          - setNumber
+          - weight
+          - workoutExerciseId
+    - role: user
+      output:
+        allowedFields:
+          - completed
+          - createdAt
+          - id
+          - notes
+          - reps
+          - setNumber
+          - weight
+          - workoutExerciseId
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: InsertExerciseSetsResult
+  description: insert from exercise_sets result
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: Number of affected rows
+    - name: returning
+      type: "[ExerciseSets!]!"
+      description: Objects that were affected by insert
+  graphql:
+    typeName: InsertExerciseSetsResult
+    inputTypeName: InsertExerciseSetsResultInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: insert_exercise_sets_result
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: InsertExerciseSetsResult
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+    - role: user
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: InsertExerciseSets
+  outputType: InsertExerciseSetsResult!
+  arguments:
+    - name: objects
+      type: "[ExerciseSetsInsertInput!]!"
+      description: Objects to insert
+    - name: returning
+      type: "[String_1!]"
+      description: Fields to return
+  source:
+    dataConnectorName: my_pg
+    dataConnectorCommand:
+      procedure: insert_exercise_sets
+  graphql:
+    rootFieldName: insertExerciseSets
+    rootFieldKind: Mutation
+  description: Insert into exercise_sets
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: InsertExerciseSets
+  permissions:
+    - role: admin
+      allowExecution: true
+    - role: user
+      allowExecution: true
+

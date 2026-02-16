@@ -87,6 +87,20 @@ definition:
           - movementPattern
           - name
           - progressionParentId
+    - role: user
+      output:
+        allowedFields:
+          - category
+          - createdAt
+          - cues
+          - description
+          - difficulty
+          - equipment
+          - focusAreas
+          - id
+          - movementPattern
+          - name
+          - progressionParentId
 
 ---
 kind: BooleanExpressionType
@@ -234,6 +248,10 @@ definition:
   modelName: Exercises
   permissions:
     - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+    - role: user
       select:
         filter: null
         allowSubscriptions: true

@@ -1,0 +1,268 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: BooleanSetInput
+  description: Wrapper for setting scalar boolean
+  fields:
+    - name: value
+      type: Boolean_1
+      description: New value for scalar boolean
+  graphql:
+    typeName: BooleanSetInput
+    inputTypeName: BooleanSetInputInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: boolean_set_input
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: BooleanSetInput
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - value
+    - role: user
+      output:
+        allowedFields:
+          - value
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: TimestampWithTimeZoneSetInput
+  description: Wrapper for setting scalar timestamp_with_time_zone
+  fields:
+    - name: value
+      type: Timestamptz
+      description: New value for scalar timestamp_with_time_zone
+  graphql:
+    typeName: TimestampWithTimeZoneSetInput
+    inputTypeName: TimestampWithTimeZoneSetInputInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: timestamp_with_time_zone_set_input
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: TimestampWithTimeZoneSetInput
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - value
+    - role: user
+      output:
+        allowedFields:
+          - value
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: DecimalSetInput
+  description: Wrapper for setting scalar decimal
+  fields:
+    - name: value
+      type: Bigdecimal
+      description: New value for scalar decimal
+  graphql:
+    typeName: DecimalSetInput
+    inputTypeName: DecimalSetInputInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: decimal_set_input
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: DecimalSetInput
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - value
+    - role: user
+      output:
+        allowedFields:
+          - value
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ExerciseSetsSetInput
+  description: Input type for updating exercise_sets
+  fields:
+    - name: completed
+      type: BooleanSetInput
+      description: New value wrapper for exercise_sets.completed
+    - name: createdAt
+      type: TimestampWithTimeZoneSetInput
+      description: New value wrapper for exercise_sets.created_at
+    - name: id
+      type: TextSetInput
+      description: New value wrapper for exercise_sets.id
+    - name: notes
+      type: TextSetInput
+      description: New value wrapper for exercise_sets.notes
+    - name: reps
+      type: IntegerSetInput
+      description: New value wrapper for exercise_sets.reps
+    - name: setNumber
+      type: IntegerSetInput
+      description: New value wrapper for exercise_sets.set_number
+    - name: weight
+      type: DecimalSetInput
+      description: New value wrapper for exercise_sets.weight
+    - name: workoutExerciseId
+      type: TextSetInput
+      description: New value wrapper for exercise_sets.workout_exercise_id
+  graphql:
+    typeName: ExerciseSetsSetInput
+    inputTypeName: ExerciseSetsSetInputInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: exercise_sets_set_input
+      fieldMapping:
+        completed:
+          column:
+            name: completed
+        createdAt:
+          column:
+            name: created_at
+        id:
+          column:
+            name: id
+        notes:
+          column:
+            name: notes
+        reps:
+          column:
+            name: reps
+        setNumber:
+          column:
+            name: set_number
+        weight:
+          column:
+            name: weight
+        workoutExerciseId:
+          column:
+            name: workout_exercise_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ExerciseSetsSetInput
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - completed
+          - createdAt
+          - id
+          - notes
+          - reps
+          - setNumber
+          - weight
+          - workoutExerciseId
+    - role: user
+      output:
+        allowedFields:
+          - completed
+          - createdAt
+          - id
+          - notes
+          - reps
+          - setNumber
+          - weight
+          - workoutExerciseId
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateExerciseSetsResult
+  description: update from exercise_sets result
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: Number of affected rows
+    - name: returning
+      type: "[ExerciseSets!]!"
+      description: Objects that were affected by update
+  graphql:
+    typeName: UpdateExerciseSetsResult
+    inputTypeName: UpdateExerciseSetsResultInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: update_exercise_sets_result
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateExerciseSetsResult
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+    - role: user
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: UpdateExerciseSets
+  outputType: UpdateExerciseSetsResult!
+  arguments:
+    - name: returning
+      type: "[String_1!]"
+      description: Fields to return
+    - name: set
+      type: ExerciseSetsSetInput!
+      description: Values to set
+    - name: where
+      type: ExerciseSetsBoolExp!
+      description: Filter for rows to update
+  source:
+    dataConnectorName: my_pg
+    dataConnectorCommand:
+      procedure: update_exercise_sets
+  graphql:
+    rootFieldName: updateExerciseSets
+    rootFieldKind: Mutation
+  description: Update exercise_sets
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: UpdateExerciseSets
+  permissions:
+    - role: admin
+      allowExecution: true
+    - role: user
+      allowExecution: true
+

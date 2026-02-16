@@ -1,0 +1,161 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UserProfilesInsertInput
+  description: Input type for inserting into user_profiles
+  fields:
+    - name: authUserId
+      type: String_1!
+      description: New value for user_profiles.auth_user_id
+    - name: createdAt
+      type: Timestamptz
+      description: New value for user_profiles.created_at
+    - name: email
+      type: String_1
+      description: New value for user_profiles.email
+    - name: equipment
+      type: String_1
+      description: New value for user_profiles.equipment
+    - name: id
+      type: Int32
+      description: New value for user_profiles.id
+    - name: name
+      type: String_1!
+      description: New value for user_profiles.name
+    - name: updatedAt
+      type: Timestamptz
+      description: New value for user_profiles.updated_at
+  graphql:
+    typeName: UserProfilesInsertInput
+    inputTypeName: UserProfilesInsertInputInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: user_profiles_insert_input
+      fieldMapping:
+        authUserId:
+          column:
+            name: auth_user_id
+        createdAt:
+          column:
+            name: created_at
+        email:
+          column:
+            name: email
+        equipment:
+          column:
+            name: equipment
+        id:
+          column:
+            name: id
+        name:
+          column:
+            name: name
+        updatedAt:
+          column:
+            name: updated_at
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UserProfilesInsertInput
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - authUserId
+          - createdAt
+          - email
+          - equipment
+          - id
+          - name
+          - updatedAt
+    - role: user
+      output:
+        allowedFields:
+          - authUserId
+          - createdAt
+          - email
+          - equipment
+          - id
+          - name
+          - updatedAt
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: InsertUserProfilesResult
+  description: insert from user_profiles result
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: Number of affected rows
+    - name: returning
+      type: "[UserProfiles!]!"
+      description: Objects that were affected by insert
+  graphql:
+    typeName: InsertUserProfilesResult
+    inputTypeName: InsertUserProfilesResultInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: insert_user_profiles_result
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: InsertUserProfilesResult
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+    - role: user
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: InsertUserProfiles
+  outputType: InsertUserProfilesResult!
+  arguments:
+    - name: objects
+      type: "[UserProfilesInsertInput!]!"
+      description: Objects to insert
+    - name: returning
+      type: "[String_1!]"
+      description: Fields to return
+  source:
+    dataConnectorName: my_pg
+    dataConnectorCommand:
+      procedure: insert_user_profiles
+  graphql:
+    rootFieldName: insertUserProfiles
+    rootFieldKind: Mutation
+  description: Insert into user_profiles
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: InsertUserProfiles
+  permissions:
+    - role: admin
+      allowExecution: true
+    - role: user
+      allowExecution: true
+

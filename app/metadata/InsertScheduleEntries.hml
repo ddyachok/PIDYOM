@@ -1,0 +1,161 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ScheduleEntriesInsertInput
+  description: Input type for inserting into schedule_entries
+  fields:
+    - name: completed
+      type: Boolean_1
+      description: New value for schedule_entries.completed
+    - name: createdAt
+      type: Timestamptz
+      description: New value for schedule_entries.created_at
+    - name: date
+      type: Date!
+      description: New value for schedule_entries.date
+    - name: id
+      type: String_1!
+      description: New value for schedule_entries.id
+    - name: userId
+      type: Int32!
+      description: New value for schedule_entries.user_id
+    - name: workoutId
+      type: String_1
+      description: New value for schedule_entries.workout_id
+    - name: workoutType
+      type: String_1!
+      description: New value for schedule_entries.workout_type
+  graphql:
+    typeName: ScheduleEntriesInsertInput
+    inputTypeName: ScheduleEntriesInsertInputInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: schedule_entries_insert_input
+      fieldMapping:
+        completed:
+          column:
+            name: completed
+        createdAt:
+          column:
+            name: created_at
+        date:
+          column:
+            name: date
+        id:
+          column:
+            name: id
+        userId:
+          column:
+            name: user_id
+        workoutId:
+          column:
+            name: workout_id
+        workoutType:
+          column:
+            name: workout_type
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ScheduleEntriesInsertInput
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - completed
+          - createdAt
+          - date
+          - id
+          - userId
+          - workoutId
+          - workoutType
+    - role: user
+      output:
+        allowedFields:
+          - completed
+          - createdAt
+          - date
+          - id
+          - userId
+          - workoutId
+          - workoutType
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: InsertScheduleEntriesResult
+  description: insert from schedule_entries result
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: Number of affected rows
+    - name: returning
+      type: "[ScheduleEntries!]!"
+      description: Objects that were affected by insert
+  graphql:
+    typeName: InsertScheduleEntriesResult
+    inputTypeName: InsertScheduleEntriesResultInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_pg
+      dataConnectorObjectType: insert_schedule_entries_result
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: InsertScheduleEntriesResult
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+    - role: user
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: InsertScheduleEntries
+  outputType: InsertScheduleEntriesResult!
+  arguments:
+    - name: objects
+      type: "[ScheduleEntriesInsertInput!]!"
+      description: Objects to insert
+    - name: returning
+      type: "[String_1!]"
+      description: Fields to return
+  source:
+    dataConnectorName: my_pg
+    dataConnectorCommand:
+      procedure: insert_schedule_entries
+  graphql:
+    rootFieldName: insertScheduleEntries
+    rootFieldKind: Mutation
+  description: Insert into schedule_entries
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: InsertScheduleEntries
+  permissions:
+    - role: admin
+      allowExecution: true
+    - role: user
+      allowExecution: true
+
