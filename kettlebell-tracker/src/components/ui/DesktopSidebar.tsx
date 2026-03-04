@@ -27,7 +27,7 @@ export default function DesktopSidebar() {
       </div>
 
       {/* Navigation */}
-      <div className="flex flex-col gap-1 flex-1">
+      <div className="flex flex-col gap-0.5 flex-1">
         {tabs.map((tab) => {
           const isActive = currentTab === tab.id;
           const Icon = tab.icon;
@@ -35,27 +35,46 @@ export default function DesktopSidebar() {
             <button
               key={tab.id}
               onClick={() => setCurrentTab(tab.id)}
-              className={`relative flex items-center gap-4 px-4 py-3 text-left transition-all duration-200 ${
+              className={`relative flex items-center gap-3.5 px-4 py-3 text-left transition-all duration-200 ${
                 isActive
                   ? 'text-white'
-                  : 'text-white/30 hover:text-white/50'
+                  : 'text-white/30 hover:text-white/55 hover:bg-white/[0.02]'
               }`}
               aria-current={isActive ? 'page' : undefined}
               aria-label={tab.label}
             >
-              {/* White left bar indicator */}
+              {/* Amber left bar indicator */}
               {isActive && (
                 <motion.div
                   layoutId="sidebar-indicator"
-                  className="absolute left-0 top-2 bottom-2 w-[2px] bg-white"
+                  className="absolute left-0 top-2 bottom-2 w-[2px]"
+                  style={{ background: '#ff9500' }}
                   transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                 />
               )}
-              <span className="text-[10px] tracking-[0.1em] text-white/25 w-5 tabular-nums">
+
+              {/* Active background */}
+              {isActive && (
+                <motion.div
+                  layoutId="sidebar-bg"
+                  className="absolute inset-0"
+                  style={{ background: 'rgba(255,149,0,0.05)' }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                />
+              )}
+
+              <span
+                className={`relative text-[10px] tracking-[0.1em] w-5 tabular-nums transition-colors ${
+                  isActive ? 'text-amber-400' : 'text-white/20'
+                }`}
+                style={isActive ? { color: 'rgba(255,149,0,0.7)' } : {}}
+              >
                 {tab.num}
               </span>
-              <Icon size={18} className="transition-colors shrink-0" />
-              <span className="text-[13px] tracking-[0.2em] uppercase">{tab.label}</span>
+              <span className="relative">
+                <Icon size={17} className="transition-colors shrink-0" />
+              </span>
+              <span className="relative text-[12px] tracking-[0.2em] uppercase font-bold">{tab.label}</span>
             </button>
           );
         })}

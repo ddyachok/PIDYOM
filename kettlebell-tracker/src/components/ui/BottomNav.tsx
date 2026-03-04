@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { useStore } from '../../store/useStore';
 import { IconHome, IconDumbbell, IconCalendar, IconChart, IconUser } from '../icons/Icons';
 
@@ -14,7 +15,7 @@ export default function BottomNav() {
   const setCurrentTab = useStore(s => s.setCurrentTab);
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-black border-t border-white/[0.06] safe-bottom">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-black border-t border-white/[0.07] safe-bottom">
       <div className="max-w-lg mx-auto flex items-center justify-around h-16">
         {tabs.map((tab) => {
           const isActive = currentTab === tab.id;
@@ -27,22 +28,26 @@ export default function BottomNav() {
               aria-current={isActive ? 'page' : undefined}
               aria-label={tab.label}
             >
-              <span className="inline-flex shrink-0 w-[22px] h-[22px] items-center justify-center">
-                <Icon
-                  size={22}
-                  className={`transition-colors duration-200 ${isActive ? 'text-white' : 'text-white/35'}`}
-                />
+              <span
+                className="inline-flex shrink-0 w-[22px] h-[22px] items-center justify-center transition-colors duration-200"
+                style={{ color: isActive ? '#ff9500' : 'rgba(255,255,255,0.3)' }}
+              >
+                <Icon size={22} />
               </span>
               <span
-                className={`text-[10px] tracking-[0.15em] uppercase transition-colors duration-200 ${
-                  isActive ? 'text-white' : 'text-white/35'
-                }`}
+                className="text-[9px] tracking-[0.12em] uppercase transition-colors duration-200"
+                style={{ color: isActive ? 'rgba(255,149,0,0.85)' : 'rgba(255,255,255,0.3)' }}
               >
                 {tab.label}
               </span>
-              {/* White underline indicator (no orange dot) */}
+              {/* Amber dot indicator */}
               {isActive && (
-                <div className="absolute bottom-1 w-5 h-[2px] bg-white" />
+                <motion.div
+                  layoutId="bottom-nav-indicator"
+                  className="absolute bottom-1.5 w-1 h-1 rounded-full"
+                  style={{ background: '#ff9500', boxShadow: '0 0 6px rgba(255,149,0,0.7)' }}
+                  transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                />
               )}
             </button>
           );
