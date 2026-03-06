@@ -27,7 +27,8 @@ function CurrentPage() {
 }
 
 export default function App() {
-  const session = authClient.useSession();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const session = (authClient as any).useSession();
   const syncAuth = useStore(s => s.syncAuth);
   const hydrateStore = useStore(s => s.hydrateStore);
   const isHydrated = useStore(s => s.isHydrated);
