@@ -1,0 +1,1532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PIDYOM — CONCEPT 02 / BRUTUS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,800;0,900;1,700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ================================================================
+       PIDYOM — BRUTUS / CONCEPT-02
+       Kettlebell movement tracking framework
+       Inspired by: brutalist typography, technical data interfaces,
+       concrete textures, scientific annotation aesthetics
+       ================================================================ */
+
+    /* ── RESET ─────────────────────────────────────────────────────── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    /* ── TOKENS ─────────────────────────────────────────────────────── */
+    :root {
+      --paper:    #E8E8E1;   /* concrete off-white */
+      --ink:      #0A0A0A;   /* near black */
+      --acid:     #C6FF00;   /* acid green — single accent */
+      --void:     #0D0D0D;   /* deep black for panels */
+      --steel:    #6A6A62;   /* secondary / muted */
+      --rule:     #C0C0B8;   /* light dividers */
+      --surface:  #E0E0D8;   /* subtle panel on light bg */
+
+      --f-display: 'Barlow Condensed', sans-serif;
+      --f-mono:    'Space Mono', monospace;
+    }
+
+    /* ── GRAIN TEXTURE OVERLAY ─────────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9000;
+      opacity: 0.06;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 250px 250px;
+    }
+
+    /* ── BASE ───────────────────────────────────────────────────────── */
+    html { font-size: 16px; }
+
+    body {
+      background-color: var(--paper);
+      /* Subtle dot grid — technical drawing paper */
+      background-image: radial-gradient(circle, rgba(0,0,0,0.07) 1px, transparent 1px);
+      background-size: 28px 28px;
+      color: var(--ink);
+      font-family: var(--f-mono);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      min-height: 100vh;
+    }
+
+    /* ── WRAPPER ─────────────────────────────────────────────────────── */
+    .wrap {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 48px 120px;
+    }
+
+    /* ════════════════════════════════════════════════════════════════
+       PRESENTATION HEADER
+       ════════════════════════════════════════════════════════════════ */
+    .doc-header {
+      padding-top: 52px;
+      padding-bottom: 0;
+      border-bottom: 3px solid var(--ink);
+      margin-bottom: 52px;
+    }
+
+    .doc-header__top {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding-bottom: 22px;
+      gap: 24px;
+    }
+
+    .doc-header__title {
+      font-family: var(--f-display);
+      font-weight: 900;
+      font-size: clamp(72px, 10vw, 112px);
+      line-height: 0.88;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+    }
+
+    .doc-header__spec {
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .doc-header__spec-block {
+      display: inline-block;
+      border: 1.5px solid var(--ink);
+      padding: 12px 16px;
+      font-size: 9px;
+      line-height: 1.9;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .doc-header__spec-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .doc-header__spec-line span:first-child {
+      color: var(--steel);
+    }
+
+    .doc-header__sub {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+      border-top: 1px solid var(--rule);
+    }
+
+    .doc-header__descriptor {
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--steel);
+    }
+
+    .doc-header__coord {
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      color: var(--steel);
+    }
+
+    /* ── MANIFESTO STRIP ─────────────────────────────────────────────── */
+    .manifesto {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 52px;
+      border: 1.5px solid var(--ink);
+      overflow: hidden;
+    }
+
+    .manifesto__word {
+      flex: 1;
+      text-align: center;
+      padding: 11px 8px;
+      font-family: var(--f-display);
+      font-weight: 900;
+      font-size: 12px;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      border-right: 1.5px solid var(--ink);
+    }
+
+    .manifesto__word:last-child { border-right: none; }
+
+    .manifesto__word--accent {
+      background: var(--acid);
+      color: var(--void);
+    }
+
+    /* ════════════════════════════════════════════════════════════════
+       SCREENS ROW
+       ════════════════════════════════════════════════════════════════ */
+    .section-tag {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+
+    .section-tag__label {
+      font-size: 9px;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: var(--steel);
+      white-space: nowrap;
+    }
+
+    .section-tag__line {
+      flex: 1;
+      height: 1px;
+      background: var(--rule);
+    }
+
+    .screens-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      margin-bottom: 60px;
+    }
+
+    /* ── PHONE WRAPPER ───────────────────────────────────────────────── */
+    .phone { display: flex; flex-direction: column; }
+
+    .phone__index {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      margin-bottom: 9px;
+    }
+
+    .phone__index-num {
+      font-family: var(--f-display);
+      font-weight: 900;
+      font-size: 15px;
+      letter-spacing: 0.04em;
+    }
+
+    .phone__index-name {
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--steel);
+    }
+
+    .phone__frame {
+      position: relative;
+      border: 2px solid var(--ink);
+      box-shadow: 5px 5px 0 0 var(--ink);
+      overflow: hidden;
+      aspect-ratio: 9 / 19.5;
+      background: var(--paper);
+    }
+
+    .phone__caption {
+      margin-top: 13px;
+    }
+
+    .phone__caption-title {
+      font-family: var(--f-display);
+      font-weight: 800;
+      font-size: 16px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    .phone__caption-sub {
+      font-size: 8px;
+      letter-spacing: 0.16em;
+      color: var(--steel);
+      text-transform: uppercase;
+      margin-top: 3px;
+    }
+
+    /* ════════════════════════════════════════════════════════════════
+       SCREEN: BASE SHELL
+       ════════════════════════════════════════════════════════════════ */
+    .screen {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .screen--light { background: var(--paper); color: var(--ink); }
+    .screen--dark  {
+      background: var(--void);
+      color: #fff;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.035) 1px, transparent 1px);
+      background-size: 14px 14px;
+    }
+
+    /* ── STATUS BAR ─────────────────────────────────────────────────── */
+    .sbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 12px 5px;
+      flex-shrink: 0;
+    }
+    .sbar--light { border-bottom: 1px solid var(--rule); }
+    .sbar--dark  { border-bottom: 1px solid rgba(255,255,255,0.07); }
+
+    .sbar__time {
+      font-family: var(--f-display);
+      font-weight: 700;
+      font-size: 10px;
+      letter-spacing: 0.04em;
+    }
+    .sbar--dark .sbar__time { color: rgba(255,255,255,0.65); }
+
+    .sbar__icons {
+      font-size: 7px;
+      letter-spacing: 0.06em;
+      color: var(--steel);
+    }
+    .sbar--dark .sbar__icons { color: rgba(255,255,255,0.35); }
+
+    /* ── SCREEN PADDING ─────────────────────────────────────────────── */
+    .sc { padding: 12px 13px; flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+    /* ── RULE LINES ─────────────────────────────────────────────────── */
+    .r  { height: 1px; background: var(--rule); flex-shrink: 0; }
+    .r--dark  { background: rgba(255,255,255,0.07); }
+    .r--heavy { height: 2px; background: var(--ink); }
+
+    /* ── LABELS ─────────────────────────────────────────────────────── */
+    .lbl {
+      font-size: 7px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--steel);
+      flex-shrink: 0;
+    }
+    .lbl--dark { color: rgba(255,255,255,0.3); }
+
+    /* ── DISPLAY TYPE ───────────────────────────────────────────────── */
+    .disp {
+      font-family: var(--f-display);
+      font-weight: 900;
+      text-transform: uppercase;
+      line-height: 0.9;
+      letter-spacing: -0.01em;
+    }
+
+    /* ── PILLS / TAGS ───────────────────────────────────────────────── */
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 6px;
+      border: 1px solid currentColor;
+      font-size: 6.5px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      line-height: 1.4;
+      flex-shrink: 0;
+    }
+
+    .pill--dark    { color: rgba(255,255,255,0.5); border-color: rgba(255,255,255,0.2); }
+    .pill--acid    { color: var(--void); background: var(--acid); border-color: var(--acid); }
+    .pill--outline { color: var(--ink); border-color: var(--ink); }
+    .pill--ghost   { color: var(--steel); border-color: var(--rule); }
+
+    /* ── BUTTONS ─────────────────────────────────────────────────────── */
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--f-mono);
+      font-weight: 700;
+      font-size: 8px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      padding: 10px 14px;
+      border: none;
+      cursor: pointer;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+
+    .btn--solid   { background: var(--ink); color: #fff; }
+    .btn--acid    { background: var(--acid); color: var(--void); }
+    .btn--outline { background: transparent; border: 1.5px solid var(--ink); color: var(--ink); }
+    .btn--outw    { background: transparent; border: 1.5px solid rgba(255,255,255,0.25); color: #fff; }
+    .btn--full    { width: 100%; }
+
+    /* ── FORM FIELDS ─────────────────────────────────────────────────── */
+    .field { display: flex; flex-direction: column; gap: 4px; }
+    .field label {
+      font-size: 7px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--steel);
+    }
+    .field input {
+      font-family: var(--f-mono);
+      font-size: 9px;
+      padding: 7px 8px;
+      background: transparent;
+      border: none;
+      border-bottom: 1.5px solid var(--rule);
+      color: var(--ink);
+      letter-spacing: 0.04em;
+      outline: none;
+      -webkit-appearance: none;
+    }
+    .field input::placeholder { color: var(--rule); }
+
+    /* ── MODE TOGGLE ─────────────────────────────────────────────────── */
+    .mode-toggle {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border: 1.5px solid var(--ink);
+      flex-shrink: 0;
+    }
+    .mode-toggle__btn {
+      padding: 8px 4px;
+      font-family: var(--f-mono);
+      font-size: 7.5px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: var(--steel);
+      text-align: center;
+    }
+    .mode-toggle__btn--on {
+      background: var(--acid);
+      color: var(--void);
+    }
+
+    /* ── STATS ───────────────────────────────────────────────────────── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .stat {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 8px 0;
+    }
+    .stat:not(:last-child) {
+      border-right: 1px solid rgba(255,255,255,0.07);
+      padding-right: 7px;
+      margin-right: 7px;
+    }
+    .stat__val {
+      font-family: var(--f-display);
+      font-weight: 900;
+      font-size: 24px;
+      line-height: 1;
+      letter-spacing: -0.01em;
+      color: #fff;
+    }
+    .stat__lbl {
+      font-size: 6.5px;
+      letter-spacing: 0.18em;
+      color: rgba(255,255,255,0.3);
+      text-transform: uppercase;
+    }
+
+    /* ── WORKOUT CARD ────────────────────────────────────────────────── */
+    .wk-card {
+      padding: 9px 10px;
+      background: rgba(255,255,255,0.03);
+      border-left: 2px solid var(--acid);
+      flex-shrink: 0;
+    }
+    .wk-card__name {
+      font-family: var(--f-display);
+      font-weight: 900;
+      font-size: 20px;
+      text-transform: uppercase;
+      color: #fff;
+      line-height: 1;
+      letter-spacing: 0.01em;
+    }
+    .wk-card__desc {
+      font-size: 7.5px;
+      color: rgba(255,255,255,0.38);
+      line-height: 1.55;
+      letter-spacing: 0.04em;
+      margin-top: 4px;
+    }
+
+    /* ── EX ROWS ─────────────────────────────────────────────────────── */
+    .ex-row {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .ex-row:last-child { border-bottom: none; }
+    .ex-num {
+      font-family: var(--f-display);
+      font-weight: 700;
+      font-size: 10px;
+      color: rgba(255,255,255,0.2);
+      min-width: 16px;
+    }
+    .ex-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .ex-dot--done    { background: var(--acid); }
+    .ex-dot--active  { background: #fff; }
+    .ex-dot--idle    { background: rgba(255,255,255,0.15); }
+    .ex-name {
+      font-size: 8px;
+      letter-spacing: 0.06em;
+      flex: 1;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .ex-sets {
+      font-size: 7.5px;
+      color: rgba(255,255,255,0.3);
+      letter-spacing: 0.06em;
+    }
+
+    /* ── SET TABLE ───────────────────────────────────────────────────── */
+    .set-row {
+      display: grid;
+      grid-template-columns: 20px 1fr 1fr 14px;
+      gap: 4px;
+      padding: 4.5px 0;
+      font-size: 8.5px;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .set-row--head {
+      font-size: 6.5px;
+      letter-spacing: 0.18em;
+      color: rgba(255,255,255,0.28);
+      text-transform: uppercase;
+      border-bottom-color: rgba(255,255,255,0.08);
+      padding-bottom: 5px;
+    }
+    .set-row--active {
+      background: rgba(198,255,0,0.05);
+      margin: 0 -13px;
+      padding-left: 13px;
+      padding-right: 13px;
+    }
+    .set-check {
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .set-check--done { background: var(--acid); border-color: var(--acid); }
+
+    /* ── PROGRESS BAR ────────────────────────────────────────────────── */
+    .pbar { height: 3px; background: rgba(255,255,255,0.08); position: relative; flex-shrink: 0; }
+    .pbar__fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--acid); }
+
+    /* ── CALENDAR ────────────────────────────────────────────────────── */
+    .cal-labels {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      border-top: 1px solid var(--rule);
+      border-left: 1px solid var(--rule);
+      flex-shrink: 0;
+    }
+    .cal-day-lbl {
+      padding: 4px 3px 3px;
+      font-size: 6.5px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--steel);
+      text-align: center;
+      border-right: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+    }
+    .cal-week {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      border-left: 1px solid var(--rule);
+      flex-shrink: 0;
+    }
+    .cal-cell {
+      padding: 4px 3px;
+      border-right: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+      min-height: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .cal-num {
+      font-family: var(--f-display);
+      font-weight: 700;
+      font-size: 9px;
+      color: var(--steel);
+      line-height: 1;
+    }
+    .cal-cell--today .cal-num {
+      background: var(--acid);
+      color: var(--void);
+      width: 14px;
+      height: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .cal-cell--empty { background: rgba(0,0,0,0.018); }
+    .cal-tag {
+      font-size: 5px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 1px 3px;
+      border: 1px solid currentColor;
+      line-height: 1.3;
+    }
+    .cal-tag--a   { color: var(--ink); border-color: var(--ink); }
+    .cal-tag--b   { color: var(--steel); border-color: var(--rule); }
+    .cal-tag--end { color: var(--steel); border-color: var(--rule); }
+    .cal-tag--today { color: var(--void); background: var(--acid); border-color: var(--acid); }
+
+    /* ── BOTTOM NAV ──────────────────────────────────────────────────── */
+    .b-nav {
+      display: flex;
+      flex-shrink: 0;
+      border-top: 1px solid;
+    }
+    .b-nav--light { background: var(--paper); border-color: var(--rule); }
+    .b-nav--dark  { background: var(--void); border-color: rgba(255,255,255,0.07); }
+    .b-nav__item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 2px 5px;
+      gap: 2px;
+    }
+    .b-nav__lbl {
+      font-size: 5.5px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    .b-nav--dark  .b-nav__lbl { color: rgba(255,255,255,0.28); }
+    .b-nav--light .b-nav__lbl { color: var(--steel); }
+
+    /* ── COORD STAMP ─────────────────────────────────────────────────── */
+    .coord {
+      font-size: 6.5px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    .coord--light { color: var(--rule); }
+    .coord--dark  { color: rgba(255,255,255,0.15); }
+
+    /* ════════════════════════════════════════════════════════════════
+       DESIGN TOKENS SECTION
+       ════════════════════════════════════════════════════════════════ */
+    .tokens-section {
+      padding-top: 52px;
+      border-top: 3px solid var(--ink);
+      margin-top: 16px;
+    }
+
+    .tokens-title {
+      font-family: var(--f-display);
+      font-weight: 900;
+      font-size: 56px;
+      letter-spacing: -0.01em;
+      text-transform: uppercase;
+      margin-bottom: 44px;
+      line-height: 0.9;
+    }
+
+    .tokens-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 48px;
+    }
+
+    .token-group__tag {
+      font-size: 8px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--steel);
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--rule);
+      margin-bottom: 18px;
+    }
+
+    /* Colors */
+    .swatches { display: flex; flex-direction: column; gap: 7px; }
+    .swatch { display: flex; align-items: center; gap: 11px; }
+    .swatch__blk {
+      width: 34px; height: 22px;
+      border: 1px solid rgba(0,0,0,0.1);
+      flex-shrink: 0;
+    }
+    .swatch__name {
+      font-size: 8.5px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 700;
+      display: block;
+    }
+    .swatch__hex {
+      font-size: 7.5px;
+      color: var(--steel);
+      letter-spacing: 0.06em;
+      display: block;
+    }
+
+    /* Typography */
+    .type-specimens { display: flex; flex-direction: column; gap: 16px; }
+    .type-spec {
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .type-spec:last-child { border-bottom: none; }
+    .type-spec__sample {
+      font-family: var(--f-display);
+      font-weight: 900;
+      text-transform: uppercase;
+      line-height: 0.9;
+    }
+    .type-spec__meta {
+      font-size: 7.5px;
+      color: var(--steel);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 5px;
+    }
+
+    /* Components preview */
+    .comp-group { display: flex; flex-direction: column; gap: 14px; }
+    .comp-label {
+      font-size: 7px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--steel);
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    /* ── CONCEPT FOOTER ─────────────────────────────────────────────── */
+    .doc-footer {
+      margin-top: 80px;
+      padding-top: 20px;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .doc-footer__left {
+      font-family: var(--f-display);
+      font-weight: 900;
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .doc-footer__right {
+      font-size: 7.5px;
+      letter-spacing: 0.14em;
+      color: var(--steel);
+      text-transform: uppercase;
+      text-align: right;
+      line-height: 1.7;
+    }
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- ════════════════════════════════════════════════════════════════
+       DOCUMENT HEADER
+       ════════════════════════════════════════════════════════════════ -->
+  <header class="doc-header">
+    <div class="doc-header__top">
+      <h1 class="doc-header__title">PIDYOM</h1>
+
+      <div class="doc-header__spec">
+        <div class="doc-header__spec-block">
+          <div class="doc-header__spec-line"><span>CONCEPT</span><span>02 / BRUTUS</span></div>
+          <div class="doc-header__spec-line"><span>SYSTEM</span><span>MOVEMENT FRAMEWORK</span></div>
+          <div class="doc-header__spec-line"><span>VIEWPORT</span><span>375 × 812</span></div>
+          <div class="doc-header__spec-line"><span>DATE</span><span>05.03.2026</span></div>
+          <div class="doc-header__spec-line"><span>REF</span><span>DOC-0042/B</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="doc-header__sub">
+      <span class="doc-header__descriptor">
+        A KETTLEBELL TRAINING SYSTEM &nbsp;·&nbsp; FOUR KEY SCREENS &nbsp;·&nbsp; DESIGN SPECIFICATION
+      </span>
+      <span class="doc-header__coord">ACID / CONCRETE / PRECISION</span>
+    </div>
+  </header>
+
+  <!-- ── MANIFESTO STRIP ─────────────────────────────────────────────── -->
+  <div class="manifesto">
+    <div class="manifesto__word">RAW</div>
+    <div class="manifesto__word manifesto__word--accent">FUNCTIONAL</div>
+    <div class="manifesto__word">PRECISE</div>
+    <div class="manifesto__word">UNCOMPROMISED</div>
+    <div class="manifesto__word">EXECUTE</div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════════
+       FOUR SCREENS
+       ════════════════════════════════════════════════════════════════ -->
+  <div class="section-tag">
+    <span class="section-tag__label">FOUR SCREENS</span>
+    <div class="section-tag__line"></div>
+    <span class="section-tag__label" style="font-size: 8px; opacity: 0.55;">375 × 812 · MOBILE FIRST</span>
+  </div>
+
+  <div class="screens-row">
+
+    <!-- ══════════════════════════════════════════
+         01 · IDENT — AUTHENTICATION
+         ══════════════════════════════════════════ -->
+    <div class="phone">
+      <div class="phone__index">
+        <span class="phone__index-num">01</span>
+        <span class="phone__index-name">IDENT</span>
+      </div>
+
+      <div class="phone__frame">
+        <div class="screen screen--light">
+
+          <div class="sbar sbar--light">
+            <span class="sbar__time">19:47</span>
+            <span class="sbar__icons">▌▌▌ ● 97%</span>
+          </div>
+
+          <div class="sc" style="justify-content: center; gap: 0; padding: 16px 14px 14px;">
+
+            <!-- Big logotype -->
+            <div style="margin-bottom: 6px;">
+              <div class="disp" style="font-size: 58px; letter-spacing: -0.025em;">PIDYOM</div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 18px; padding-bottom: 18px; border-bottom: 2px solid var(--ink);">
+              <span class="lbl" style="color: var(--ink);">MOVEMENT FRAMEWORK</span>
+              <div style="flex:1; height: 1px; background: var(--rule);"></div>
+              <span class="lbl">v2.0</span>
+            </div>
+
+            <!-- Mode toggle -->
+            <div class="mode-toggle" style="margin-bottom: 16px;">
+              <button class="mode-toggle__btn mode-toggle__btn--on">SIGN IN</button>
+              <button class="mode-toggle__btn">CREATE</button>
+            </div>
+
+            <!-- Fields -->
+            <div style="display: flex; flex-direction: column; gap: 11px; margin-bottom: 14px;">
+              <div class="field">
+                <label>EMAIL ADDRESS</label>
+                <input type="email" placeholder="you@example.com" readonly />
+              </div>
+              <div class="field">
+                <label>PASSWORD</label>
+                <input type="password" placeholder="••••••••" readonly />
+              </div>
+            </div>
+
+            <!-- CTA -->
+            <button class="btn btn--solid btn--full" style="letter-spacing: 0.26em; margin-bottom: 12px; font-size: 8.5px;">
+              AUTHENTICATE →
+            </button>
+
+            <!-- Divider -->
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 11px;">
+              <div class="r" style="flex: 1;"></div>
+              <span class="lbl">OR</span>
+              <div class="r" style="flex: 1;"></div>
+            </div>
+
+            <!-- Social logins -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-bottom: auto;">
+              <button class="btn btn--outline" style="gap: 5px;">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+                GITHUB
+              </button>
+              <button class="btn btn--outline" style="gap: 5px;">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/>
+                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
+                GOOGLE
+              </button>
+            </div>
+
+            <!-- Coord footer -->
+            <div class="coord coord--light" style="text-align: center; padding-top: 10px; margin-top: auto;">
+              IDENT · SEC-00 · DOC-0042/B
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="phone__caption">
+        <div class="phone__caption-title">AUTHENTICATION</div>
+        <div class="phone__caption-sub">Identity gate · Light mode</div>
+      </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════
+         02 · CORE — HOME DASHBOARD
+         ══════════════════════════════════════════ -->
+    <div class="phone">
+      <div class="phone__index">
+        <span class="phone__index-num">02</span>
+        <span class="phone__index-name">CORE</span>
+      </div>
+
+      <div class="phone__frame">
+        <div class="screen screen--dark">
+
+          <div class="sbar sbar--dark">
+            <span class="sbar__time">19:47</span>
+            <span class="sbar__icons">▌▌▌ ● 97%</span>
+          </div>
+
+          <div class="sc" style="gap: 0; padding: 11px 13px;">
+
+            <!-- Header -->
+            <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 9px;">
+              <div>
+                <div class="disp" style="font-size: 18px; color: #fff; letter-spacing: 0.05em;">PIDYOM</div>
+                <div style="font-size: 7px; letter-spacing: 0.16em; color: rgba(255,255,255,0.28); margin-top: 2px; text-transform: uppercase;">
+                  05.03.2026 &nbsp;·&nbsp; BARBELL
+                </div>
+              </div>
+              <div class="pill pill--acid" style="margin-top: 3px; font-size: 6px;">ACTIVE</div>
+            </div>
+
+            <div class="r r--dark" style="margin-bottom: 10px;"></div>
+
+            <!-- Stats -->
+            <div class="stats-row" style="margin-bottom: 10px;">
+              <div class="stat" style="padding-right: 7px; margin-right: 7px; border-right: 1px solid rgba(255,255,255,0.07);">
+                <span class="stat__val">47</span>
+                <span class="stat__lbl">WORKOUTS</span>
+              </div>
+              <div class="stat" style="padding-right: 7px; margin-right: 7px; border-right: 1px solid rgba(255,255,255,0.07);">
+                <span class="stat__val">823</span>
+                <span class="stat__lbl">SETS</span>
+              </div>
+              <div class="stat">
+                <span class="stat__val" style="font-size: 20px;">3.2K</span>
+                <span class="stat__lbl">KG TOTAL</span>
+              </div>
+            </div>
+
+            <div class="r r--dark" style="margin-bottom: 9px;"></div>
+
+            <!-- Mission -->
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 7px;">
+              <span class="lbl lbl--dark">TODAY'S MISSION</span>
+              <span style="font-size: 7px; letter-spacing: 0.1em; color: var(--acid); font-weight: 700; text-transform: uppercase;">WED</span>
+            </div>
+
+            <div class="wk-card" style="margin-bottom: 9px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                <div class="wk-card__name">STRENGTH A</div>
+                <div class="pill pill--dark">UPPER</div>
+              </div>
+              <div class="wk-card__desc">
+                KB press · bent rows ·<br>
+                Turkish get-ups · 45 min
+              </div>
+            </div>
+
+            <button class="btn btn--acid btn--full" style="letter-spacing: 0.24em; margin-bottom: 10px;">
+              EXECUTE WORKOUT →
+            </button>
+
+            <!-- Recent log -->
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+              <span class="lbl lbl--dark">RECENT LOG</span>
+              <span style="font-size: 6.5px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.18);">VIEW ALL</span>
+            </div>
+
+            <div style="flex: 1; overflow: hidden;">
+              <div class="ex-row">
+                <span class="ex-num">01</span>
+                <span class="ex-dot ex-dot--done"></span>
+                <span class="ex-name" style="color: rgba(255,255,255,0.6);">STRENGTH A</span>
+                <span class="ex-sets">MAR 4 · 8EX</span>
+              </div>
+              <div class="ex-row">
+                <span class="ex-num">02</span>
+                <span class="ex-dot ex-dot--done"></span>
+                <span class="ex-name" style="color: rgba(255,255,255,0.6);">STRENGTH B</span>
+                <span class="ex-sets">MAR 2 · 7EX</span>
+              </div>
+              <div class="ex-row" style="border-bottom: none;">
+                <span class="ex-num">03</span>
+                <span class="ex-dot ex-dot--idle"></span>
+                <span class="ex-name" style="color: rgba(255,255,255,0.4);">ENDURANCE</span>
+                <span class="ex-sets">FEB 28 · 5EX</span>
+              </div>
+            </div>
+
+            <div class="coord coord--dark" style="margin-top: auto; padding-top: 6px;">CORE / SEC-01</div>
+
+          </div>
+
+          <!-- Bottom nav -->
+          <div class="b-nav b-nav--dark">
+            <div class="b-nav__item">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#C6FF00" stroke-width="2.5">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                <polyline points="9 22 9 12 15 12 15 22"/>
+              </svg>
+              <span class="b-nav__lbl" style="color: var(--acid);">HOME</span>
+            </div>
+            <div class="b-nav__item" style="opacity: 0.35;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2">
+                <circle cx="12" cy="8" r="4"/><path d="M6 20v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>
+              </svg>
+              <span class="b-nav__lbl">TRAIN</span>
+            </div>
+            <div class="b-nav__item" style="opacity: 0.35;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+              <span class="b-nav__lbl">PLAN</span>
+            </div>
+            <div class="b-nav__item" style="opacity: 0.35;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+              </svg>
+              <span class="b-nav__lbl">INTEL</span>
+            </div>
+            <div class="b-nav__item" style="opacity: 0.35;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+              <span class="b-nav__lbl">YOU</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="phone__caption">
+        <div class="phone__caption-title">CORE DASHBOARD</div>
+        <div class="phone__caption-sub">Home screen · Dark mode</div>
+      </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════
+         03 · EXECUTE — ACTIVE WORKOUT
+         ══════════════════════════════════════════ -->
+    <div class="phone">
+      <div class="phone__index">
+        <span class="phone__index-num">03</span>
+        <span class="phone__index-name">EXECUTE</span>
+      </div>
+
+      <div class="phone__frame">
+        <div class="screen screen--dark">
+
+          <div class="sbar sbar--dark">
+            <span class="sbar__time">19:47</span>
+            <span class="sbar__icons">▌▌▌ ● 97%</span>
+          </div>
+
+          <!-- Workout progress bar -->
+          <div class="pbar">
+            <div class="pbar__fill" style="width: 37.5%;"></div>
+          </div>
+
+          <div class="sc" style="gap: 0; padding: 10px 13px; flex: 1; overflow: hidden;">
+
+            <!-- Navigation row -->
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <span style="color: rgba(255,255,255,0.28); font-size: 11px;">←</span>
+                <span class="lbl lbl--dark">STRENGTH A</span>
+              </div>
+              <div style="font-size: 7px; letter-spacing: 0.12em; color: var(--acid); font-weight: 700; text-transform: uppercase;">
+                03 / 08 EXERCISES
+              </div>
+            </div>
+
+            <!-- Current exercise block -->
+            <div style="padding: 9px 10px; background: rgba(255,255,255,0.03); border-top: 2px solid var(--acid); margin-bottom: 9px; flex-shrink: 0;">
+              <div class="lbl lbl--dark" style="margin-bottom: 4px;">NOW EXECUTING</div>
+              <div class="disp" style="font-size: 17px; color: #fff; letter-spacing: 0.01em; line-height: 1.05;">
+                KETTLEBELL<br>PRESS
+              </div>
+              <div style="display: flex; align-items: center; gap: 5px; margin-top: 6px; flex-wrap: wrap;">
+                <div class="pill pill--dark">24 KG</div>
+                <div class="pill pill--dark">BILATERAL</div>
+                <div class="pill pill--acid">COMPOUND</div>
+              </div>
+            </div>
+
+            <!-- Set log -->
+            <div class="lbl lbl--dark" style="margin-bottom: 6px;">SET LOG</div>
+
+            <div style="flex-shrink: 0; margin-bottom: 8px;">
+              <div class="set-row set-row--head">
+                <span>#</span><span>KG</span><span>REPS</span><span></span>
+              </div>
+              <div class="set-row" style="color: rgba(255,255,255,0.5);">
+                <span>01</span><span>24</span><span>8</span>
+                <span><div class="set-check set-check--done"></div></span>
+              </div>
+              <div class="set-row" style="color: rgba(255,255,255,0.5);">
+                <span>02</span><span>24</span><span>7</span>
+                <span><div class="set-check set-check--done"></div></span>
+              </div>
+              <div class="set-row set-row--active" style="color: #fff;">
+                <span>03</span><span>24</span><span>—</span>
+                <span><div class="set-check" style="border-color: var(--acid);"></div></span>
+              </div>
+              <div class="set-row" style="color: rgba(255,255,255,0.2); border-bottom: none;">
+                <span>04</span><span>—</span><span>—</span>
+                <span><div class="set-check"></div></span>
+              </div>
+            </div>
+
+            <!-- Queue -->
+            <div class="lbl lbl--dark" style="margin-bottom: 5px;">QUEUE</div>
+
+            <div style="flex: 1; overflow: hidden;">
+              <div class="ex-row" style="padding: 3px 0; opacity: 0.35;">
+                <span class="ex-num">01</span>
+                <span class="ex-dot ex-dot--done"></span>
+                <span class="ex-name" style="font-size: 7.5px; color: rgba(255,255,255,0.5); text-decoration: line-through; text-decoration-color: rgba(255,255,255,0.2);">KB SWING</span>
+                <span class="ex-sets">4×16</span>
+              </div>
+              <div class="ex-row" style="padding: 3px 0; opacity: 0.35;">
+                <span class="ex-num">02</span>
+                <span class="ex-dot ex-dot--done"></span>
+                <span class="ex-name" style="font-size: 7.5px; color: rgba(255,255,255,0.5); text-decoration: line-through; text-decoration-color: rgba(255,255,255,0.2);">DEADLIFT</span>
+                <span class="ex-sets">4×5</span>
+              </div>
+              <div class="ex-row" style="padding: 3px 0; background: rgba(198,255,0,0.05); border-left: 2px solid var(--acid); padding-left: 5px; margin-left: -5px;">
+                <span class="ex-num" style="color: var(--acid);">03</span>
+                <span class="ex-dot" style="background: var(--acid);"></span>
+                <span class="ex-name" style="font-size: 7.5px; color: #fff;">KB PRESS</span>
+                <span class="ex-sets" style="color: rgba(255,255,255,0.45);">4×8</span>
+              </div>
+              <div class="ex-row" style="padding: 3px 0; border-bottom: none;">
+                <span class="ex-num" style="color: rgba(255,255,255,0.15);">04</span>
+                <span class="ex-dot ex-dot--idle"></span>
+                <span class="ex-name" style="font-size: 7.5px; color: rgba(255,255,255,0.3);">BENT ROW</span>
+                <span class="ex-sets">4×10</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Log button -->
+          <button class="btn btn--acid btn--full" style="font-size: 9.5px; padding: 13px; letter-spacing: 0.24em; flex-shrink: 0;">
+            + LOG SET &nbsp;·&nbsp; KB PRESS
+          </button>
+
+        </div>
+      </div>
+
+      <div class="phone__caption">
+        <div class="phone__caption-title">ACTIVE WORKOUT</div>
+        <div class="phone__caption-sub">Exercise tracking · Dark mode</div>
+      </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════
+         04 · MATRIX — SCHEDULE
+         ══════════════════════════════════════════ -->
+    <div class="phone">
+      <div class="phone__index">
+        <span class="phone__index-num">04</span>
+        <span class="phone__index-name">MATRIX</span>
+      </div>
+
+      <div class="phone__frame">
+        <div class="screen screen--light">
+
+          <div class="sbar sbar--light">
+            <span class="sbar__time">19:47</span>
+            <span class="sbar__icons">▌▌▌ ● 97%</span>
+          </div>
+
+          <div class="sc" style="gap: 0; padding: 11px 12px;">
+
+            <!-- Header -->
+            <div style="display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 10px; gap: 6px;">
+              <div>
+                <div class="disp" style="font-size: 26px; letter-spacing: -0.01em;">MATRIX</div>
+                <div class="lbl" style="margin-top: 3px;">WEEK 10 · MARCH 2026</div>
+              </div>
+              <div style="display: flex; gap: 4px; flex-shrink: 0;">
+                <button class="pill pill--outline" style="font-size: 6px; cursor: pointer;">← PRV</button>
+                <button class="pill pill--outline" style="font-size: 6px; cursor: pointer;">NXT →</button>
+              </div>
+            </div>
+
+            <div class="r r--heavy" style="margin-bottom: 0;"></div>
+
+            <!-- Cal labels -->
+            <div class="cal-labels">
+              <div class="cal-day-lbl">M</div>
+              <div class="cal-day-lbl">T</div>
+              <div class="cal-day-lbl">W</div>
+              <div class="cal-day-lbl">T</div>
+              <div class="cal-day-lbl">F</div>
+              <div class="cal-day-lbl">S</div>
+              <div class="cal-day-lbl">S</div>
+            </div>
+
+            <!-- Week 1 -->
+            <div class="cal-week">
+              <div class="cal-cell cal-cell--empty">
+                <div class="cal-num">24</div>
+              </div>
+              <div class="cal-cell">
+                <div class="cal-num">25</div>
+                <div class="cal-tag cal-tag--a">STR A</div>
+              </div>
+              <div class="cal-cell">
+                <div class="cal-num">26</div>
+                <div class="cal-tag cal-tag--b">STR B</div>
+              </div>
+              <div class="cal-cell cal-cell--empty">
+                <div class="cal-num">27</div>
+                <div style="font-size: 5.5px; color: var(--rule); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 1px;">REST</div>
+              </div>
+              <div class="cal-cell">
+                <div class="cal-num">28</div>
+                <div class="cal-tag cal-tag--end">END</div>
+              </div>
+              <div class="cal-cell cal-cell--empty">
+                <div class="cal-num">1</div>
+              </div>
+              <div class="cal-cell cal-cell--empty">
+                <div class="cal-num">2</div>
+              </div>
+            </div>
+
+            <!-- Week 2 (current) -->
+            <div class="cal-week">
+              <div class="cal-cell">
+                <div class="cal-num">3</div>
+                <div class="cal-tag cal-tag--a">STR A</div>
+              </div>
+              <div class="cal-cell">
+                <div class="cal-num">4</div>
+                <div class="cal-tag cal-tag--b">STR B</div>
+              </div>
+              <div class="cal-cell cal-cell--today">
+                <div class="cal-num">5</div>
+                <div class="cal-tag cal-tag--today" style="margin-top: 3px;">STR A</div>
+              </div>
+              <div class="cal-cell cal-cell--empty">
+                <div class="cal-num">6</div>
+                <div style="font-size: 5.5px; color: var(--rule); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 1px;">REST</div>
+              </div>
+              <div class="cal-cell">
+                <div class="cal-num">7</div>
+                <div class="cal-tag cal-tag--end">END</div>
+              </div>
+              <div class="cal-cell cal-cell--empty">
+                <div class="cal-num">8</div>
+              </div>
+              <div class="cal-cell cal-cell--empty">
+                <div class="cal-num">9</div>
+              </div>
+            </div>
+
+            <!-- Week 3 -->
+            <div class="cal-week">
+              <div class="cal-cell">
+                <div class="cal-num">10</div>
+                <div class="cal-tag cal-tag--b">STR B</div>
+              </div>
+              <div class="cal-cell">
+                <div class="cal-num">11</div>
+                <div class="cal-tag cal-tag--a">STR A</div>
+              </div>
+              <div class="cal-cell cal-cell--empty">
+                <div class="cal-num">12</div>
+              </div>
+              <div class="cal-cell">
+                <div class="cal-num">13</div>
+                <div class="cal-tag cal-tag--end">END</div>
+              </div>
+              <div class="cal-cell cal-cell--empty">
+                <div class="cal-num">14</div>
+              </div>
+              <div class="cal-cell cal-cell--empty">
+                <div class="cal-num">15</div>
+              </div>
+              <div class="cal-cell cal-cell--empty">
+                <div class="cal-num">16</div>
+              </div>
+            </div>
+
+            <!-- Legend strip — pill badges (ref: cyclists image) -->
+            <div style="margin-top: 9px; margin-bottom: 7px;">
+              <span class="lbl" style="display: block; margin-bottom: 6px;">WORKOUT TYPES</span>
+              <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+                <div class="pill" style="color: var(--void); background: var(--acid); border-color: var(--acid);">
+                  <span style="width: 4px; height: 4px; background: var(--void); border-radius: 50%; display: inline-block; opacity: 0.5;"></span>
+                  STR&nbsp;A
+                </div>
+                <div class="pill pill--outline">
+                  <span style="width: 4px; height: 4px; background: var(--ink); border-radius: 50%; display: inline-block; opacity: 0.4;"></span>
+                  STR&nbsp;B
+                </div>
+                <div class="pill pill--ghost">
+                  <span style="width: 4px; height: 4px; background: var(--steel); border-radius: 50%; display: inline-block;"></span>
+                  ENDURANCE
+                </div>
+                <div class="pill pill--ghost">REST</div>
+              </div>
+            </div>
+
+            <!-- CTA -->
+            <div style="margin-top: auto; padding-top: 8px; border-top: 1px solid var(--rule);">
+              <button class="btn btn--solid btn--full" style="letter-spacing: 0.22em;">
+                + SCHEDULE WORKOUT
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <div class="phone__caption">
+        <div class="phone__caption-title">WEEK MATRIX</div>
+        <div class="phone__caption-sub">Training schedule · Light mode</div>
+      </div>
+    </div>
+
+  </div><!-- /screens-row -->
+
+
+  <!-- ════════════════════════════════════════════════════════════════
+       DESIGN TOKENS
+       ════════════════════════════════════════════════════════════════ -->
+  <div class="tokens-section">
+    <div class="tokens-title">DESIGN<br>TOKENS</div>
+
+    <div class="tokens-grid">
+
+      <!-- ── COLOR SYSTEM ─────────────────────── -->
+      <div>
+        <div class="token-group__tag">COLOR SYSTEM</div>
+        <div class="swatches">
+          <div class="swatch">
+            <div class="swatch__blk" style="background: #E8E8E1;"></div>
+            <div>
+              <span class="swatch__name">PAPER</span>
+              <span class="swatch__hex">#E8E8E1 — Concrete background</span>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch__blk" style="background: #0A0A0A;"></div>
+            <div>
+              <span class="swatch__name">INK</span>
+              <span class="swatch__hex">#0A0A0A — Primary text / borders</span>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch__blk" style="background: #C6FF00; border-color: rgba(0,0,0,0.15);"></div>
+            <div>
+              <span class="swatch__name">ACID</span>
+              <span class="swatch__hex">#C6FF00 — Single accent / CTA</span>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch__blk" style="background: #0D0D0D;"></div>
+            <div>
+              <span class="swatch__name">VOID</span>
+              <span class="swatch__hex">#0D0D0D — Dark screen base</span>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch__blk" style="background: #6A6A62;"></div>
+            <div>
+              <span class="swatch__name">STEEL</span>
+              <span class="swatch__hex">#6A6A62 — Secondary / muted text</span>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch__blk" style="background: #C0C0B8;"></div>
+            <div>
+              <span class="swatch__name">RULE</span>
+              <span class="swatch__hex">#C0C0B8 — Borders / dividers</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TYPOGRAPHY ───────────────────────── -->
+      <div>
+        <div class="token-group__tag">TYPOGRAPHY</div>
+        <div class="type-specimens">
+          <div class="type-spec">
+            <div class="type-spec__sample" style="font-size: 44px; letter-spacing: -0.025em;">PIDYOM</div>
+            <div class="type-spec__meta">Barlow Condensed · 900 · Display</div>
+          </div>
+          <div class="type-spec">
+            <div class="type-spec__sample" style="font-size: 26px; letter-spacing: 0.01em;">STRENGTH A</div>
+            <div class="type-spec__meta">Barlow Condensed · 700 · Section</div>
+          </div>
+          <div class="type-spec">
+            <div style="font-family: var(--f-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; line-height: 1.5;">
+              KETTLEBELL SWING<br>
+              <span style="font-weight: 400; color: var(--steel); font-size: 9px;">24 KG · 4 SETS · 16 REPS</span>
+            </div>
+            <div class="type-spec__meta" style="margin-top: 6px;">Space Mono · 700 / 400 · Data labels</div>
+          </div>
+          <div class="type-spec" style="border-bottom: none;">
+            <div style="font-family: var(--f-mono); font-size: 8px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--steel); line-height: 1.8;">
+              IDENT · SEC-00 · DOC-0042<br>
+              COORD 48.85°N 2.35°E<br>
+              TIMESTAMP 2026.03.05
+            </div>
+            <div class="type-spec__meta">Space Mono · 400 · Annotations</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── COMPONENTS ───────────────────────── -->
+      <div>
+        <div class="token-group__tag">COMPONENTS</div>
+        <div class="comp-group">
+
+          <!-- Buttons -->
+          <div>
+            <span class="comp-label">BUTTONS</span>
+            <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
+              <button class="btn btn--solid" style="font-size: 7.5px; padding: 8px 12px;">PRIMARY</button>
+              <button class="btn btn--acid" style="font-size: 7.5px; padding: 8px 12px;">ACTION</button>
+              <button class="btn btn--outline" style="font-size: 7.5px; padding: 8px 12px;">GHOST</button>
+            </div>
+          </div>
+
+          <!-- Pills -->
+          <div>
+            <span class="comp-label">TAGS / PILLS</span>
+            <div style="display: flex; gap: 5px; flex-wrap: wrap; align-items: center;">
+              <span class="pill pill--acid">ACTIVE</span>
+              <span class="pill pill--outline">REST DAY</span>
+              <span class="pill pill--ghost">OPTIONAL</span>
+              <span class="pill pill--dark" style="background: rgba(0,0,0,0.7);">COMPOUND</span>
+            </div>
+          </div>
+
+          <!-- Status dots -->
+          <div>
+            <span class="comp-label">STATUS INDICATORS</span>
+            <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <div style="width: 7px; height: 7px; border-radius: 50%; background: var(--acid);"></div>
+                <span style="font-size: 7.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--steel);">DONE</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <div style="width: 7px; height: 7px; border-radius: 50%; border: 1.5px solid var(--ink);"></div>
+                <span style="font-size: 7.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--steel);">ACTIVE</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <div style="width: 7px; height: 7px; border-radius: 50%; background: var(--rule);"></div>
+                <span style="font-size: 7.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--steel);">IDLE</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Progress bar in context -->
+          <div>
+            <span class="comp-label">PROGRESS / WORKOUT</span>
+            <div style="background: var(--void); padding: 11px 13px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                <span style="font-size: 7px; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.3);">COMPLETION</span>
+                <span style="font-size: 7px; letter-spacing: 0.1em; color: var(--acid); font-weight: 700;">65%</span>
+              </div>
+              <div class="pbar" style="height: 3px; margin-bottom: 8px;">
+                <div class="pbar__fill" style="width: 65%;"></div>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 6.5px; color: rgba(255,255,255,0.2); letter-spacing: 0.1em; text-transform: uppercase;">5 OF 8 EXERCISES</span>
+                <span style="font-size: 6.5px; color: rgba(255,255,255,0.2); letter-spacing: 0.1em; text-transform: uppercase;">18 MIN ELAPSED</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hard shadow / frame style note -->
+          <div>
+            <span class="comp-label">CARDS / FRAMES</span>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <div style="width: 40px; height: 30px; border: 1.5px solid var(--ink); box-shadow: 3px 3px 0 0 var(--ink);"></div>
+              <div style="width: 40px; height: 30px; background: var(--acid); border: 1.5px solid var(--ink);"></div>
+              <div style="width: 40px; height: 30px; background: var(--void); border-left: 2px solid var(--acid);"></div>
+              <div style="font-size: 7px; letter-spacing: 0.1em; color: var(--steel); text-transform: uppercase; align-self: center; line-height: 1.6;">
+                Hard shadow<br>Acid accent<br>Left border
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div><!-- /tokens-grid -->
+  </div><!-- /tokens-section -->
+
+
+  <!-- ════════════════════════════════════════════════════════════════
+       DOCUMENT FOOTER
+       ════════════════════════════════════════════════════════════════ -->
+  <div class="doc-footer">
+    <div class="doc-footer__left">PIDYOM · CONCEPT-02 · BRUTUS</div>
+    <div class="doc-footer__right">
+      MOVEMENT TRACKING FRAMEWORK · KETTLEBELL SYSTEM<br>
+      DESIGN SPECIFICATION · MARCH 2026 · DOC-0042/B
+    </div>
+  </div>
+
+</div><!-- /wrap -->
+
+</body>
+</html>

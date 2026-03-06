@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Logo from '../components/ui/Logo';
 import PageTransition from '../components/ui/PageTransition';
 import { useStore } from '../store/useStore';
 import { WORKOUT_TYPE_INFO } from '../data/workouts';
@@ -9,20 +8,25 @@ import { format } from 'date-fns';
 const INTRO_SHOWN_KEY = 'pidyom-intro-shown';
 
 export default function HomePage() {
-  const { workouts, schedule, setCurrentTab, userName } = useStore();
+  const { workouts, schedule, setCurrentTab, userName, theme } = useStore();
+  const isLight = theme === 'light';
+  const ink = isLight ? '#0A0A0A' : '#E8E8E1';
+  const faint = isLight ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.07)';
+  const muted = isLight ? 'rgba(0,0,0,0.15)' : 'rgba(255,255,255,0.15)';
+  const textMid = isLight ? 'rgba(0,0,0,0.7)' : 'rgba(232,232,225,0.7)';
   const [showIntro, setShowIntro] = useState(() => !sessionStorage.getItem(INTRO_SHOWN_KEY));
   const [introPhase, setIntroPhase] = useState(0);
 
   useEffect(() => {
     if (!showIntro) return;
     const timers = [
-      setTimeout(() => setIntroPhase(1), 600),
-      setTimeout(() => setIntroPhase(2), 1400),
-      setTimeout(() => setIntroPhase(3), 2000),
+      setTimeout(() => setIntroPhase(1), 400),
+      setTimeout(() => setIntroPhase(2), 900),
+      setTimeout(() => setIntroPhase(3), 1300),
       setTimeout(() => {
         sessionStorage.setItem(INTRO_SHOWN_KEY, '1');
         setShowIntro(false);
-      }, 2500),
+      }, 1900),
     ];
     return () => timers.forEach(clearTimeout);
   }, [showIntro]);
@@ -41,29 +45,37 @@ export default function HomePage() {
       {showIntro ? (
         <motion.div
           key="intro"
-          className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black"
+          className="fixed inset-0 z-50 flex flex-col items-center justify-center"
+          style={{ background: '#0D0D0D' }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.4 }}
+          transition={{ duration: 0.3 }}
         >
-          <Logo size={210} animate className="w-[120px] h-[120px] md:w-[180px] md:h-[180px]" />
-          <motion.div className="mt-6 md:mt-10 flex flex-col items-center gap-3">
+          <motion.div className="flex flex-col items-center gap-3">
             <AnimatePresence>
               {introPhase >= 1 && (
-                <motion.h1
-                  initial={{ opacity: 0, y: 8 }}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="text-2xl md:text-4xl tracking-[0.35em] font-bold"
+                  style={{
+                    fontFamily: "'Barlow Condensed', sans-serif",
+                    fontWeight: 900,
+                    fontSize: 72,
+                    letterSpacing: '-0.02em',
+                    lineHeight: 1,
+                    color: '#E8E8E1',
+                    textTransform: 'uppercase',
+                  }}
                 >
                   PIDYOM
-                </motion.h1>
+                </motion.div>
               )}
             </AnimatePresence>
             <AnimatePresence>
               {introPhase >= 2 && (
                 <motion.p
                   initial={{ opacity: 0 }}
-                  animate={{ opacity: 0.35 }}
-                  className="text-[10px] md:text-[13px] tracking-[0.4em] uppercase"
+                  animate={{ opacity: 1 }}
+                  style={{ fontSize: 9, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#6A6A62' }}
                 >
                   Movement Framework
                 </motion.p>
@@ -74,8 +86,7 @@ export default function HomePage() {
                 <motion.div
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
-                  className="w-16 h-px mt-2"
-                  style={{ background: 'rgba(255,149,0,0.4)' }}
+                  style={{ height: 2, background: '#C6FF00', width: 40, marginTop: 8, transformOrigin: 'left' }}
                 />
               )}
             </AnimatePresence>
@@ -84,42 +95,46 @@ export default function HomePage() {
       ) : (
         <PageTransition key="home" className="page">
           {/* Header */}
-          <div className="flex items-center justify-between mb-8 md:mb-10">
-            <div className="min-w-0 flex-1">
-              <motion.h1
-                initial={{ opacity: 0, x: -15 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.1 }}
-                className="text-lg md:text-2xl tracking-[0.3em] font-bold"
+          <div className="flex items-start justify-between mb-8 md:mb-10">
+            <motion.div
+              initial={{ opacity: 0, x: -12 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.1 }}
+            >
+              <div
+                style={{
+                  fontFamily: "'Barlow Condensed', sans-serif",
+                  fontWeight: 900,
+                  fontSize: 36,
+                  letterSpacing: '-0.01em',
+                  lineHeight: 1,
+                  color: ink,
+                  textTransform: 'uppercase',
+                }}
               >
                 PIDYOM
-              </motion.h1>
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.25 }}
-                className="flex items-center gap-3 mt-2"
-              >
-                <span className="text-[10px] md:text-[12px] tracking-[0.15em] text-white/35">
+              </div>
+              <div className="flex items-center gap-2 mt-2">
+                <span style={{ fontSize: 9, letterSpacing: '0.12em', color: '#6A6A62' }}>
                   {format(new Date(), 'dd.MM.yyyy')}
                 </span>
                 {userName && (
                   <>
-                    <span className="text-white/15">·</span>
-                    <span className="text-[10px] md:text-[12px] tracking-[0.15em] text-white/35 uppercase truncate">
+                    <span style={{ color: faint }}>·</span>
+                    <span style={{ fontSize: 9, letterSpacing: '0.12em', color: '#6A6A62', textTransform: 'uppercase' }}>
                       {userName}
                     </span>
                   </>
                 )}
-              </motion.div>
-            </div>
+              </div>
+            </motion.div>
+
             <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.15 }}
-              className="shrink-0 ml-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
             >
-              <Logo size={40} animate={false} className="w-[28px] h-[28px] md:w-[40px] md:h-[40px]" />
+              <span className="pill pill--acid">ACTIVE</span>
             </motion.div>
           </div>
 
@@ -127,79 +142,89 @@ export default function HomePage() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="coord-stamp mb-8 md:mb-10"
+            transition={{ delay: 0.15 }}
+            className="coord-stamp mb-8"
           >
-            SEC-1 // MOVEMENT FRAMEWORK
+            CORE // MOVEMENT FRAMEWORK
           </motion.div>
 
-          {/* Hero Stats */}
+          {/* Stats row */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="grid grid-cols-3 gap-0 mb-10 md:mb-14"
+            transition={{ delay: 0.25 }}
+            className="grid grid-cols-3 mb-10 md:mb-12"
+            style={{ borderTop: `1px solid ${faint}`, borderBottom: `1px solid ${faint}` }}
           >
             {[
               { label: 'Workouts', value: completedWorkouts },
               { label: 'Sets', value: totalSets },
-              { label: 'KG', value: formatVolume(totalVolume) },
+              { label: 'KG Total', value: formatVolume(totalVolume) },
             ].map((stat, i) => (
               <div
                 key={stat.label}
-                className={`data-readout py-5 px-4 ${i < 2 ? 'border-r border-white/[0.07]' : ''}`}
+                className="data-readout py-5 px-3"
+                style={{ borderRight: i < 2 ? `1px solid ${faint}` : 'none' }}
               >
-                <span className="data-label">{stat.label}</span>
+                <span className="data-label mb-1">{stat.label}</span>
                 <span className="hero-stat">{stat.value}</span>
               </div>
             ))}
           </motion.div>
 
-          <div className="divider-full" />
-
           {/* Today's Workout */}
           <motion.div
-            initial={{ opacity: 0, y: 15 }}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="bracket-card bracket-card-amber mb-10 md:mb-14"
+            transition={{ delay: 0.35 }}
+            className="mb-10 md:mb-12"
           >
-            <div className="flex items-center justify-between mb-5">
-              <span className="section-label mb-0">Today's Workout</span>
+            <div className="flex items-center justify-between mb-4">
+              <span className="section-tag">Today's Mission</span>
               {todaySchedule && (
-                <span className="tag tag-amber">
-                  {WORKOUT_TYPE_INFO[todaySchedule.workoutType].label}
-                </span>
+                <span className="pill pill--ghost">{WORKOUT_TYPE_INFO[todaySchedule.workoutType].label}</span>
               )}
             </div>
+
             {todaySchedule ? (
-              <div>
-                <p className="text-[12px] md:text-[14px] tracking-[0.06em] text-white/75 mb-3">
+              <div className="wk-card">
+                <div
+                  style={{
+                    fontFamily: "'Barlow Condensed', sans-serif",
+                    fontWeight: 700,
+                    fontSize: 20,
+                    letterSpacing: '0.02em',
+                    color: ink,
+                    textTransform: 'uppercase',
+                    marginBottom: 6,
+                  }}
+                >
                   {WORKOUT_TYPE_INFO[todaySchedule.workoutType].subtitle}
-                </p>
-                <p className="text-[10px] md:text-[12px] text-white/30 leading-relaxed mb-6">
+                </div>
+                <p style={{ fontSize: 11, color: '#6A6A62', lineHeight: 1.6, marginBottom: 16 }}>
                   {WORKOUT_TYPE_INFO[todaySchedule.workoutType].description}
                 </p>
                 <button
                   onClick={() => setCurrentTab('workouts')}
-                  className="btn btn-primary btn-full"
+                  className="btn btn-acid btn-full"
+                  style={{ fontSize: 11, letterSpacing: '0.12em' }}
                 >
-                  Start Workout
+                  EXECUTE WORKOUT →
                 </button>
               </div>
             ) : (
-              <div>
-                <p className="text-[10px] md:text-[12px] text-white/30 mb-5">
+              <div className="wk-card">
+                <p style={{ fontSize: 11, color: '#6A6A62', marginBottom: 16, lineHeight: 1.6 }}>
                   {workouts.length === 0
-                    ? 'No workout planned. Start your first workout or schedule your week.'
+                    ? 'No workout planned. Start your first session.'
                     : 'Rest day. Recover and prepare.'}
                 </p>
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <button onClick={() => setCurrentTab('workouts')} className="btn btn-primary flex-1">
+                <div className="flex gap-3">
+                  <button onClick={() => setCurrentTab('workouts')} className="btn btn-acid flex-1" style={{ fontSize: 10 }}>
                     New Workout
                   </button>
-                  <button onClick={() => setCurrentTab('schedule')} className="btn btn-ghost flex-1">
-                    View Schedule
+                  <button onClick={() => setCurrentTab('schedule')} className="btn btn-outline flex-1" style={{ fontSize: 10 }}>
+                    Schedule
                   </button>
                 </div>
               </div>
@@ -209,44 +234,45 @@ export default function HomePage() {
           {/* Recent Workouts */}
           {recentWorkouts.length > 0 && (
             <motion.div
-              initial={{ opacity: 0, y: 15 }}
+              initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
+              transition={{ delay: 0.45 }}
             >
-              <div className="flex items-center justify-between mb-5">
-                <span className="section-label mb-0">Recent Workouts</span>
+              <div className="flex items-center justify-between mb-4">
+                <span className="section-tag">Recent Log</span>
                 <button
                   onClick={() => setCurrentTab('workouts')}
-                  className="text-[9px] md:text-[10px] tracking-[0.15em] text-white/25 hover:text-white/55 transition-colors uppercase"
+                  style={{ fontSize: 8, letterSpacing: '0.15em', color: '#6A6A62', textTransform: 'uppercase', background: 'none', border: 'none', cursor: 'pointer' }}
                 >
-                  View All
+                  All →
                 </button>
               </div>
-              <div className="flex flex-col gap-0">
+              <div>
                 {recentWorkouts.map((w, i) => (
                   <motion.button
                     key={w.id}
-                    initial={{ opacity: 0, x: -8 }}
+                    initial={{ opacity: 0, x: -6 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.55 + i * 0.04 }}
+                    transition={{ delay: 0.5 + i * 0.04 }}
                     onClick={() => {
                       useStore.getState().setActiveWorkout(w.id);
                       setCurrentTab('workouts');
                     }}
-                    className="flex items-center gap-3 py-3.5 px-2 text-left hover:bg-white/[0.025] transition-colors group border-b border-white/[0.04] last:border-0"
+                    className="ex-row w-full text-left"
+                    style={{ cursor: 'pointer' }}
                   >
-                    <span className="text-[10px] text-white/20 w-5 text-right tabular-nums">
+                    <span style={{ fontSize: 9, color: '#6A6A62', width: 20, textAlign: 'right', flexShrink: 0, fontVariantNumeric: 'tabular-nums' }}>
                       {String(i + 1).padStart(2, '0')}
                     </span>
                     <span className={`status-dot ${w.completed ? 'status-dot--done' : 'status-dot--idle'}`} />
-                    <span className="text-[12px] md:text-[13px] tracking-[0.04em] text-white/65 group-hover:text-white/90 transition-colors truncate flex-1">
+                    <span style={{ fontSize: 12, letterSpacing: '0.04em', color: textMid, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       {w.name}
                     </span>
                     <span className="dot-leader hidden md:block" />
-                    <span className="text-[10px] text-white/30 tabular-nums shrink-0">
+                    <span style={{ fontSize: 9, color: '#6A6A62', flexShrink: 0, fontVariantNumeric: 'tabular-nums' }}>
                       {format(new Date(w.date), 'MMM d')}
                     </span>
-                    <span className="text-[9px] text-white/20 shrink-0">
+                    <span style={{ fontSize: 8, color: '#6A6A62', flexShrink: 0 }}>
                       {w.exercises.length}ex
                     </span>
                   </motion.button>
@@ -258,18 +284,19 @@ export default function HomePage() {
           {/* Empty state */}
           {workouts.length === 0 && (
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="bracket-card text-center py-12 md:py-16"
+              transition={{ delay: 0.45 }}
+              className="bracket-card text-center py-12"
+              style={{ borderTop: `1px solid ${faint}` }}
             >
-              <p className="text-[11px] md:text-[13px] text-white/30 mb-3">No workouts logged yet.</p>
-              <p className="text-[9px] md:text-[10px] text-white/18 mb-8">Start building your framework.</p>
+              <p style={{ fontSize: 11, color: '#6A6A62', marginBottom: 4 }}>No workouts logged yet.</p>
+              <p style={{ fontSize: 9, color: muted, marginBottom: 20 }}>Start building your framework.</p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center max-w-xs mx-auto">
-                <button onClick={() => setCurrentTab('workouts')} className="btn btn-primary flex-1">
+                <button onClick={() => setCurrentTab('workouts')} className="btn btn-acid flex-1" style={{ fontSize: 10 }}>
                   First Workout
                 </button>
-                <button onClick={() => setCurrentTab('schedule')} className="btn btn-ghost flex-1">
+                <button onClick={() => setCurrentTab('schedule')} className="btn btn-outline flex-1" style={{ fontSize: 10 }}>
                   Plan Schedule
                 </button>
               </div>

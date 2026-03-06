@@ -24,7 +24,7 @@ const EQUIPMENT_INFO: Record<Equipment, { label: string; icon: typeof IconKettle
 };
 
 export default function ProfilePage() {
-  const { userEquipment, toggleEquipment, unlockedExercises, userName, userEmail, setUserName } = useStore();
+  const { userEquipment, toggleEquipment, unlockedExercises, userName, userEmail, setUserName, theme, setTheme } = useStore();
   const addToast = useToastStore((s) => s.addToast);
   const [showProgressions, setShowProgressions] = useState(false);
   const [selectedExercise, setSelectedExercise] = useState<string | null>(null);
@@ -164,7 +164,7 @@ export default function ProfilePage() {
                 {/* Active indicator bar */}
                 {isSelected && (
                   <motion.div
-                    className="absolute left-0 top-4 bottom-4 w-[2px] bg-[#ff9500]/60"
+                    className="absolute left-0 top-4 bottom-4 w-[2px] bg-[#C6FF00]/60"
                     initial={{ scaleY: 0 }}
                     animate={{ scaleY: 1 }}
                     transition={{ duration: 0.25 }}
@@ -286,12 +286,35 @@ export default function ProfilePage() {
 
       <div className="divider-full" />
 
+      {/* Display Mode */}
+      <div className="mb-8 md:mb-12">
+        <div className="section-label">Display Mode</div>
+        <div className="mode-toggle">
+          <button
+            type="button"
+            className={`mode-toggle__btn${theme === 'dark' ? ' mode-toggle__btn--active' : ''}`}
+            onClick={() => { setTheme('dark'); addToast('Dark mode'); }}
+          >
+            Dark
+          </button>
+          <button
+            type="button"
+            className={`mode-toggle__btn${theme === 'light' ? ' mode-toggle__btn--active' : ''}`}
+            onClick={() => { setTheme('light'); addToast('Light mode'); }}
+          >
+            Light
+          </button>
+        </div>
+      </div>
+
+      <div className="divider-full" />
+
       {/* Sign Out */}
       <div className="py-6 md:py-8">
         <button
           onClick={handleSignOut}
           className="btn btn-full"
-          style={{ borderColor: 'rgba(255,149,0,0.4)', color: '#ff9500' }}
+          style={{ borderColor: 'rgba(198,255,0,0.4)', color: '#C6FF00' }}
         >
           <IconSignOut size={16} />
           Sign Out

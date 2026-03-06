@@ -9,7 +9,11 @@ import { IconChevronRight, IconTree } from '../components/icons/Icons';
 
 type TimePeriod = '7d' | '30d' | 'all';
 
-function RadarChart({ data, size = 280 }: { data: RadarDataPoint[]; size?: number }) {
+function RadarChart({ data, size = 280, isLight = false }: { data: RadarDataPoint[]; size?: number; isLight?: boolean }) {
+  const gridColor = isLight ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.06)';
+  const activeLineColor = isLight ? 'rgba(0,0,0,0.35)' : 'rgba(198,255,0,0.4)';
+  const labelColor = isLight ? 'rgba(0,0,0,0.45)' : 'rgba(255,255,255,0.45)';
+  const activeLabelColor = isLight ? 'rgba(0,0,0,0.85)' : 'rgba(198,255,0,0.9)';
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [touchedIndex, setTouchedIndex] = useState<number | null>(null);
   const activeIndex = touchedIndex ?? hoveredIndex;
@@ -53,7 +57,7 @@ function RadarChart({ data, size = 280 }: { data: RadarDataPoint[]; size?: numbe
               const angle = angleSlice * j - Math.PI / 2;
               return `${center + r * Math.cos(angle)},${center + r * Math.sin(angle)}`;
             }).join(' ')}
-            fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="0.5"
+            fill="none" stroke={gridColor} strokeWidth="0.5"
           />
         ))}
         {data.map((_, i) => {
@@ -62,13 +66,13 @@ function RadarChart({ data, size = 280 }: { data: RadarDataPoint[]; size?: numbe
           return (
             <line key={i} x1={center} y1={center}
               x2={center + radius * Math.cos(angle)} y2={center + radius * Math.sin(angle)}
-              stroke={isActive ? 'rgba(255,149,0,0.4)' : 'rgba(255,255,255,0.06)'} strokeWidth={isActive ? 1.5 : 0.5}
+              stroke={isActive ? activeLineColor : gridColor} strokeWidth={isActive ? 1.5 : 0.5}
             />
           );
         })}
         <motion.path d={dataPath}
-          fill={activeIndex !== null ? 'rgba(255,149,0,0.12)' : 'rgba(255,149,0,0.06)'}
-          stroke="rgba(255,149,0,0.6)" strokeWidth="1.5"
+          fill={activeIndex !== null ? 'rgba(198,255,0,0.12)' : 'rgba(198,255,0,0.06)'}
+          stroke="rgba(198,255,0,0.6)" strokeWidth="1.5"
           initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.3, type: 'spring' }}
           style={{ transformOrigin: `${center}px ${center}px` }}
@@ -78,7 +82,7 @@ function RadarChart({ data, size = 280 }: { data: RadarDataPoint[]; size?: numbe
           const isActive = activeIndex === i;
           return (
             <motion.circle key={i} cx={pt.x} cy={pt.y} r={isActive ? 5 : 3}
-              fill="#ff9500" initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }}
+              fill="#C6FF00" initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.5 + i * 0.1 }}
             />
           );
@@ -91,7 +95,7 @@ function RadarChart({ data, size = 280 }: { data: RadarDataPoint[]; size?: numbe
           const isActive = activeIndex === i;
           return (
             <text key={i} x={x} y={y} textAnchor="middle" dominantBaseline="middle"
-              fill={isActive ? 'rgba(255,149,0,0.9)' : 'rgba(255,255,255,0.45)'}
+              fill={isActive ? activeLabelColor : labelColor}
               fontSize="8" fontFamily="'Space Mono', monospace" letterSpacing="0.08em"
               fontWeight={isActive ? 'bold' : 'normal'}
             >
@@ -105,7 +109,7 @@ function RadarChart({ data, size = 280 }: { data: RadarDataPoint[]; size?: numbe
           className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-2 px-3 py-1.5 bg-black border border-white/15 text-[9px] tracking-wider whitespace-nowrap"
         >
           <span className="text-white/60 uppercase">{data[activeIndex].label}</span>
-          <span className="text-[#ff9500] font-bold ml-2">{data[activeIndex].value} sets</span>
+          <span className="text-[#C6FF00] font-bold ml-2">{data[activeIndex].value} sets</span>
         </motion.div>
       )}
     </div>
@@ -131,7 +135,7 @@ function VolumeChart({ data, onBarHover, hoveredIndex }: { data: { label: string
             >
               <div className="w-full h-16 md:h-20 flex flex-col justify-end flex-shrink-0">
                 <motion.div
-                  className={`w-full max-w-[12px] md:max-w-none mx-auto transition-colors ${isHovered ? 'bg-[#ff9500]/50' : 'bg-white/20'}`}
+                  className={`w-full max-w-[12px] md:max-w-none mx-auto transition-colors ${isHovered ? 'bg-[#C6FF00]/50' : 'bg-white/20'}`}
                   style={{ minHeight: 1 }}
                   initial={{ height: 0 }} animate={{ height: `${heightPct}%` }}
                   transition={{ duration: 0.5, delay: i * 0.02 }}
@@ -154,7 +158,8 @@ function VolumeChart({ data, onBarHover, hoveredIndex }: { data: { label: string
 }
 
 export default function ProgressPage() {
-  const { workouts, setCurrentTab, setActiveWorkout, unlockedExercises, userEquipment } = useStore();
+  const { workouts, setCurrentTab, setActiveWorkout, unlockedExercises, userEquipment, theme } = useStore();
+  const isLight = theme === 'light';
   const [timePeriod, setTimePeriod] = useState<TimePeriod>('30d');
   const [hoveredBarIndex, setHoveredBarIndex] = useState<number | null>(null);
 
@@ -253,7 +258,7 @@ export default function ProgressPage() {
             <button key={period} onClick={() => setTimePeriod(period)}
               className={`px-3 py-2 text-[9px] tracking-[0.12em] uppercase transition-all border ${
                 timePeriod === period
-                  ? 'border-[#ff9500]/40 bg-[#ff9500]/[0.06] text-[#ff9500]'
+                  ? 'border-[#C6FF00]/40 bg-[#C6FF00]/[0.06] text-[#C6FF00]'
                   : 'border-white/[0.06] text-white/35 hover:text-white/60'
               }`}
             >
@@ -306,7 +311,7 @@ export default function ProgressPage() {
                 <span className="dot-leader hidden md:block" />
                 <div className="flex items-center gap-4 shrink-0">
                   <div className="text-right">
-                    <span className="text-[11px] font-bold text-[#ff9500] tabular-nums">{pr.maxWeight}kg</span>
+                    <span className="text-[11px] font-bold text-[#C6FF00] tabular-nums">{pr.maxWeight}kg</span>
                     <span className="text-[8px] text-white/25 ml-1">max</span>
                   </div>
                   <div className="text-right">
@@ -346,7 +351,7 @@ export default function ProgressPage() {
                 <div className="flex items-center gap-3">
                   <div className="flex-1 h-[3px] bg-white/[0.06] relative overflow-hidden">
                     <motion.div
-                      className="absolute left-0 top-0 h-full bg-[#ff9500]/50"
+                      className="absolute left-0 top-0 h-full bg-[#C6FF00]/50"
                       initial={{ width: 0 }}
                       animate={{ width: `${tree.pct}%` }}
                       transition={{ duration: 0.6, delay: 0.3 + i * 0.05 }}
@@ -369,7 +374,7 @@ export default function ProgressPage() {
         <div className="flex flex-col items-center">
           <span className="section-label mb-0 text-center">Movement Balance</span>
           <p className="text-[9px] text-white/30 mb-5 text-center">Tap segments for detail</p>
-          <RadarChart data={radarData} size={260} />
+          <RadarChart data={radarData} size={260} isLight={isLight} />
         </div>
       </motion.div>
 
@@ -386,7 +391,7 @@ export default function ProgressPage() {
               <div key={p} className="flex items-center gap-3 py-2.5 group">
                 <span className="text-[10px] text-white/40 w-12 uppercase">{p}</span>
                 <div className="flex-1 h-[2px] bg-white/[0.04] relative overflow-hidden">
-                  <motion.div className="absolute left-0 top-0 h-full bg-[#ff9500]/30 group-hover:bg-[#ff9500]/50 transition-colors"
+                  <motion.div className="absolute left-0 top-0 h-full bg-[#C6FF00]/30 group-hover:bg-[#C6FF00]/50 transition-colors"
                     initial={{ width: 0 }} animate={{ width: `${maxCount > 0 ? (count / maxCount) * 100 : 0}%` }}
                     transition={{ duration: 0.6, delay: 0.3 + i * 0.05 }}
                   />

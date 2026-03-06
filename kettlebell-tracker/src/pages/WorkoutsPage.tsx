@@ -242,7 +242,7 @@ function WorkoutDetail({ workout, onBack }: { workout: Workout; onBack: () => vo
         <div className="flex-1">
           <div className="h-[2px] bg-white/[0.06] relative">
             <motion.div
-              className="absolute top-0 left-0 h-full bg-[#ff9500]/50"
+              className="absolute top-0 left-0 h-full bg-[#C6FF00]/50"
               initial={{ width: 0 }}
               animate={{ width: `${progressPct}%` }}
               transition={{ duration: 0.5 }}
@@ -258,7 +258,7 @@ function WorkoutDetail({ workout, onBack }: { workout: Workout; onBack: () => vo
       {/* Warmup */}
       {workout.warmup && (
         <div className="bracket-card mb-8 md:mb-10 relative">
-          <div className="absolute left-0 top-4 bottom-4 w-[2px] bg-[#ff9500]/40" />
+          <div className="absolute left-0 top-4 bottom-4 w-[2px] bg-[#C6FF00]/40" />
           <div className="pl-4">
             <span className="data-label">Warmup</span>
             <p className="text-[10px] md:text-[12px] text-white/50 leading-relaxed mt-2">{workout.warmup}</p>
@@ -311,7 +311,7 @@ function WorkoutDetail({ workout, onBack }: { workout: Workout; onBack: () => vo
                   <div
                     key={set.id}
                     className={`grid grid-cols-[24px_1fr_1fr_1fr] gap-3 items-center py-2.5 transition-colors ${
-                      set.completed ? 'bg-[#ff9500]/[0.03]' : ''
+                      set.completed ? 'bg-[#C6FF00]/[0.03]' : ''
                     } ${setIdx > 0 ? 'border-t border-white/[0.04]' : ''}`}
                   >
                     <span className="text-[10px] text-white/30 tabular-nums">{setIdx + 1}</span>
@@ -420,7 +420,7 @@ function WorkoutDetail({ workout, onBack }: { workout: Workout; onBack: () => vo
                           <div className="text-[9px] text-white/30 mt-1.5 flex gap-2 flex-wrap">
                             <span>{ex.movementPattern}</span>
                             <span>{ex.difficulty}</span>
-                            <span className="text-[#ff9500]/60">{ex.focusAreas.join(', ')}</span>
+                            <span className="text-[#C6FF00]/60">{ex.focusAreas.join(', ')}</span>
                           </div>
                         </div>
                         <IconPlus size={14} className="text-white/25 shrink-0 ml-2" />
@@ -602,7 +602,7 @@ export default function WorkoutsPage() {
                 <span className="text-[9px] text-white/35 tabular-nums">
                   {format(new Date(entry.date + 'T12:00:00'), 'EEE, MMM d')}
                 </span>
-                <span className="text-[9px] text-[#ff9500]/70 tracking-[0.1em] uppercase shrink-0">Start</span>
+                <span className="text-[9px] text-[#C6FF00]/70 tracking-[0.1em] uppercase shrink-0">Start</span>
               </motion.button>
             ))}
           </div>
@@ -679,7 +679,7 @@ export default function WorkoutsPage() {
                       onClick={() => { setSelectedGoal(goal); setSelectedTemplate(''); }}
                       className={`tag transition-colors cursor-pointer ${
                         selectedGoal === goal
-                          ? 'border-[#ff9500]/50 text-[#ff9500] bg-[#ff9500]/[0.08]'
+                          ? 'border-[#C6FF00]/50 text-[#C6FF00] bg-[#C6FF00]/[0.08]'
                           : 'hover:border-white/25'
                       }`}
                     >

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { useStore } from './store/useStore';
 import { authClient } from './lib/auth';
@@ -31,7 +31,13 @@ export default function App() {
   const syncAuth = useStore(s => s.syncAuth);
   const hydrateStore = useStore(s => s.hydrateStore);
   const isHydrated = useStore(s => s.isHydrated);
+  const theme = useStore(s => s.theme);
   const hydrationAttempted = useRef(false);
+
+  // Apply theme to <html> before paint to prevent flash
+  useLayoutEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
 
   // Sync Neon Auth session → Zustand store + trigger hydration
   useEffect(() => {
@@ -69,26 +75,22 @@ export default function App() {
   // Loading state
   if (session.isPending) {
     return (
-      <div className="relative min-h-screen bg-black text-white flex items-center justify-center">
+      <div className="relative min-h-screen flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-5 h-5 border border-[#ff9500]/50 border-t-transparent rounded-full animate-spin" />
-          <span className="text-[10px] tracking-[0.2em] text-white/30 uppercase">Initializing</span>
+          <div className="w-4 h-4 border border-[#C6FF00]/50 border-t-transparent rounded-full animate-spin" />
+          <span className="text-[9px] tracking-[0.2em] text-white/25 uppercase" style={{ fontFamily: 'Space Mono, monospace' }}>Initializing</span>
         </div>
       </div>
     );
   }
 
   if (!session.data?.user) {
-    return (
-      <div className="relative min-h-screen bg-black text-white">
-        <AuthPage />
-      </div>
-    );
+    return <AuthPage />;
   }
 
   return (
     <ErrorBoundary>
-      <div className="relative min-h-screen bg-black text-white">
+      <div className="relative min-h-screen">
         <DesktopSidebar />
         <div className="desktop-main">
           <AnimatePresence mode="wait">

@@ -77,6 +77,10 @@ interface AppState {
   currentTab: string;
   setCurrentTab: (tab: string) => void;
 
+  // Theme
+  theme: 'dark' | 'light';
+  setTheme: (theme: 'dark' | 'light') => void;
+
   // Glitch
   glitchActive: boolean;
   triggerGlitch: () => void;
@@ -313,6 +317,10 @@ export const useStore = create<AppState>()(
         set({ currentTab: tab });
       },
 
+      // Theme
+      theme: 'dark',
+      setTheme: (theme) => set({ theme }),
+
       // Glitch (deprecated — no-op)
       glitchActive: false,
       triggerGlitch: () => {},
@@ -328,6 +336,7 @@ export const useStore = create<AppState>()(
         unlockedExercises: state.unlockedExercises,
         workouts: state.workouts,
         schedule: state.schedule,
+        theme: state.theme,
       }),
     }
   )
