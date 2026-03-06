@@ -1,0 +1,5 @@
+{
+  "buildCommand": "cd kettlebell-tracker && npm install && npm run build",
+  "outputDirectory": "kettlebell-tracker/dist",
+  "installCommand": "echo 'skip root install'"
+}
