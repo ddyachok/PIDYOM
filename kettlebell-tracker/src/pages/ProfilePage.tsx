@@ -9,18 +9,18 @@ import { EXERCISES, getProgressionRoots } from '../data/exercises';
 import {
   IconKettlebell, IconRings, IconRope, IconBodyweight,
   IconPullupBar, IconParallettes, IconResistanceBand,
-  IconTree, IconChevronRight, IconSignOut,
+  IconChevronRight, IconSignOut,
 } from '../components/icons/Icons';
 import ProgressionTree from '../components/workout/ProgressionTree';
 
 const EQUIPMENT_INFO: Record<Equipment, { label: string; icon: typeof IconKettlebell; description: string }> = {
-  kettlebell: { label: 'Kettlebell', icon: IconKettlebell, description: 'Cast iron. The foundation.' },
-  rings: { label: 'Gymnastic Rings', icon: IconRings, description: 'Upper body mastery.' },
-  rope: { label: 'Flow Rope', icon: IconRope, description: 'Rhythm and coordination.' },
-  bodyweight: { label: 'Bodyweight', icon: IconBodyweight, description: 'Always available.' },
-  pullup_bar: { label: 'Pull-Up Bar', icon: IconPullupBar, description: 'Vertical pulling.' },
-  parallettes: { label: 'Parallettes', icon: IconParallettes, description: 'Push and hold.' },
-  resistance_band: { label: 'Resistance Band', icon: IconResistanceBand, description: 'Assistance and mobility.' },
+  kettlebell:      { label: 'Kettlebell',       icon: IconKettlebell,      description: 'Cast iron. The foundation.' },
+  rings:           { label: 'Gymnastic Rings',   icon: IconRings,           description: 'Upper body mastery.' },
+  rope:            { label: 'Flow Rope',         icon: IconRope,            description: 'Rhythm and coordination.' },
+  bodyweight:      { label: 'Bodyweight',        icon: IconBodyweight,      description: 'Always available.' },
+  pullup_bar:      { label: 'Pull-Up Bar',       icon: IconPullupBar,       description: 'Vertical pulling.' },
+  parallettes:     { label: 'Parallettes',       icon: IconParallettes,     description: 'Push and hold.' },
+  resistance_band: { label: 'Resistance Band',   icon: IconResistanceBand,  description: 'Assistance and mobility.' },
 };
 
 export default function ProfilePage() {
@@ -31,117 +31,143 @@ export default function ProfilePage() {
   const [editingName, setEditingName] = useState(false);
   const [nameInput, setNameInput] = useState(userName);
 
+  const isLight = theme === 'light';
+
+  // Semantic color tokens that adapt to theme — same pattern as SchedulePage
+  const ink   = isLight ? '#0A0A0A'             : '#E8E8E1';
+  const rule  = isLight ? '#C0C0B8'             : 'rgba(255,255,255,0.12)';
+  // steel: mid-gray on light, visible muted white on dark
+  const steel = isLight ? '#6A6A62'             : 'rgba(255,255,255,0.38)';
+  // heavy rule: bold ink bar on light, subtle bright hairline on dark
+  const heavyRule = isLight
+    ? { height: 2, background: '#0A0A0A', marginBottom: 32 }
+    : { height: 1, background: 'rgba(255,255,255,0.18)', marginBottom: 32 };
+
   const availableExerciseCount = EXERCISES.filter(e =>
     e.equipment.some(eq => userEquipment.includes(eq))
   ).length;
 
   const unlockedCount = unlockedExercises.length;
-  const totalCount = EXERCISES.length;
+  const totalCount    = EXERCISES.length;
 
   const progressionRoots = getProgressionRoots().filter(e =>
     e.equipment.some(eq => userEquipment.includes(eq))
   );
 
-  const handleSignOut = async () => {
-    await authClient.signOut();
-  };
+  const handleSignOut = async () => { await authClient.signOut(); };
 
   const handleNameSave = () => {
-    if (nameInput.trim()) {
-      setUserName(nameInput.trim());
-      addToast('Name updated');
-    }
+    if (nameInput.trim()) { setUserName(nameInput.trim()); addToast('Name updated'); }
     setEditingName(false);
   };
 
   // Sub-view: Progression tree detail
   if (selectedExercise) {
-    return (
-      <ProgressionTree
-        exerciseId={selectedExercise}
-        onBack={() => setSelectedExercise(null)}
-      />
-    );
+    return <ProgressionTree exerciseId={selectedExercise} onBack={() => setSelectedExercise(null)} />;
   }
 
   return (
-    <PageTransition className="page">
-      {/* Header */}
-      <div className="mb-8 md:mb-12">
-        <div className="coord-stamp mb-3">SEC-5 // USER DATA</div>
-        <h1 className="page-title mb-0">Operator Profile</h1>
-      </div>
+    <div className={isLight ? 'page-light' : ''}>
+      <PageTransition className="page" style={{ position: 'relative', zIndex: 1 }}>
 
-      {/* Identity */}
-      <div className="mb-8 md:mb-12">
-        <div className="flex items-start gap-6 md:gap-8">
+        {/* ── Header ─────────────────────────────────────────── */}
+        <div className="mb-8 md:mb-10">
+          <div className="coord-stamp mb-3">SEC-5 // USER DATA</div>
+          <div style={{
+            fontFamily: "'Barlow Condensed', sans-serif",
+            fontWeight: 900, fontSize: 48, letterSpacing: '-0.02em',
+            lineHeight: 1, color: ink, textTransform: 'uppercase',
+          }}>
+            OPERATOR
+          </div>
+        </div>
+
+        {/* Heavy rule */}
+        <div style={heavyRule} />
+
+        {/* ── 01 // IDENTITY ─────────────────────────────────── */}
+        <Section num="01" label="IDENTITY" rule={rule} steel={steel} />
+
+        <div className="flex items-start gap-6 md:gap-10 mb-8 md:mb-10">
           {/* Name */}
           <div className="flex-1 min-w-0">
-            <div className="data-label mb-2">Operator</div>
+            <Label text="Operator Name" steel={steel} />
             {editingName ? (
-              <div className="flex items-center gap-3">
-                <input
-                  type="text"
-                  value={nameInput}
-                  onChange={(e) => setNameInput(e.target.value)}
-                  onBlur={handleNameSave}
-                  onKeyDown={(e) => e.key === 'Enter' && handleNameSave()}
-                  autoFocus
-                  className="!w-auto !text-lg md:!text-xl tracking-wide"
-                />
-              </div>
+              <input
+                type="text"
+                value={nameInput}
+                onChange={(e) => setNameInput(e.target.value)}
+                onBlur={handleNameSave}
+                onKeyDown={(e) => e.key === 'Enter' && handleNameSave()}
+                autoFocus
+                className="!w-auto !text-lg md:!text-xl tracking-wide"
+              />
             ) : (
               <button
                 onClick={() => { setNameInput(userName); setEditingName(true); }}
-                className="text-lg md:text-xl tracking-wide text-white hover:text-white/70 transition-colors text-left"
+                style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, textAlign: 'left', display: 'flex', alignItems: 'baseline', gap: 10 }}
               >
-                {userName || 'Set name'}
-                <span className="text-[9px] text-white/15 ml-3 tracking-[0.15em] uppercase">Edit</span>
+                <span style={{
+                  fontFamily: "'Barlow Condensed', sans-serif",
+                  fontWeight: 700, fontSize: 28, letterSpacing: '-0.01em',
+                  color: ink, textTransform: 'uppercase', lineHeight: 1,
+                }}>
+                  {userName || 'SET NAME'}
+                </span>
+                <span style={{ fontSize: 8, letterSpacing: '0.15em', color: isLight ? 'rgba(10,10,10,0.25)' : 'rgba(255,255,255,0.18)', textTransform: 'uppercase', fontFamily: 'Space Mono, monospace' }}>
+                  Edit
+                </span>
               </button>
             )}
           </div>
 
-          {/* Email (read-only) */}
+          {/* Email */}
           <div className="shrink-0">
-            <div className="data-label mb-2">Email</div>
-            <div className="text-[13px] md:text-[14px] text-white/40 tracking-wide">
+            <Label text="Auth Email" steel={steel} />
+            <div style={{ fontSize: 11, color: isLight ? 'rgba(10,10,10,0.45)' : 'rgba(255,255,255,0.32)', fontFamily: 'Space Mono, monospace', letterSpacing: '0.02em' }}>
               {userEmail || '—'}
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="divider-full" />
+        {/* Thin rule */}
+        <div style={{ height: 1, background: rule, marginBottom: 32 }} />
 
-      {/* Stats Row */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.1 }}
-        className="flex items-end gap-8 md:gap-12 mb-8 md:mb-12"
-      >
-        <div className="data-readout">
-          <span className="data-label">Gear</span>
-          <span className="text-2xl md:text-3xl font-bold">{userEquipment.length}</span>
-        </div>
-        <div className="data-readout">
-          <span className="data-label">Available</span>
-          <span className="text-2xl md:text-3xl font-bold">{availableExerciseCount}</span>
-        </div>
-        <div className="data-readout">
-          <span className="data-label">Unlocked</span>
-          <span className="text-2xl md:text-3xl font-bold">
-            {unlockedCount}<span className="text-white/20 text-sm">/{totalCount}</span>
-          </span>
-        </div>
-      </motion.div>
+        {/* ── 02 // SYSTEM STATS ─────────────────────────────── */}
+        <Section num="02" label="SYSTEM" rule={rule} steel={steel} />
 
-      <div className="divider-full" />
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.1 }}
+          className="flex items-end gap-8 md:gap-14 mb-8 md:mb-10"
+        >
+          <Stat label="Gear" value={userEquipment.length} ink={ink} steel={steel} />
+          <Stat label="Available" value={availableExerciseCount} ink={ink} steel={steel} />
+          <div>
+            <Label text="Unlocked" steel={steel} />
+            <div style={{
+              fontFamily: "'Barlow Condensed', sans-serif",
+              fontWeight: 900, fontSize: 56, lineHeight: 1,
+              letterSpacing: '-0.02em', color: ink,
+              fontVariantNumeric: 'tabular-nums',
+              display: 'flex', alignItems: 'baseline', gap: 4,
+            }}>
+              {unlockedCount}
+              <span style={{ fontSize: 20, fontWeight: 400, color: isLight ? 'rgba(10,10,10,0.22)' : 'rgba(255,255,255,0.2)' }}>
+                /{totalCount}
+              </span>
+            </div>
+          </div>
+        </motion.div>
 
-      {/* Equipment Grid */}
-      <div className="mb-8 md:mb-12">
-        <div className="section-label">Your Equipment</div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+        {/* Heavy rule */}
+        <div style={heavyRule} />
+
+        {/* ── 03 // LOADOUT ──────────────────────────────────── */}
+        <Section num="03" label="LOADOUT" rule={rule} steel={steel} />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-2 mb-8 md:mb-10">
           {(Object.entries(EQUIPMENT_INFO) as [Equipment, typeof EQUIPMENT_INFO[Equipment]][]).map(([key, info], i) => {
             const isSelected = userEquipment.includes(key);
             const Icon = info.icon;
@@ -150,80 +176,83 @@ export default function ProfilePage() {
             return (
               <motion.button
                 key={key}
-                initial={{ opacity: 0, y: 8 }}
+                initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.04 }}
                 onClick={() => {
                   toggleEquipment(key);
                   addToast(isSelected ? `${info.label} removed` : `${info.label} added`);
                 }}
-                className={`bracket-card bracket-card-interactive text-left relative ${
-                  isSelected ? 'bg-white/[0.03]' : ''
-                }`}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 14,
+                  padding: '14px 16px',
+                  // Light: bold ink border when on. Dark: subtle border, acid left accent only.
+                  border: isSelected
+                    ? (isLight ? `2px solid #0A0A0A` : `1px solid rgba(255,255,255,0.2)`)
+                    : (isLight ? `1px solid ${rule}` : `1px solid rgba(255,255,255,0.07)`),
+                  borderLeft: isSelected ? `3px solid #C6FF00` : (isLight ? `1px solid ${rule}` : `1px solid rgba(255,255,255,0.07)`),
+                  background: isSelected
+                    ? (isLight ? 'rgba(10,10,10,0.05)' : 'rgba(198,255,0,0.04)')
+                    : 'transparent',
+                  cursor: 'pointer', textAlign: 'left', transition: 'all 0.15s',
+                }}
               >
-                {/* Active indicator bar */}
-                {isSelected && (
-                  <motion.div
-                    className="absolute left-0 top-4 bottom-4 w-[2px] bg-[#C6FF00]/60"
-                    initial={{ scaleY: 0 }}
-                    animate={{ scaleY: 1 }}
-                    transition={{ duration: 0.25 }}
-                  />
-                )}
+                {/* Icon */}
+                <div style={{ flexShrink: 0, color: isSelected ? ink : steel, transition: 'color 0.15s' }}>
+                  <Icon size={20} />
+                </div>
 
-                <div className="flex items-center gap-4">
-                  <div className="shrink-0">
-                    <Icon
-                      size={22}
-                      className={`transition-colors ${isSelected ? 'text-white/80' : 'text-white/20'}`}
-                    />
+                {/* Text */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 3 }}>
+                    <span style={{
+                      fontSize: 11, letterSpacing: '0.1em', fontWeight: 700,
+                      textTransform: 'uppercase',
+                      color: isSelected ? ink : steel,
+                      fontFamily: 'Space Mono, monospace', transition: 'color 0.15s',
+                    }}>
+                      {info.label}
+                    </span>
+                    {isSelected && (
+                      <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#C6FF00', flexShrink: 0, boxShadow: '0 0 6px rgba(198,255,0,0.5)' }} />
+                    )}
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-3 mb-1">
-                      <h3 className={`text-[13px] md:text-[14px] tracking-[0.08em] font-bold transition-colors ${
-                        isSelected ? 'text-white' : 'text-white/40'
-                      }`}>
-                        {info.label}
-                      </h3>
-                      {isSelected && (
-                        <span className="status-dot status-dot--active" />
-                      )}
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-[9px] md:text-[10px] text-white/20 tracking-wide">
-                        {exerciseCount} exercises
-                      </span>
-                      <span className="text-[9px] text-white/10">·</span>
-                      <span className="text-[9px] md:text-[10px] text-white/15 italic">
-                        {info.description}
-                      </span>
-                    </div>
+                  <div style={{ fontSize: 9, color: steel, fontFamily: 'Space Mono, monospace', letterSpacing: '0.04em' }}>
+                    {exerciseCount} exercises · {info.description}
                   </div>
                 </div>
+
+                {/* Active badge */}
+                {isSelected && (
+                  <span style={{
+                    fontSize: 8, letterSpacing: '0.12em', textTransform: 'uppercase',
+                    padding: '2px 6px', background: '#C6FF00', color: '#0A0A0A',
+                    fontFamily: 'Space Mono, monospace', fontWeight: 700, flexShrink: 0,
+                  }}>
+                    ON
+                  </span>
+                )}
               </motion.button>
             );
           })}
         </div>
-      </div>
 
-      <div className="divider-full" />
+        {/* Thin rule */}
+        <div style={{ height: 1, background: rule, marginBottom: 32 }} />
 
-      {/* Progression Trees */}
-      <div className="mb-8 md:mb-12">
+        {/* ── 04 // PROGRESSIONS ─────────────────────────────── */}
         <button
           onClick={() => setShowProgressions(!showProgressions)}
-          className="flex items-center justify-between w-full mb-4 md:mb-6 group"
+          style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, width: '100%' }}
         >
-          <div className="flex items-center gap-3">
-            <IconTree size={16} className="text-white/20 group-hover:text-white/40 transition-colors" />
-            <span className="section-label mb-0">Progression Trees</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 0 }}>
+            <span style={{ fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: steel, fontFamily: 'Space Mono, monospace', flexShrink: 0 }}>04</span>
+            <div style={{ height: 1, background: rule, flex: 1 }} />
+            <span style={{ fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: steel, fontFamily: 'Space Mono, monospace', flexShrink: 0 }}>PROGRESSIONS</span>
+            <motion.span animate={{ rotate: showProgressions ? 90 : 0 }} style={{ color: steel, display: 'flex', flexShrink: 0, marginLeft: 4 }}>
+              <IconChevronRight size={12} />
+            </motion.span>
           </div>
-          <motion.span
-            animate={{ rotate: showProgressions ? 90 : 0 }}
-            className="text-white/20 group-hover:text-white/40 transition-colors"
-          >
-            <IconChevronRight size={14} />
-          </motion.span>
         </button>
 
         <AnimatePresence>
@@ -232,10 +261,11 @@ export default function ProfilePage() {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="overflow-hidden"
+              style={{ overflow: 'hidden' }}
             >
+              <div style={{ height: 1, background: rule, marginTop: 16, marginBottom: 4 }} />
               {progressionRoots.length > 0 ? (
-                <div className="flex flex-col gap-1">
+                <div>
                   {progressionRoots.map((ex, i) => {
                     const childCount = EXERCISES.filter(e => {
                       let current = e;
@@ -256,40 +286,47 @@ export default function ProfilePage() {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: i * 0.03 }}
                         onClick={() => setSelectedExercise(ex.id)}
-                        className="flex items-center gap-3 py-3 px-2 text-left hover:bg-white/[0.02] transition-colors group"
+                        style={{
+                          display: 'flex', alignItems: 'center', gap: 10,
+                          padding: '10px 0', width: '100%',
+                          background: 'none', border: 'none',
+                          borderBottom: `1px solid ${rule}`,
+                          cursor: 'pointer', textAlign: 'left',
+                        }}
                       >
-                        <span className="text-[10px] text-white/15 w-5 text-right tabular-nums">
+                        <span style={{ fontSize: 9, color: steel, width: 20, textAlign: 'right', fontVariantNumeric: 'tabular-nums', fontFamily: 'Space Mono, monospace', flexShrink: 0 }}>
                           {String(i + 1).padStart(2, '0')}
                         </span>
-                        <span className={`status-dot ${isUnlocked ? 'status-dot--done' : 'status-dot--idle'}`} />
-                        <span className="text-[12px] md:text-[13px] tracking-[0.06em] text-white/70 group-hover:text-white transition-colors flex-1">
+                        <span style={{ width: 5, height: 5, borderRadius: '50%', flexShrink: 0, background: isUnlocked ? '#22c55e' : (isLight ? 'rgba(10,10,10,0.2)' : 'rgba(255,255,255,0.2)') }} />
+                        <span style={{ fontSize: 12, letterSpacing: '0.05em', color: ink, flex: 1, fontFamily: 'Space Mono, monospace' }}>
                           {ex.name}
                         </span>
-                        <span className="dot-leader" />
-                        <span className="text-[9px] text-white/20">{ex.movementPattern}</span>
-                        <span className="text-[9px] text-white/15">{childCount + 1} lvl</span>
-                        <IconChevronRight size={12} className="text-white/10 group-hover:text-white/30 transition-colors" />
+                        <div style={{ flex: 1, borderBottom: `1px dotted ${rule}`, alignSelf: 'flex-end', marginBottom: 3, minWidth: 16 }} />
+                        <span style={{ fontSize: 8, color: steel, fontFamily: 'Space Mono, monospace', flexShrink: 0 }}>{ex.movementPattern}</span>
+                        <span style={{ fontSize: 8, color: isLight ? 'rgba(10,10,10,0.28)' : 'rgba(255,255,255,0.2)', fontFamily: 'Space Mono, monospace', flexShrink: 0 }}>{childCount + 1} lvl</span>
+                        <span style={{ color: steel, flexShrink: 0, display: 'flex' }}><IconChevronRight size={11} /></span>
                       </motion.button>
                     );
                   })}
                 </div>
               ) : (
-                <div className="py-8 text-center">
-                  <p className="text-[11px] text-white/20 mb-2">No progression trees available</p>
-                  <p className="text-[9px] text-white/15">Select equipment to view progressions</p>
+                <div style={{ padding: '24px 0', textAlign: 'center' }}>
+                  <p style={{ fontSize: 10, color: steel, fontFamily: 'Space Mono, monospace' }}>No progression trees available</p>
+                  <p style={{ fontSize: 9, color: isLight ? 'rgba(10,10,10,0.28)' : 'rgba(255,255,255,0.18)', marginTop: 4, fontFamily: 'Space Mono, monospace' }}>
+                    Select equipment to view progressions
+                  </p>
                 </div>
               )}
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
 
-      <div className="divider-full" />
+        <div style={{ height: 1, background: rule, marginTop: 32, marginBottom: 32 }} />
 
-      {/* Display Mode */}
-      <div className="mb-8 md:mb-12">
-        <div className="section-label">Display Mode</div>
-        <div className="mode-toggle">
+        {/* ── 05 // DISPLAY ──────────────────────────────────── */}
+        <Section num="05" label="DISPLAY" rule={rule} steel={steel} />
+
+        <div className="mode-toggle mb-8 md:mb-10">
           <button
             type="button"
             className={`mode-toggle__btn${theme === 'dark' ? ' mode-toggle__btn--active' : ''}`}
@@ -305,22 +342,63 @@ export default function ProfilePage() {
             Light
           </button>
         </div>
-      </div>
 
-      <div className="divider-full" />
+        {/* Heavy rule */}
+        <div style={heavyRule} />
 
-      {/* Sign Out */}
-      <div className="py-6 md:py-8">
-        <button
-          onClick={handleSignOut}
-          className="btn btn-full"
-          style={{ borderColor: 'rgba(198,255,0,0.4)', color: '#C6FF00' }}
-        >
-          <IconSignOut size={16} />
-          Sign Out
-        </button>
-        <div className="coord-stamp text-center mt-6">PIDYOM v1.0 // MOVEMENT FRAMEWORK</div>
+        {/* ── Sign Out ───────────────────────────────────────── */}
+        <div className="py-4 md:py-6">
+          <button onClick={handleSignOut} className="btn btn-solid btn-full">
+            <IconSignOut size={16} />
+            Sign Out
+          </button>
+          <div style={{
+            textAlign: 'center', marginTop: 24,
+            fontSize: 8, letterSpacing: '0.1em',
+            color: isLight ? 'rgba(10,10,10,0.22)' : 'rgba(255,255,255,0.14)',
+            textTransform: 'uppercase', fontFamily: 'Space Mono, monospace',
+          }}>
+            PIDYOM v1.0 // MOVEMENT FRAMEWORK
+          </div>
+        </div>
+
+      </PageTransition>
+    </div>
+  );
+}
+
+// ── Small helpers ────────────────────────────────────────────────────────────
+
+function Section({ num, label, rule, steel }: { num: string; label: string; rule: string; steel: string }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
+      <span style={{ fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: steel, fontFamily: 'Space Mono, monospace', flexShrink: 0 }}>{num}</span>
+      <div style={{ height: 1, background: rule, flex: 1 }} />
+      <span style={{ fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: steel, fontFamily: 'Space Mono, monospace', flexShrink: 0 }}>{label}</span>
+    </div>
+  );
+}
+
+function Label({ text, steel }: { text: string; steel: string }) {
+  return (
+    <div style={{ fontSize: 8, letterSpacing: '0.18em', textTransform: 'uppercase', color: steel, marginBottom: 8, fontFamily: 'Space Mono, monospace' }}>
+      {text}
+    </div>
+  );
+}
+
+function Stat({ label, value, ink, steel }: { label: string; value: number; ink: string; steel: string }) {
+  return (
+    <div>
+      <Label text={label} steel={steel} />
+      <div style={{
+        fontFamily: "'Barlow Condensed', sans-serif",
+        fontWeight: 900, fontSize: 56, lineHeight: 1,
+        letterSpacing: '-0.02em', color: ink,
+        fontVariantNumeric: 'tabular-nums',
+      }}>
+        {value}
       </div>
-    </PageTransition>
+    </div>
   );
 }
