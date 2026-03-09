@@ -40,8 +40,11 @@ export default function App() {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
 
+  const _isPreview = !!new URLSearchParams(window.location.search).get('preview');
+
   // Sync Neon Auth session → Zustand store + trigger hydration
   useEffect(() => {
+    if (_isPreview) return; // Skip auth sync in preview mode
     if (session.data?.user) {
       const user = session.data.user;
       syncAuth(true, user.email || '', user.name || '', user.id);
@@ -71,7 +74,15 @@ export default function App() {
       syncAuth(false, '', '');
       hydrationAttempted.current = false;
     }
-  }, [session.data, session.isPending, syncAuth, hydrateStore]);
+  }, [session.data, session.isPending, syncAuth, hydrateStore, _isPreview]);
+
+  // Preview shortcuts (bypass auth entirely)
+  if (_isPreview === true) {
+    const _preview = new URLSearchParams(window.location.search).get('preview');
+    if (_preview === 'profile')  return <ProfilePage />;
+    if (_preview === 'progress') return <ProgressPage />;
+    if (_preview === 'workouts') return <WorkoutsPage />;
+  }
 
   // Loading state
   if (session.isPending) {
@@ -84,7 +95,6 @@ export default function App() {
       </div>
     );
   }
-
   if (!session.data?.user) {
     return <AuthPage />;
   }

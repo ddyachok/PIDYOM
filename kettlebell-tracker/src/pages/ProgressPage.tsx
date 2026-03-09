@@ -5,15 +5,20 @@ import { useStore } from '../store/useStore';
 import { EXERCISES, getProgressionRoots } from '../data/exercises';
 import { format, subDays, isAfter, parseISO } from 'date-fns';
 import { RadarDataPoint } from '../lib/types';
-import { IconChevronRight, IconTree } from '../components/icons/Icons';
+import { IconChevronRight } from '../components/icons/Icons';
 
 type TimePeriod = '7d' | '30d' | 'all';
 
+// ── Radar Chart ──────────────────────────────────────────────────────────────
 function RadarChart({ data, size = 280, isLight = false }: { data: RadarDataPoint[]; size?: number; isLight?: boolean }) {
-  const gridColor = isLight ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.06)';
-  const activeLineColor = isLight ? 'rgba(0,0,0,0.35)' : 'rgba(198,255,0,0.4)';
-  const labelColor = isLight ? 'rgba(0,0,0,0.45)' : 'rgba(255,255,255,0.45)';
-  const activeLabelColor = isLight ? 'rgba(0,0,0,0.85)' : 'rgba(198,255,0,0.9)';
+  const gridColor        = isLight ? 'rgba(0,0,0,0.08)'   : 'rgba(255,255,255,0.06)';
+  const activeLineColor  = isLight ? 'rgba(0,0,0,0.35)'   : 'rgba(198,255,0,0.4)';
+  const labelColor       = isLight ? 'rgba(0,0,0,0.45)'   : 'rgba(255,255,255,0.45)';
+  const activeLabelColor = isLight ? 'rgba(0,0,0,0.85)'   : 'rgba(198,255,0,0.9)';
+  const tooltipBg        = isLight ? '#E8E8E1'             : '#0A0A0A';
+  const tooltipBorder    = isLight ? 'rgba(0,0,0,0.12)'   : 'rgba(255,255,255,0.12)';
+  const tooltipLabel     = isLight ? 'rgba(0,0,0,0.55)'   : 'rgba(255,255,255,0.55)';
+
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [touchedIndex, setTouchedIndex] = useState<number | null>(null);
   const activeIndex = touchedIndex ?? hoveredIndex;
@@ -106,45 +111,66 @@ function RadarChart({ data, size = 280, isLight = false }: { data: RadarDataPoin
       </svg>
       {activeIndex !== null && data[activeIndex] !== undefined && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-          className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-2 px-3 py-1.5 bg-black border border-white/15 text-[9px] tracking-wider whitespace-nowrap"
+          style={{
+            position: 'absolute', bottom: 0, left: '50%',
+            transform: 'translateX(-50%) translateY(8px)',
+            padding: '6px 12px',
+            background: tooltipBg,
+            border: `1px solid ${tooltipBorder}`,
+            fontSize: 9, letterSpacing: '0.1em', whiteSpace: 'nowrap',
+            fontFamily: 'Space Mono, monospace',
+          }}
         >
-          <span className="text-white/60 uppercase">{data[activeIndex].label}</span>
-          <span className="text-[#C6FF00] font-bold ml-2">{data[activeIndex].value} sets</span>
+          <span style={{ color: tooltipLabel, textTransform: 'uppercase' }}>{data[activeIndex].label}</span>
+          <span style={{ color: '#C6FF00', fontWeight: 700, marginLeft: 8 }}>{data[activeIndex].value} sets</span>
         </motion.div>
       )}
     </div>
   );
 }
 
-function VolumeChart({ data, onBarHover, hoveredIndex }: { data: { label: string; value: number; date?: string }[]; onBarHover: (index: number | null) => void; hoveredIndex: number | null }) {
+// ── Volume Bar Chart ─────────────────────────────────────────────────────────
+function VolumeChart({ data, onBarHover, hoveredIndex, isLight }: {
+  data: { label: string; value: number; date?: string }[];
+  onBarHover: (index: number | null) => void;
+  hoveredIndex: number | null;
+  isLight: boolean;
+}) {
+  const barColor   = isLight ? 'rgba(10,10,10,0.15)'   : 'rgba(255,255,255,0.18)';
+  const labelColor = isLight ? 'rgba(10,10,10,0.35)'   : 'rgba(255,255,255,0.28)';
+  const hoverLabel = isLight ? 'rgba(10,10,10,0.65)'   : 'rgba(255,255,255,0.65)';
+  const tooltipBg  = isLight ? '#E8E8E1'               : '#0A0A0A';
+  const tooltipBrd = isLight ? 'rgba(0,0,0,0.12)'      : 'rgba(255,255,255,0.12)';
+  const tooltipTxt = isLight ? 'rgba(0,0,0,0.7)'       : 'rgba(255,255,255,0.75)';
+
   const max = data.length ? Math.max(...data.map(d => d.value), 1) : 1;
   if (!data.length) {
-    return <div className="h-20 flex items-center justify-center text-[10px] text-white/30">No data</div>;
+    return <div style={{ height: 80, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: labelColor, fontFamily: 'Space Mono, monospace' }}>No data</div>;
   }
   return (
-    <div className="overflow-x-auto overflow-y-visible pb-2 -mx-1">
-      <div className="flex items-end gap-1 h-24" style={{ minWidth: data.length * 18 }}>
+    <div style={{ overflowX: 'auto', overflowY: 'visible', paddingBottom: 8, marginLeft: -4, marginRight: -4 }}>
+      <div style={{ display: 'flex', alignItems: 'flex-end', gap: 2, height: 88, minWidth: data.length * 18 }}>
         {data.map((d, i) => {
           const heightPct = max > 0 ? (d.value / max) * 100 : 0;
           const isHovered = hoveredIndex === i;
           return (
-            <div key={i} className="relative flex flex-col items-center gap-1 flex-shrink-0 w-4 md:flex-1 md:min-w-0 cursor-pointer"
-              style={{ minWidth: 14 }}
+            <div key={i} style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, flexShrink: 0, minWidth: 14, flex: 1, cursor: 'pointer' }}
               onMouseEnter={() => onBarHover(i)} onMouseLeave={() => onBarHover(null)}
               onTouchStart={() => onBarHover(i)} onTouchEnd={() => setTimeout(() => onBarHover(null), 1500)}
             >
-              <div className="w-full h-16 md:h-20 flex flex-col justify-end flex-shrink-0">
+              <div style={{ width: '100%', height: 64, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
                 <motion.div
-                  className={`w-full max-w-[12px] md:max-w-none mx-auto transition-colors ${isHovered ? 'bg-[#C6FF00]/50' : 'bg-white/20'}`}
-                  style={{ minHeight: 1 }}
+                  style={{ width: '100%', maxWidth: 12, margin: '0 auto', minHeight: 1, background: isHovered ? '#C6FF00' : barColor, transition: 'background 0.15s' }}
                   initial={{ height: 0 }} animate={{ height: `${heightPct}%` }}
                   transition={{ duration: 0.5, delay: i * 0.02 }}
                 />
               </div>
-              <span className={`text-[6px] md:text-[8px] truncate max-w-[18px] text-center ${isHovered ? 'text-white/70' : 'text-white/30'}`}>{d.label}</span>
+              <span style={{ fontSize: 7, color: isHovered ? hoverLabel : labelColor, fontFamily: 'Space Mono, monospace', letterSpacing: '0.04em', textTransform: 'uppercase', textAlign: 'center', maxWidth: 18, overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                {d.label}
+              </span>
               {isHovered && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                  className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black border border-white/15 px-2 py-1 text-[8px] text-white/80 whitespace-nowrap z-10"
+                  style={{ position: 'absolute', top: -28, left: '50%', transform: 'translateX(-50%)', background: tooltipBg, border: `1px solid ${tooltipBrd}`, padding: '3px 8px', fontSize: 8, color: tooltipTxt, whiteSpace: 'nowrap', zIndex: 10, fontFamily: 'Space Mono, monospace' }}
                 >
                   {d.value}kg
                 </motion.div>
@@ -157,27 +183,37 @@ function VolumeChart({ data, onBarHover, hoveredIndex }: { data: { label: string
   );
 }
 
+// ── Page ─────────────────────────────────────────────────────────────────────
 export default function ProgressPage() {
   const { workouts, setCurrentTab, setActiveWorkout, unlockedExercises, userEquipment, theme } = useStore();
   const isLight = theme === 'light';
   const [timePeriod, setTimePeriod] = useState<TimePeriod>('30d');
   const [hoveredBarIndex, setHoveredBarIndex] = useState<number | null>(null);
 
+  // Semantic tokens — same pattern as ProfilePage
+  const ink      = isLight ? '#0A0A0A'             : '#E8E8E1';
+  const rule     = isLight ? '#C0C0B8'             : 'rgba(255,255,255,0.12)';
+  const steel    = isLight ? '#6A6A62'             : 'rgba(255,255,255,0.38)';
+  const muted    = isLight ? 'rgba(10,10,10,0.35)' : 'rgba(255,255,255,0.28)';
+  const heavyRule = isLight
+    ? { height: 2, background: '#0A0A0A', marginBottom: 32 }
+    : { height: 1, background: 'rgba(255,255,255,0.18)', marginBottom: 32 };
+
   const filteredWorkouts = useMemo(() => {
     const completed = workouts.filter(w => w.completed);
     if (timePeriod === 'all') return completed;
-    const cutoffDate = timePeriod === '7d' ? subDays(new Date(), 7) : subDays(new Date(), 30);
+    const cutoff = timePeriod === '7d' ? subDays(new Date(), 7) : subDays(new Date(), 30);
     return completed.filter(w => {
-      const workoutDate = parseISO(w.date);
-      return isAfter(workoutDate, cutoffDate) || workoutDate.toDateString() === cutoffDate.toDateString();
+      const d = parseISO(w.date);
+      return isAfter(d, cutoff) || d.toDateString() === cutoff.toDateString();
     });
   }, [workouts, timePeriod]);
 
   const stats = useMemo(() => {
     const totalWorkouts = filteredWorkouts.length;
-    const totalSets = filteredWorkouts.reduce((a, w) => a + w.exercises.reduce((b, e) => b + e.sets.filter(s => s.completed).length, 0), 0);
-    const totalVolume = filteredWorkouts.reduce((a, w) => a + w.exercises.reduce((b, e) => b + e.sets.filter(s => s.completed).reduce((c, s) => c + s.reps * s.weight, 0), 0), 0);
-    const maxWeight = filteredWorkouts.reduce((a, w) => Math.max(a, ...w.exercises.flatMap(e => e.sets.filter(s => s.completed).map(s => s.weight))), 0);
+    const totalSets     = filteredWorkouts.reduce((a, w) => a + w.exercises.reduce((b, e) => b + e.sets.filter(s => s.completed).length, 0), 0);
+    const totalVolume   = filteredWorkouts.reduce((a, w) => a + w.exercises.reduce((b, e) => b + e.sets.filter(s => s.completed).reduce((c, s) => c + s.reps * s.weight, 0), 0), 0);
+    const maxWeight     = filteredWorkouts.reduce((a, w) => Math.max(a, ...w.exercises.flatMap(e => e.sets.filter(s => s.completed).map(s => s.weight))), 0);
 
     const exerciseCounts: Record<string, number> = {};
     filteredWorkouts.forEach(w => w.exercises.forEach(e => {
@@ -187,56 +223,47 @@ export default function ProgressPage() {
     const daysToShow = timePeriod === '7d' ? 7 : 30;
     const periodData = Array.from({ length: daysToShow }, (_, i) => {
       const dayDate = subDays(new Date(), daysToShow - 1 - i);
-      const date = format(dayDate, 'yyyy-MM-dd');
-      const dayWorkouts = filteredWorkouts.filter(w => w.date === date);
-      const vol = dayWorkouts.reduce((a, w) => a + w.exercises.reduce((b, e) => b + e.sets.filter(s => s.completed).reduce((c, s) => c + s.reps * s.weight, 0), 0), 0);
+      const date    = format(dayDate, 'yyyy-MM-dd');
+      const vol     = filteredWorkouts.filter(w => w.date === date).reduce((a, w) => a + w.exercises.reduce((b, e) => b + e.sets.filter(s => s.completed).reduce((c, s) => c + s.reps * s.weight, 0), 0), 0);
       return { label: format(dayDate, 'EEE').slice(0, 2), value: vol, date };
     });
 
     return { totalWorkouts, totalSets, totalVolume, exerciseCounts, maxWeight, periodData };
   }, [filteredWorkouts, timePeriod]);
 
-  // Personal Records — best weight per exercise across ALL completed workouts
   const personalRecords = useMemo(() => {
     const prMap: Record<string, { exerciseName: string; maxWeight: number; maxReps: number; bestVolume: number }> = {};
-    const allCompleted = workouts.filter(w => w.completed);
-    allCompleted.forEach(w => w.exercises.forEach(e => {
-      const completedSets = e.sets.filter(s => s.completed);
-      if (completedSets.length === 0) return;
+    workouts.filter(w => w.completed).forEach(w => w.exercises.forEach(e => {
+      const completed = e.sets.filter(s => s.completed);
+      if (!completed.length) return;
       const best = prMap[e.exerciseId] || { exerciseName: e.exercise.name, maxWeight: 0, maxReps: 0, bestVolume: 0 };
-      completedSets.forEach(s => {
+      completed.forEach(s => {
         if (s.weight > best.maxWeight) best.maxWeight = s.weight;
-        if (s.reps > best.maxReps) best.maxReps = s.reps;
-        const vol = s.weight * s.reps;
-        if (vol > best.bestVolume) best.bestVolume = vol;
+        if (s.reps   > best.maxReps)   best.maxReps   = s.reps;
+        if (s.weight * s.reps > best.bestVolume) best.bestVolume = s.weight * s.reps;
       });
       prMap[e.exerciseId] = best;
     }));
     return Object.entries(prMap).sort((a, b) => b[1].maxWeight - a[1].maxWeight).slice(0, 8);
   }, [workouts]);
 
-  // Progression tree progress
   const treeProgress = useMemo(() => {
-    const roots = getProgressionRoots().filter(e =>
-      e.equipment.some(eq => userEquipment.includes(eq))
-    );
-    return roots.map(root => {
-      // Count total exercises in this tree
-      const treeExercises: string[] = [root.id];
-      const addChildren = (parentId: string) => {
-        const parent = EXERCISES.find(e => e.id === parentId);
-        if (parent?.progressionChildren) {
-          parent.progressionChildren.forEach(childId => {
-            treeExercises.push(childId);
+    return getProgressionRoots()
+      .filter(e => e.equipment.some(eq => userEquipment.includes(eq)))
+      .map(root => {
+        const treeIds: string[] = [root.id];
+        const addChildren = (parentId: string) => {
+          EXERCISES.find(e => e.id === parentId)?.progressionChildren?.forEach(childId => {
+            treeIds.push(childId);
             addChildren(childId);
           });
-        }
-      };
-      addChildren(root.id);
-      const total = treeExercises.length;
-      const unlocked = treeExercises.filter(id => unlockedExercises.includes(id)).length;
-      return { root, total, unlocked, pct: Math.round((unlocked / total) * 100) };
-    }).filter(t => t.total > 1); // Only show trees with progressions
+        };
+        addChildren(root.id);
+        const total    = treeIds.length;
+        const unlocked = treeIds.filter(id => unlockedExercises.includes(id)).length;
+        return { root, total, unlocked, pct: Math.round((unlocked / total) * 100) };
+      })
+      .filter(t => t.total > 1);
   }, [unlockedExercises, userEquipment]);
 
   const radarData: RadarDataPoint[] = useMemo(() => {
@@ -245,231 +272,309 @@ export default function ProgressPage() {
     return patterns.map(p => ({ label: p.toUpperCase(), value: stats.exerciseCounts[p] || 0, fullMark: max }));
   }, [stats]);
 
+  const PATTERNS = ['hinge', 'squat', 'push', 'pull', 'core', 'carry', 'flow'];
+
   return (
-    <PageTransition className="page">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-8 md:mb-10">
-        <div>
-          <div className="coord-stamp mb-2">SEC-4 // STATISTICS</div>
-          <h1 className="page-title mb-0">Stats</h1>
-        </div>
-        <div className="flex items-center gap-1">
-          {(['7d', '30d', 'all'] as TimePeriod[]).map(period => (
-            <button key={period} onClick={() => setTimePeriod(period)}
-              className={`px-3 py-2 text-[9px] tracking-[0.12em] uppercase transition-all border ${
-                timePeriod === period
-                  ? 'border-[#C6FF00]/40 bg-[#C6FF00]/[0.06] text-[#C6FF00]'
-                  : 'border-white/[0.06] text-white/35 hover:text-white/60'
-              }`}
-            >
-              {period === 'all' ? 'All' : period}
-            </button>
-          ))}
-        </div>
-      </div>
+    <div className={isLight ? 'page-light' : ''}>
+      <PageTransition className="page" style={{ position: 'relative', zIndex: 1 }}>
 
-      {/* Hero Stats */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.1 }}
-        className="flex items-end gap-6 md:gap-10 mb-10 md:mb-12"
-      >
-        <div className="data-readout">
-          <span className="data-label">Workouts</span>
-          <span className="hero-stat">{stats.totalWorkouts}</span>
-        </div>
-        <div className="data-readout">
-          <span className="data-label">Sets</span>
-          <span className="hero-stat">{stats.totalSets}</span>
-        </div>
-        <div className="data-readout">
-          <span className="data-label">Volume</span>
-          <span className="hero-stat">{stats.totalVolume > 1000 ? `${(stats.totalVolume / 1000).toFixed(1)}K` : stats.totalVolume}</span>
-        </div>
-        <div className="data-readout">
-          <span className="data-label">Max KG</span>
-          <span className="hero-stat">{stats.maxWeight || '—'}</span>
-        </div>
-      </motion.div>
+        {/* ── Header ─────────────────────────────────────────── */}
+        <div className="flex items-start justify-between mb-8 md:mb-10">
+          <div>
+            <div className="coord-stamp mb-3">SEC-4 // STATISTICS</div>
+            <div style={{
+              fontFamily: "'Barlow Condensed', sans-serif",
+              fontWeight: 900, fontSize: 48, letterSpacing: '-0.02em',
+              lineHeight: 1, color: ink, textTransform: 'uppercase',
+            }}>
+              INTEL
+            </div>
+          </div>
 
-      <div className="divider-full" />
+          {/* Period filter */}
+          <div style={{ display: 'flex', gap: 1, marginTop: 4 }}>
+            {(['7d', '30d', 'all'] as TimePeriod[]).map(period => {
+              const active = timePeriod === period;
+              return (
+                <button key={period} onClick={() => setTimePeriod(period)}
+                  style={{
+                    padding: '8px 12px',
+                    fontSize: 9, letterSpacing: '0.12em', textTransform: 'uppercase',
+                    fontFamily: 'Space Mono, monospace',
+                    border: active ? `1px solid ${ink}` : `1px solid ${rule}`,
+                    background: active ? ink : 'transparent',
+                    color: active ? (isLight ? '#E8E8E1' : '#0A0A0A') : steel,
+                    cursor: 'pointer', transition: 'all 0.15s',
+                  }}
+                >
+                  {period === 'all' ? 'ALL' : period.toUpperCase()}
+                </button>
+              );
+            })}
+          </div>
+        </div>
 
-      {/* Personal Records */}
-      {personalRecords.length > 0 && (
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="mb-8 md:mb-10">
-          <span className="section-label">Personal Records</span>
-          <div className="flex flex-col gap-0">
-            {personalRecords.map(([exId, pr], i) => (
-              <div key={exId} className="flex items-center gap-3 py-3 px-1 group">
-                <span className="text-[10px] text-white/25 w-5 text-right tabular-nums">
-                  {String(i + 1).padStart(2, '0')}
-                </span>
-                <span className="text-[11px] md:text-[12px] tracking-[0.04em] text-white/70 flex-1 truncate">
-                  {pr.exerciseName}
-                </span>
-                <span className="dot-leader hidden md:block" />
-                <div className="flex items-center gap-4 shrink-0">
-                  <div className="text-right">
-                    <span className="text-[11px] font-bold text-[#C6FF00] tabular-nums">{pr.maxWeight}kg</span>
-                    <span className="text-[8px] text-white/25 ml-1">max</span>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-[10px] text-white/50 tabular-nums">{pr.maxReps}</span>
-                    <span className="text-[8px] text-white/25 ml-1">reps</span>
+        {/* Heavy rule */}
+        <div style={heavyRule} />
+
+        {/* ── 01 // SIGNAL — Hero Stats ───────────────────────── */}
+        <Sec num="01" label="SIGNAL" rule={rule} steel={steel} />
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.1 }}
+          className="flex items-end gap-6 md:gap-12 mb-8 md:mb-10"
+        >
+          <BigStat label="Workouts" value={String(stats.totalWorkouts)} ink={ink} steel={steel} />
+          <BigStat label="Sets"     value={String(stats.totalSets)}     ink={ink} steel={steel} />
+          <BigStat
+            label="Volume"
+            value={stats.totalVolume > 1000 ? `${(stats.totalVolume / 1000).toFixed(1)}K` : String(stats.totalVolume)}
+            ink={ink} steel={steel}
+          />
+          <BigStat label="Max KG"   value={stats.maxWeight ? String(stats.maxWeight) : '—'} ink={ink} steel={steel} />
+        </motion.div>
+
+        {/* Thin rule */}
+        <div style={{ height: 1, background: rule, marginBottom: 32 }} />
+
+        {/* ── 02 // RECORDS ──────────────────────────────────── */}
+        {personalRecords.length > 0 && (
+          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="mb-8 md:mb-10">
+            <Sec num="02" label="RECORDS" rule={rule} steel={steel} />
+            <div>
+              {personalRecords.map(([exId, pr], i) => (
+                <div key={exId}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 10,
+                    padding: '10px 0',
+                    borderBottom: `1px solid ${rule}`,
+                  }}
+                >
+                  <span style={{ fontSize: 9, color: muted, width: 20, textAlign: 'right', fontVariantNumeric: 'tabular-nums', fontFamily: 'Space Mono, monospace', flexShrink: 0 }}>
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <span style={{ fontSize: 11, letterSpacing: '0.04em', color: ink, flex: 1, fontFamily: 'Space Mono, monospace', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {pr.exerciseName}
+                  </span>
+                  <div style={{ flex: 1, borderBottom: `1px dotted ${rule}`, alignSelf: 'flex-end', marginBottom: 3, minWidth: 16, display: 'none' }} className="md:block" />
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexShrink: 0 }}>
+                    <div style={{ textAlign: 'right' }}>
+                      <span style={{ fontSize: 12, fontWeight: 700, color: '#C6FF00', fontVariantNumeric: 'tabular-nums', fontFamily: 'Space Mono, monospace' }}>{pr.maxWeight}kg</span>
+                      <span style={{ fontSize: 8, color: muted, marginLeft: 4, fontFamily: 'Space Mono, monospace' }}>max</span>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <span style={{ fontSize: 10, color: steel, fontVariantNumeric: 'tabular-nums', fontFamily: 'Space Mono, monospace' }}>{pr.maxReps}</span>
+                      <span style={{ fontSize: 8, color: muted, marginLeft: 3, fontFamily: 'Space Mono, monospace' }}>reps</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {/* Thin rule */}
+        {personalRecords.length > 0 && <div style={{ height: 1, background: rule, marginBottom: 32 }} />}
+
+        {/* ── 03 // TREES ────────────────────────────────────── */}
+        {treeProgress.length > 0 && (
+          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mb-8 md:mb-10">
+            <Sec num="03" label="TREES" rule={rule} steel={steel} />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+              {treeProgress.map((tree, i) => (
+                <motion.button
+                  key={tree.root.id}
+                  initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.25 + i * 0.04 }}
+                  onClick={() => setCurrentTab('profile')}
+                  style={{
+                    padding: '14px 16px',
+                    border: `1px solid ${rule}`,
+                    background: 'transparent',
+                    cursor: 'pointer', textAlign: 'left',
+                    transition: 'all 0.15s',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+                    <span style={{ fontSize: 11, letterSpacing: '0.06em', fontWeight: 700, color: ink, fontFamily: 'Space Mono, monospace', textTransform: 'uppercase' }}>
+                      {tree.root.name}
+                    </span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span style={{ fontSize: 9, color: steel, fontFamily: 'Space Mono, monospace' }}>{tree.root.movementPattern}</span>
+                      <span style={{ fontSize: 10, color: '#C6FF00', fontWeight: 700, fontFamily: 'Space Mono, monospace', fontVariantNumeric: 'tabular-nums' }}>{tree.pct}%</span>
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <div style={{ flex: 1, height: 2, background: rule, position: 'relative', overflow: 'hidden' }}>
+                      <motion.div
+                        style={{ position: 'absolute', left: 0, top: 0, height: '100%', background: '#C6FF00' }}
+                        initial={{ width: 0 }} animate={{ width: `${tree.pct}%` }}
+                        transition={{ duration: 0.6, delay: 0.3 + i * 0.05 }}
+                      />
+                    </div>
+                    <span style={{ fontSize: 9, color: muted, fontFamily: 'Space Mono, monospace', fontVariantNumeric: 'tabular-nums', flexShrink: 0 }}>
+                      {tree.unlocked}/{tree.total}
+                    </span>
+                  </div>
+                </motion.button>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {/* Heavy rule */}
+        <div style={heavyRule} />
+
+        {/* ── 04 // RADAR — Movement Balance ─────────────────── */}
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.25 }} className="mb-8 md:mb-10">
+          <Sec num="04" label="RADAR" rule={rule} steel={steel} />
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <p style={{ fontSize: 9, color: muted, marginBottom: 20, fontFamily: 'Space Mono, monospace', letterSpacing: '0.08em' }}>
+              TAP SEGMENTS FOR DETAIL
+            </p>
+            <RadarChart data={radarData} size={260} isLight={isLight} />
           </div>
         </motion.div>
-      )}
 
-      {personalRecords.length > 0 && <div className="divider-full" />}
+        {/* Thin rule */}
+        <div style={{ height: 1, background: rule, marginBottom: 32 }} />
 
-      {/* Progression Trees Progress */}
-      {treeProgress.length > 0 && (
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mb-8 md:mb-10">
-          <div className="flex items-center gap-2 mb-4">
-            <IconTree size={14} className="text-white/30" />
-            <span className="section-label mb-0">Progression Trees</span>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {treeProgress.map((tree, i) => (
-              <motion.button
-                key={tree.root.id}
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.25 + i * 0.04 }}
-                onClick={() => { setCurrentTab('profile'); }}
-                className="bracket-card bracket-card-interactive text-left"
-              >
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-[11px] md:text-[12px] tracking-[0.06em] font-bold text-white/80">{tree.root.name}</span>
-                  <span className="text-[9px] text-white/30">{tree.root.movementPattern}</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="flex-1 h-[3px] bg-white/[0.06] relative overflow-hidden">
+        {/* ── 05 // PATTERN — Breakdown ──────────────────────── */}
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="mb-8 md:mb-10">
+          <Sec num="05" label="PATTERN" rule={rule} steel={steel} />
+          <div>
+            {PATTERNS.map((p, i) => {
+              const count    = stats.exerciseCounts[p] || 0;
+              const maxCount = Math.max(...Object.values(stats.exerciseCounts), 1);
+              return (
+                <div key={p} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 0', borderBottom: `1px solid ${rule}` }}>
+                  <span style={{ fontSize: 9, color: steel, width: 52, textTransform: 'uppercase', fontFamily: 'Space Mono, monospace', letterSpacing: '0.08em', flexShrink: 0 }}>{p}</span>
+                  <div style={{ flex: 1, height: 2, background: rule, position: 'relative', overflow: 'hidden' }}>
                     <motion.div
-                      className="absolute left-0 top-0 h-full bg-[#C6FF00]/50"
-                      initial={{ width: 0 }}
-                      animate={{ width: `${tree.pct}%` }}
+                      style={{ position: 'absolute', left: 0, top: 0, height: '100%', background: count > 0 ? '#C6FF00' : 'transparent', opacity: 0.5 }}
+                      initial={{ width: 0 }} animate={{ width: `${maxCount > 0 ? (count / maxCount) * 100 : 0}%` }}
                       transition={{ duration: 0.6, delay: 0.3 + i * 0.05 }}
                     />
                   </div>
-                  <span className="text-[10px] text-white/50 tabular-nums shrink-0">
-                    {tree.unlocked}/{tree.total}
-                  </span>
+                  <span style={{ fontSize: 10, color: count > 0 ? ink : muted, width: 28, textAlign: 'right', fontVariantNumeric: 'tabular-nums', fontFamily: 'Space Mono, monospace', flexShrink: 0 }}>{count}</span>
                 </div>
-              </motion.button>
-            ))}
-          </div>
-        </motion.div>
-      )}
-
-      {treeProgress.length > 0 && <div className="divider-full" />}
-
-      {/* Radar Chart */}
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.25 }} className="mb-8 md:mb-10">
-        <div className="flex flex-col items-center">
-          <span className="section-label mb-0 text-center">Movement Balance</span>
-          <p className="text-[9px] text-white/30 mb-5 text-center">Tap segments for detail</p>
-          <RadarChart data={radarData} size={260} isLight={isLight} />
-        </div>
-      </motion.div>
-
-      <div className="divider-full" />
-
-      {/* Pattern Distribution */}
-      <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="mb-8 md:mb-10">
-        <span className="section-label">Pattern Breakdown</span>
-        <div className="flex flex-col gap-0">
-          {['hinge', 'squat', 'push', 'pull', 'core', 'carry', 'flow'].map((p, i) => {
-            const count = stats.exerciseCounts[p] || 0;
-            const maxCount = Math.max(...Object.values(stats.exerciseCounts), 1);
-            return (
-              <div key={p} className="flex items-center gap-3 py-2.5 group">
-                <span className="text-[10px] text-white/40 w-12 uppercase">{p}</span>
-                <div className="flex-1 h-[2px] bg-white/[0.04] relative overflow-hidden">
-                  <motion.div className="absolute left-0 top-0 h-full bg-[#C6FF00]/30 group-hover:bg-[#C6FF00]/50 transition-colors"
-                    initial={{ width: 0 }} animate={{ width: `${maxCount > 0 ? (count / maxCount) * 100 : 0}%` }}
-                    transition={{ duration: 0.6, delay: 0.3 + i * 0.05 }}
-                  />
-                </div>
-                <span className="text-[10px] text-white/35 w-8 text-right tabular-nums">{count}</span>
-              </div>
-            );
-          })}
-        </div>
-      </motion.div>
-
-      <div className="divider-full" />
-
-      {/* Volume Chart */}
-      {timePeriod !== 'all' && (
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }} className="mb-8 md:mb-10">
-          <div className="flex items-center justify-between mb-4">
-            <span className="section-label mb-0">
-              {timePeriod === '7d' ? 'Weekly' : 'Monthly'} Volume
-            </span>
-            {stats.periodData.length > 0 && (
-              <span className="text-[8px] text-white/30">
-                Avg: {Math.round(stats.periodData.reduce((a, d) => a + d.value, 0) / stats.periodData.length)}kg
-              </span>
-            )}
-          </div>
-          <VolumeChart data={stats.periodData} onBarHover={setHoveredBarIndex} hoveredIndex={hoveredBarIndex} />
-        </motion.div>
-      )}
-
-      {/* Workout History */}
-      {filteredWorkouts.length > 0 && (
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}>
-          <div className="flex items-center justify-between mb-4">
-            <span className="section-label mb-0">Workout History</span>
-            <button onClick={() => setCurrentTab('workouts')}
-              className="text-[8px] tracking-[0.12em] text-white/25 hover:text-white/50 transition-colors uppercase"
-            >
-              View All
-            </button>
-          </div>
-          <div className="flex flex-col gap-0">
-            {filteredWorkouts.slice(0, 8).map((w, i) => {
-              const vol = w.exercises.reduce((a, e) => a + e.sets.filter(s => s.completed).reduce((b, s) => b + s.reps * s.weight, 0), 0);
-              return (
-                <motion.button key={w.id}
-                  initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.6 + i * 0.03 }}
-                  onClick={() => { setActiveWorkout(w.id); setCurrentTab('workouts'); }}
-                  className="flex items-center gap-3 py-3 px-2 text-left hover:bg-white/[0.02] transition-colors group"
-                >
-                  <span className="text-[9px] text-white/25 w-5 text-right tabular-nums">{String(i + 1).padStart(2, '0')}</span>
-                  <span className="status-dot status-dot--done" />
-                  <span className="text-[11px] tracking-[0.04em] text-white/60 group-hover:text-white transition-colors truncate flex-1">
-                    {w.name}
-                  </span>
-                  <span className="dot-leader hidden md:block" />
-                  {vol > 0 && <span className="text-[9px] text-white/40 tabular-nums">{vol}kg</span>}
-                  <span className="text-[9px] text-white/25 tabular-nums shrink-0">{format(new Date(w.date), 'MMM d')}</span>
-                </motion.button>
               );
             })}
           </div>
         </motion.div>
-      )}
 
-      {filteredWorkouts.length === 0 && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bracket-card text-center py-12">
-          <p className="text-[10px] text-white/30 mb-5">
-            {timePeriod === 'all'
-              ? 'Complete workouts to see stats.'
-              : `No workouts in the last ${timePeriod === '7d' ? '7 days' : '30 days'}.`}
-          </p>
-          <button onClick={() => setCurrentTab('workouts')} className="btn btn-ghost">
-            Start Workout
-          </button>
-        </motion.div>
-      )}
-    </PageTransition>
+        {/* Thin rule */}
+        {timePeriod !== 'all' && <div style={{ height: 1, background: rule, marginBottom: 32 }} />}
+
+        {/* ── 06 // VOLUME ───────────────────────────────────── */}
+        {timePeriod !== 'all' && (
+          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }} className="mb-8 md:mb-10">
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+              <Sec num="06" label={timePeriod === '7d' ? 'WEEKLY VOL' : 'MONTHLY VOL'} rule={rule} steel={steel} noMargin />
+              {stats.periodData.length > 0 && (
+                <span style={{ fontSize: 8, color: muted, fontFamily: 'Space Mono, monospace', letterSpacing: '0.08em', flexShrink: 0, marginLeft: 12 }}>
+                  AVG {Math.round(stats.periodData.reduce((a, d) => a + d.value, 0) / stats.periodData.length)}KG
+                </span>
+              )}
+            </div>
+            <VolumeChart data={stats.periodData} onBarHover={setHoveredBarIndex} hoveredIndex={hoveredBarIndex} isLight={isLight} />
+          </motion.div>
+        )}
+
+        {/* Heavy rule */}
+        <div style={heavyRule} />
+
+        {/* ── 07 // LOG — Workout History ─────────────────────── */}
+        {filteredWorkouts.length > 0 ? (
+          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+              <Sec num="07" label="LOG" rule={rule} steel={steel} noMargin />
+              <button onClick={() => setCurrentTab('workouts')}
+                style={{ fontSize: 8, letterSpacing: '0.12em', color: muted, background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'Space Mono, monospace', textTransform: 'uppercase', flexShrink: 0, marginLeft: 12 }}
+              >
+                VIEW ALL
+              </button>
+            </div>
+            <div>
+              {filteredWorkouts.slice(0, 8).map((w, i) => {
+                const vol = w.exercises.reduce((a, e) => a + e.sets.filter(s => s.completed).reduce((b, s) => b + s.reps * s.weight, 0), 0);
+                return (
+                  <motion.button key={w.id}
+                    initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.6 + i * 0.03 }}
+                    onClick={() => { setActiveWorkout(w.id); setCurrentTab('workouts'); }}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: 10,
+                      padding: '10px 0', width: '100%',
+                      background: 'none', border: 'none',
+                      borderBottom: `1px solid ${rule}`,
+                      cursor: 'pointer', textAlign: 'left', transition: 'background 0.15s',
+                    }}
+                  >
+                    <span style={{ fontSize: 9, color: muted, width: 20, textAlign: 'right', fontVariantNumeric: 'tabular-nums', fontFamily: 'Space Mono, monospace', flexShrink: 0 }}>
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                    <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#22c55e', flexShrink: 0, boxShadow: '0 0 5px rgba(34,197,94,0.4)' }} />
+                    <span style={{ fontSize: 11, letterSpacing: '0.04em', color: ink, flex: 1, fontFamily: 'Space Mono, monospace', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {w.name}
+                    </span>
+                    <div style={{ flex: 1, borderBottom: `1px dotted ${rule}`, alignSelf: 'flex-end', marginBottom: 3, minWidth: 16, display: 'none' }} className="md:block" />
+                    {vol > 0 && <span style={{ fontSize: 9, color: steel, fontVariantNumeric: 'tabular-nums', fontFamily: 'Space Mono, monospace', flexShrink: 0 }}>{vol}kg</span>}
+                    <span style={{ fontSize: 9, color: muted, fontVariantNumeric: 'tabular-nums', fontFamily: 'Space Mono, monospace', flexShrink: 0 }}>{format(new Date(w.date), 'MMM d')}</span>
+                    <span style={{ color: muted, display: 'flex', flexShrink: 0 }}><IconChevronRight size={11} /></span>
+                  </motion.button>
+                );
+              })}
+            </div>
+          </motion.div>
+        ) : (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+            style={{ border: `1px solid ${rule}`, padding: '40px 24px', textAlign: 'center' }}
+          >
+            <p style={{ fontSize: 10, color: muted, fontFamily: 'Space Mono, monospace', marginBottom: 20 }}>
+              {timePeriod === 'all'
+                ? 'Complete workouts to see stats.'
+                : `No workouts in the last ${timePeriod === '7d' ? '7 days' : '30 days'}.`}
+            </p>
+            <button onClick={() => setCurrentTab('workouts')} className="btn btn-outink">
+              Start Workout
+            </button>
+          </motion.div>
+        )}
+
+      </PageTransition>
+    </div>
+  );
+}
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+
+function Sec({ num, label, rule, steel, noMargin }: { num: string; label: string; rule: string; steel: string; noMargin?: boolean }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: noMargin ? 0 : 20 }}>
+      <span style={{ fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: steel, fontFamily: 'Space Mono, monospace', flexShrink: 0 }}>{num}</span>
+      <div style={{ height: 1, background: rule, flex: 1 }} />
+      <span style={{ fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: steel, fontFamily: 'Space Mono, monospace', flexShrink: 0 }}>{label}</span>
+    </div>
+  );
+}
+
+function BigStat({ label, value, ink, steel }: { label: string; value: string; ink: string; steel: string }) {
+  return (
+    <div>
+      <div style={{ fontSize: 8, letterSpacing: '0.18em', textTransform: 'uppercase', color: steel, marginBottom: 6, fontFamily: 'Space Mono, monospace' }}>
+        {label}
+      </div>
+      <div style={{
+        fontFamily: "'Barlow Condensed', sans-serif",
+        fontWeight: 900, fontSize: 52, lineHeight: 1,
+        letterSpacing: '-0.02em', color: ink,
+        fontVariantNumeric: 'tabular-nums',
+      }}>
+        {value}
+      </div>
+    </div>
   );
 }
