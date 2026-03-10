@@ -316,7 +316,8 @@ function GridChart({ data, isLight }: {
                     } : {
                       padding: '3px 4px',
                       fontSize: 8,
-                      color: hasActivity ? numColor : labelColor,
+                      color: hasActivity ? '#0A0A0A' : labelColor,
+                      textShadow: hasActivity && !isLight ? '0 0 4px rgba(255,255,255,0.85)' : 'none',
                     }),
                   }}>
                     {dayNum}
@@ -340,7 +341,7 @@ function GridChart({ data, isLight }: {
               {stat.label}
             </div>
             <div style={{ fontFamily: 'inherit', lineHeight: 1.1 }}>
-              <span style={{ fontSize: 22, fontWeight: 700, color: stat.accent ? '#C6FF00' : 'inherit' }}>
+              <span style={{ fontSize: 22, fontWeight: 700, color: stat.accent ? (isLight ? '#3D6000' : '#C6FF00') : 'inherit' }}>
                 {stat.value}
               </span>
               {stat.sub && (
