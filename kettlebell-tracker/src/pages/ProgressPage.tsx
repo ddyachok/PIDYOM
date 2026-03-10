@@ -6,6 +6,7 @@ import { EXERCISES, getProgressionRoots } from '../data/exercises';
 import { format, subDays, isAfter, parseISO } from 'date-fns';
 import { RadarDataPoint } from '../lib/types';
 import { IconChevronRight } from '../components/icons/Icons';
+import ProgressionTree from '../components/workout/ProgressionTree';
 
 type TimePeriod = '7d' | '30d' | 'all';
 
@@ -189,6 +190,7 @@ export default function ProgressPage() {
   const isLight = theme === 'light';
   const [timePeriod, setTimePeriod] = useState<TimePeriod>('30d');
   const [hoveredBarIndex, setHoveredBarIndex] = useState<number | null>(null);
+  const [selectedTreeId, setSelectedTreeId] = useState<string | null>(null);
 
   // Semantic tokens — same pattern as ProfilePage
   const ink      = isLight ? '#0A0A0A'             : '#E8E8E1';
@@ -271,6 +273,10 @@ export default function ProgressPage() {
     const max = Math.max(...patterns.map(p => stats.exerciseCounts[p] || 0), 10);
     return patterns.map(p => ({ label: p.toUpperCase(), value: stats.exerciseCounts[p] || 0, fullMark: max }));
   }, [stats]);
+
+  if (selectedTreeId) {
+    return <ProgressionTree exerciseId={selectedTreeId} onBack={() => setSelectedTreeId(null)} />;
+  }
 
   const PATTERNS = ['hinge', 'squat', 'push', 'pull', 'core', 'carry', 'flow'];
 
@@ -388,7 +394,7 @@ export default function ProgressPage() {
                   key={tree.root.id}
                   initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.25 + i * 0.04 }}
-                  onClick={() => setCurrentTab('profile')}
+                  onClick={() => setSelectedTreeId(tree.root.id)}
                   style={{
                     padding: '14px 16px',
                     border: `1px solid ${rule}`,
