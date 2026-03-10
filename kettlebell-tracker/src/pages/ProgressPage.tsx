@@ -149,7 +149,7 @@ function VolumeChart({ data, onBarHover, hoveredIndex, isLight }: {
     return <div style={{ height: 80, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: labelColor, fontFamily: 'Space Mono, monospace' }}>No data</div>;
   }
   return (
-    <div style={{ overflowX: 'auto', overflowY: 'visible', paddingBottom: 8, marginLeft: -4, marginRight: -4 }}>
+    <div style={{ overflowX: 'auto', overflowY: 'visible', paddingTop: 36, paddingBottom: 8, marginLeft: -4, marginRight: -4 }}>
       <div style={{ display: 'flex', alignItems: 'flex-end', gap: 2, height: 88, minWidth: data.length * 18 }}>
         {data.map((d, i) => {
           const heightPct = max > 0 ? (d.value / max) * 100 : 0;
