@@ -230,7 +230,7 @@ export default function SchedulePage() {
                 transition={{ delay: i * 0.003 }}
                 onClick={() => {
                   setSelectedDate(dateStr);
-                  if (!entry) setShowScheduleModal(true);
+                  if (!entry && !workout) setShowScheduleModal(true);
                 }}
                 className={`cal-cell${isToday ? ' cal-cell--today' : ''}${!isCurrentMonth ? ' cal-cell--other-month' : ''}`}
                 style={{
@@ -256,6 +256,14 @@ export default function SchedulePage() {
                     style={{ display: 'block', fontSize: 7 }}
                   >
                     {WORKOUT_TYPE_INFO[entry.workoutType].label}
+                  </span>
+                )}
+                {!entry && workout && (
+                  <span
+                    className="cal-tag cal-tag--acid"
+                    style={{ display: 'block', fontSize: 7 }}
+                  >
+                    WOD
                   </span>
                 )}
                 {workout?.completed && (
@@ -329,6 +337,22 @@ export default function SchedulePage() {
                   style={{ fontSize: 10 }}
                 >
                   {workoutMap[selectedDate] ? 'VIEW WORKOUT →' : 'START WORKOUT →'}
+                </button>
+              </div>
+            ) : workoutMap[selectedDate] ? (
+              <div>
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="cal-tag cal-tag--acid">WOD</span>
+                  <span style={{ fontSize: 10, color: ink, fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, textTransform: 'uppercase' }}>
+                    {workoutMap[selectedDate].name}
+                  </span>
+                </div>
+                <button
+                  onClick={() => { setActiveWorkout(workoutMap[selectedDate].id); setCurrentTab('workouts'); }}
+                  className="btn btn-solid btn-full"
+                  style={{ fontSize: 10 }}
+                >
+                  {workoutMap[selectedDate].completed ? 'VIEW WORKOUT →' : 'CONTINUE WORKOUT →'}
                 </button>
               </div>
             ) : (
