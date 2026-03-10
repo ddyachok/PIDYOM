@@ -184,6 +184,125 @@ function VolumeChart({ data, onBarHover, hoveredIndex, isLight }: {
   );
 }
 
+// ── Grid Heatmap ─────────────────────────────────────────────────────────────
+function GridChart({ data, isLight }: {
+  data: { date: string; volume: number }[];
+  isLight: boolean;
+}) {
+  const emptyColor = isLight ? 'rgba(10,10,10,0.07)' : 'rgba(255,255,255,0.06)';
+  const labelColor = isLight ? 'rgba(10,10,10,0.35)' : 'rgba(255,255,255,0.28)';
+  const maxVol = Math.max(...data.map(d => d.volume), 1);
+  const weeks: { date: string; volume: number }[][] = [];
+  for (let i = 0; i < data.length; i += 7) {
+    weeks.push(data.slice(i, i + 7));
+  }
+  const activeDays = data.filter(d => d.volume > 0).length;
+  const weekCounts = weeks.map(w => w.filter(d => d.volume > 0).length);
+  const bestWeek = Math.max(...weekCounts, 0);
+  const thisWeek = weekCounts[weekCounts.length - 1] ?? 0;
+  const DAY_LABELS = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'];
+  const CELL = 12;
+  const GAP = 3;
+  const weekMonthLabels = weeks.map(week => {
+    const firstDay = week[0]?.date;
+    return firstDay ? format(parseISO(firstDay), 'MMM').toUpperCase() : '';
+  });
+  const showMonthLabel = weekMonthLabels.map((m, i) => i === 0 || m !== weekMonthLabels[i - 1]);
+  const hasMultipleMonths = new Set(weekMonthLabels).size > 1;
+
+  return (
+    <div style={{ overflowX: 'auto', paddingBottom: 4 }}>
+      <div style={{ display: 'flex', gap: GAP, minWidth: 'max-content' }}>
+        {/* Day-of-week label column */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: GAP, marginTop: hasMultipleMonths ? CELL + GAP : 0 }}>
+          {DAY_LABELS.map(label => (
+            <div
+              key={label}
+              style={{
+                width: CELL,
+                height: CELL,
+                fontSize: 7,
+                color: labelColor,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'flex-end',
+                fontFamily: 'inherit',
+                letterSpacing: '0.05em',
+              }}
+            >
+              {label}
+            </div>
+          ))}
+        </div>
+        {/* Week columns */}
+        {weeks.map((week, wi) => (
+          <div key={wi} style={{ display: 'flex', flexDirection: 'column', gap: GAP }}>
+            {hasMultipleMonths && (
+              <div
+                style={{
+                  height: CELL,
+                  fontSize: 7,
+                  color: labelColor,
+                  fontFamily: 'inherit',
+                  letterSpacing: '0.05em',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                {showMonthLabel[wi] ? weekMonthLabels[wi] : ''}
+              </div>
+            )}
+            {week.map((day, di) => {
+              const hasActivity = day.volume > 0;
+              const opacity = hasActivity ? Math.max(0.35, day.volume / maxVol) : 1;
+              return (
+                <div
+                  key={di}
+                  style={{
+                    width: CELL,
+                    height: CELL,
+                    borderRadius: 2,
+                    background: hasActivity ? `rgba(198,255,0,${opacity})` : emptyColor,
+                  }}
+                />
+              );
+            })}
+          </div>
+        ))}
+      </div>
+      {/* Stats row */}
+      <div style={{ display: 'flex', gap: 24, marginTop: 14 }}>
+        {[
+          { label: 'ACTIVE', value: `${activeDays}/${data.length}` },
+          { label: 'BEST WEEK', value: String(bestWeek), accent: true },
+          { label: 'THIS WEEK', value: String(thisWeek) },
+        ].map(stat => (
+          <div key={stat.label}>
+            <div style={{
+              fontSize: 9,
+              letterSpacing: '0.12em',
+              color: labelColor,
+              marginBottom: 2,
+              fontFamily: 'inherit',
+            }}>
+              {stat.label}
+            </div>
+            <div style={{
+              fontSize: 20,
+              fontWeight: 700,
+              color: stat.accent ? '#C6FF00' : 'inherit',
+              fontFamily: 'inherit',
+              lineHeight: 1.2,
+            }}>
+              {stat.value}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ── Page ─────────────────────────────────────────────────────────────────────
 export default function ProgressPage() {
   const { workouts, setCurrentTab, setActiveWorkout, unlockedExercises, userEquipment, theme } = useStore();
@@ -273,6 +392,20 @@ export default function ProgressPage() {
     const max = Math.max(...patterns.map(p => stats.exerciseCounts[p] || 0), 10);
     return patterns.map(p => ({ label: p.toUpperCase(), value: stats.exerciseCounts[p] || 0, fullMark: max }));
   }, [stats]);
+
+  const gridData = useMemo(() => {
+    if (timePeriod === 'all') return [];
+    const days = timePeriod === '7d' ? 7 : 28;
+    return Array.from({ length: days }, (_, i) => {
+      const d = subDays(new Date(), days - 1 - i);
+      const date = format(d, 'yyyy-MM-dd');
+      const vol = filteredWorkouts
+        .filter(w => w.date === date)
+        .reduce((a, w) => a + w.exercises.reduce((b, e) =>
+          b + e.sets.filter(s => s.completed).reduce((c, s) => c + s.reps * s.weight, 0), 0), 0);
+      return { date, volume: vol };
+    });
+  }, [filteredWorkouts, timePeriod]);
 
   if (selectedTreeId) {
     return <ProgressionTree exerciseId={selectedTreeId} onBack={() => setSelectedTreeId(null)} />;
@@ -548,6 +681,23 @@ export default function ProgressPage() {
               Start Workout
             </button>
           </motion.div>
+        )}
+
+        {/* ── 08 GRID ── */}
+        {timePeriod !== 'all' && (
+          <div>
+            <div style={{ height: 1, background: isLight ? 'rgba(10,10,10,0.08)' : 'rgba(255,255,255,0.06)', margin: '0 0 20px' }} />
+            <div style={{
+              fontSize: 9,
+              letterSpacing: '0.18em',
+              opacity: 0.3,
+              marginBottom: 16,
+              fontFamily: 'inherit',
+            }}>
+              08 // GRID
+            </div>
+            <GridChart data={gridData} isLight={isLight} />
+          </div>
         )}
 
       </PageTransition>
