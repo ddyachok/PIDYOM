@@ -33,6 +33,7 @@ export default function HomePage() {
 
   const today = format(new Date(), 'yyyy-MM-dd');
   const todaySchedule = schedule.find(s => s.date === today);
+  const todayWorkout = workouts.find(w => w.date === today);
   const completedWorkouts = workouts.filter(w => w.completed).length;
   const totalSets = workouts.reduce((acc, w) => acc + w.exercises.reduce((a, e) => a + e.sets.filter(s => s.completed).length, 0), 0);
   const totalVolume = workouts.reduce((acc, w) => acc + w.exercises.reduce((a, e) => a + e.sets.filter(s => s.completed).reduce((v, s) => v + s.weight * s.reps, 0), 0), 0);
@@ -210,6 +211,32 @@ export default function HomePage() {
                   style={{ fontSize: 11, letterSpacing: '0.12em' }}
                 >
                   EXECUTE WORKOUT →
+                </button>
+              </div>
+            ) : todayWorkout ? (
+              <div className="wk-card">
+                <div
+                  style={{
+                    fontFamily: "'Barlow Condensed', sans-serif",
+                    fontWeight: 700,
+                    fontSize: 20,
+                    letterSpacing: '0.02em',
+                    color: ink,
+                    textTransform: 'uppercase',
+                    marginBottom: 6,
+                  }}
+                >
+                  {todayWorkout.name}
+                </div>
+                <p style={{ fontSize: 11, color: '#6A6A62', lineHeight: 1.6, marginBottom: 16 }}>
+                  {todayWorkout.completed ? 'Workout completed today.' : 'Workout in progress — keep going.'}
+                </p>
+                <button
+                  onClick={() => setCurrentTab('workouts')}
+                  className="btn btn-acid btn-full"
+                  style={{ fontSize: 11, letterSpacing: '0.12em' }}
+                >
+                  {todayWorkout.completed ? 'VIEW WORKOUT →' : 'CONTINUE WORKOUT →'}
                 </button>
               </div>
             ) : (
