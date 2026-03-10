@@ -6,6 +6,7 @@ import { EXERCISES, getProgressionRoots } from '../data/exercises';
 import { format, subDays, isAfter, parseISO } from 'date-fns';
 import { RadarDataPoint } from '../lib/types';
 import { IconChevronRight } from '../components/icons/Icons';
+import ProgressionTree from '../components/workout/ProgressionTree';
 
 type TimePeriod = '7d' | '30d' | 'all';
 
@@ -148,7 +149,7 @@ function VolumeChart({ data, onBarHover, hoveredIndex, isLight }: {
     return <div style={{ height: 80, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: labelColor, fontFamily: 'Space Mono, monospace' }}>No data</div>;
   }
   return (
-    <div style={{ overflowX: 'auto', overflowY: 'visible', paddingBottom: 8, marginLeft: -4, marginRight: -4 }}>
+    <div style={{ overflowX: 'auto', overflowY: 'visible', paddingTop: 36, paddingBottom: 8, marginLeft: -4, marginRight: -4 }}>
       <div style={{ display: 'flex', alignItems: 'flex-end', gap: 2, height: 88, minWidth: data.length * 18 }}>
         {data.map((d, i) => {
           const heightPct = max > 0 ? (d.value / max) * 100 : 0;
@@ -183,12 +184,183 @@ function VolumeChart({ data, onBarHover, hoveredIndex, isLight }: {
   );
 }
 
+// ── Grid Heatmap ─────────────────────────────────────────────────────────────
+function GridChart({ data, isLight }: {
+  data: { date: string; volume: number }[];
+  isLight: boolean;
+}) {
+  const border    = isLight ? 'rgba(10,10,10,0.10)' : 'rgba(255,255,255,0.08)';
+  const labelColor = isLight ? 'rgba(10,10,10,0.35)' : 'rgba(255,255,255,0.28)';
+  const emptyBg   = isLight ? 'rgba(10,10,10,0.018)' : 'rgba(255,255,255,0.02)';
+  const numColor  = isLight ? '#0A0A0A' : '#E8E8E1';
+
+  const maxVol     = Math.max(...data.map(d => d.volume), 1);
+  const today      = format(new Date(), 'yyyy-MM-dd');
+  const weeks: { date: string; volume: number }[][] = [];
+  for (let i = 0; i < data.length; i += 7) weeks.push(data.slice(i, i + 7));
+
+  const activeDays = data.filter(d => d.volume > 0).length;
+  const weekCounts = weeks.map(w => w.filter(d => d.volume > 0).length);
+  const bestWeek   = Math.max(...weekCounts, 0);
+  const thisWeek   = weekCounts[weekCounts.length - 1] ?? 0;
+
+  const DAY_LABELS = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'];
+
+  // Month label shown on first row of each new month
+  const weekMonthLabels = weeks.map(w => w[0]?.date ? format(parseISO(w[0].date), 'MMM').toUpperCase() : '');
+  const hasMultipleMonths = new Set(weekMonthLabels).size > 1;
+
+  // Grid: 18px month-label column + 7 equal day columns
+  const cols = hasMultipleMonths ? '18px repeat(7, 1fr)' : 'repeat(7, 1fr)';
+
+  return (
+    <div>
+      {/* Bordered grid table */}
+      <div style={{ borderTop: `1px solid ${border}`, borderLeft: `1px solid ${border}` }}>
+        {/* Day header row */}
+        <div style={{ display: 'grid', gridTemplateColumns: cols }}>
+          {/* Empty corner cell when showing month labels */}
+          {hasMultipleMonths && (
+            <div style={{ borderRight: `1px solid ${border}`, borderBottom: `1px solid ${border}` }} />
+          )}
+          {DAY_LABELS.map(label => (
+            <div
+              key={label}
+              style={{
+                padding: '3px 0',
+                fontSize: 6.5,
+                letterSpacing: '0.10em',
+                color: labelColor,
+                textAlign: 'center',
+                borderRight: `1px solid ${border}`,
+                borderBottom: `1px solid ${border}`,
+                fontFamily: 'inherit',
+              }}
+            >
+              {label}
+            </div>
+          ))}
+        </div>
+
+        {/* Week rows */}
+        {weeks.map((week, wi) => (
+          <div key={week[0]?.date ?? wi} style={{ display: 'grid', gridTemplateColumns: cols }}>
+            {/* Month label cell */}
+            {hasMultipleMonths && (() => {
+              const showLabel = wi === 0 || weekMonthLabels[wi] !== weekMonthLabels[wi - 1];
+              return (
+                <div style={{
+                  borderRight: `1px solid ${border}`,
+                  borderBottom: `1px solid ${border}`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 5.5,
+                  letterSpacing: '0.08em',
+                  color: showLabel ? labelColor : 'transparent',
+                  fontFamily: 'inherit',
+                  writingMode: 'vertical-lr' as const,
+                  textOrientation: 'mixed' as const,
+                  transform: 'rotate(180deg)',
+                }}>
+                  {weekMonthLabels[wi]}
+                </div>
+              );
+            })()}
+            {week.map(day => {
+              const isToday    = day.date === today;
+              const hasActivity = day.volume > 0;
+              const fillPct    = hasActivity ? Math.max(20, Math.round((day.volume / maxVol) * 100)) : 0;
+              const dayNum     = parseISO(day.date).getDate();
+
+              return (
+                <div
+                  key={day.date}
+                  style={{
+                    position: 'relative',
+                    borderRight: `1px solid ${border}`,
+                    borderBottom: `1px solid ${border}`,
+                    minHeight: 34,
+                    overflow: 'hidden',
+                    background: emptyBg,
+                  }}
+                >
+                  {/* Volume fill rising from bottom */}
+                  {hasActivity && (
+                    <div style={{
+                      position: 'absolute',
+                      bottom: 0, left: 0, right: 0,
+                      height: `${fillPct}%`,
+                      background: `rgba(198,255,0,${Math.max(0.22, day.volume / maxVol)})`,
+                      transition: 'height 0.3s ease',
+                    }} />
+                  )}
+                  {/* Date number */}
+                  <div style={{
+                    position: 'relative',
+                    zIndex: 1,
+                    fontWeight: 700,
+                    fontFamily: 'inherit',
+                    lineHeight: 1,
+                    ...(isToday ? {
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      background: '#C6FF00',
+                      color: '#0A0A0A',
+                      width: 14,
+                      height: 14,
+                      margin: 3,
+                      padding: 0,
+                      fontSize: 7,
+                    } : {
+                      padding: '3px 4px',
+                      fontSize: 8,
+                      color: hasActivity ? numColor : labelColor,
+                    }),
+                  }}>
+                    {dayNum}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ))}
+      </div>
+
+      {/* Stats row */}
+      <div style={{ display: 'flex', gap: 24, marginTop: 14, paddingTop: 12, borderTop: `1px solid ${border}` }}>
+        {[
+          { label: 'ACTIVE', value: `${activeDays}`, sub: `/${data.length}` },
+          { label: 'BEST WEEK', value: String(bestWeek), accent: true },
+          { label: 'THIS WEEK', value: String(thisWeek) },
+        ].map(stat => (
+          <div key={stat.label}>
+            <div style={{ fontSize: 8, letterSpacing: '0.14em', color: labelColor, marginBottom: 3, fontFamily: 'inherit' }}>
+              {stat.label}
+            </div>
+            <div style={{ fontFamily: 'inherit', lineHeight: 1.1 }}>
+              <span style={{ fontSize: 22, fontWeight: 700, color: stat.accent ? '#C6FF00' : 'inherit' }}>
+                {stat.value}
+              </span>
+              {stat.sub && (
+                <span style={{ fontSize: 11, color: labelColor, fontWeight: 400 }}>{stat.sub}</span>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ── Page ─────────────────────────────────────────────────────────────────────
 export default function ProgressPage() {
   const { workouts, setCurrentTab, setActiveWorkout, unlockedExercises, userEquipment, theme } = useStore();
   const isLight = theme === 'light';
   const [timePeriod, setTimePeriod] = useState<TimePeriod>('30d');
   const [hoveredBarIndex, setHoveredBarIndex] = useState<number | null>(null);
+  const [selectedTreeId, setSelectedTreeId] = useState<string | null>(null);
 
   // Semantic tokens — same pattern as ProfilePage
   const ink      = isLight ? '#0A0A0A'             : '#E8E8E1';
@@ -271,6 +443,24 @@ export default function ProgressPage() {
     const max = Math.max(...patterns.map(p => stats.exerciseCounts[p] || 0), 10);
     return patterns.map(p => ({ label: p.toUpperCase(), value: stats.exerciseCounts[p] || 0, fullMark: max }));
   }, [stats]);
+
+  const gridData = useMemo(() => {
+    if (timePeriod === 'all') return [];
+    const days = timePeriod === '7d' ? 7 : 28;
+    return Array.from({ length: days }, (_, i) => {
+      const d = subDays(new Date(), days - 1 - i);
+      const date = format(d, 'yyyy-MM-dd');
+      const vol = filteredWorkouts
+        .filter(w => w.date === date)
+        .reduce((a, w) => a + w.exercises.reduce((b, e) =>
+          b + e.sets.filter(s => s.completed).reduce((c, s) => c + s.reps * s.weight, 0), 0), 0);
+      return { date, volume: vol };
+    });
+  }, [filteredWorkouts, timePeriod]);
+
+  if (selectedTreeId) {
+    return <ProgressionTree exerciseId={selectedTreeId} onBack={() => setSelectedTreeId(null)} />;
+  }
 
   const PATTERNS = ['hinge', 'squat', 'push', 'pull', 'core', 'carry', 'flow'];
 
@@ -388,7 +578,7 @@ export default function ProgressPage() {
                   key={tree.root.id}
                   initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.25 + i * 0.04 }}
-                  onClick={() => setCurrentTab('profile')}
+                  onClick={() => setSelectedTreeId(tree.root.id)}
                   style={{
                     padding: '14px 16px',
                     border: `1px solid ${rule}`,
@@ -541,6 +731,15 @@ export default function ProgressPage() {
             <button onClick={() => setCurrentTab('workouts')} className="btn btn-outink">
               Start Workout
             </button>
+          </motion.div>
+        )}
+
+        {/* ── 08 // GRID ── */}
+        {timePeriod !== 'all' && (
+          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}>
+            <div style={{ height: 1, background: rule, marginBottom: 32, marginTop: 32 }} />
+            <Sec num="08" label="GRID" rule={rule} steel={steel} />
+            <GridChart data={gridData} isLight={isLight} />
           </motion.div>
         )}
 
