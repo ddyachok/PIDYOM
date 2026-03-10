@@ -83,6 +83,7 @@ export default function App() {
     if (_preview === 'progress') return <ProgressPage />;
     if (_preview === 'workouts') return <WorkoutsPage />;
     if (_preview === 'home')     return <HomePage />;
+    if (_preview === 'schedule') return <SchedulePage />;
   }
 
   // Loading state
