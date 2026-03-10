@@ -236,7 +236,7 @@ function GridChart({ data, isLight }: {
         </div>
         {/* Week columns */}
         {weeks.map((week, wi) => (
-          <div key={wi} style={{ display: 'flex', flexDirection: 'column', gap: GAP }}>
+          <div key={week[0]?.date ?? wi} style={{ display: 'flex', flexDirection: 'column', gap: GAP }}>
             {hasMultipleMonths && (
               <div
                 style={{
@@ -257,7 +257,7 @@ function GridChart({ data, isLight }: {
               const opacity = hasActivity ? Math.max(0.35, day.volume / maxVol) : 1;
               return (
                 <div
-                  key={di}
+                  key={day.date}
                   style={{
                     width: CELL,
                     height: CELL,
