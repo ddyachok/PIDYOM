@@ -299,8 +299,6 @@ function GridChart({ data, isLight }: {
                   <div style={{
                     position: 'relative',
                     zIndex: 1,
-                    padding: '3px 4px',
-                    fontSize: 8,
                     fontWeight: 700,
                     fontFamily: 'inherit',
                     lineHeight: 1,
@@ -316,6 +314,8 @@ function GridChart({ data, isLight }: {
                       padding: 0,
                       fontSize: 7,
                     } : {
+                      padding: '3px 4px',
+                      fontSize: 8,
                       color: hasActivity ? numColor : labelColor,
                     }),
                   }}>
