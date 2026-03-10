@@ -683,21 +683,13 @@ export default function ProgressPage() {
           </motion.div>
         )}
 
-        {/* ── 08 GRID ── */}
+        {/* ── 08 // GRID ── */}
         {timePeriod !== 'all' && (
-          <div>
-            <div style={{ height: 1, background: isLight ? 'rgba(10,10,10,0.08)' : 'rgba(255,255,255,0.06)', margin: '0 0 20px' }} />
-            <div style={{
-              fontSize: 9,
-              letterSpacing: '0.18em',
-              opacity: 0.3,
-              marginBottom: 16,
-              fontFamily: 'inherit',
-            }}>
-              08 // GRID
-            </div>
+          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}>
+            <div style={{ height: 1, background: rule, marginBottom: 32, marginTop: 32 }} />
+            <Sec num="08" label="GRID" rule={rule} steel={steel} />
             <GridChart data={gridData} isLight={isLight} />
-          </div>
+          </motion.div>
         )}
 
       </PageTransition>
