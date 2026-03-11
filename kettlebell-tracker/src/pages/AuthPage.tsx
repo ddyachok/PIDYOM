@@ -56,11 +56,11 @@ export default function AuthPage() {
   const handleSocialLogin = async (provider: 'github' | 'google') => {
     setError('');
     try {
-      // VITE_APP_URL must match what's registered in Neon Console → Auth → Allowed Callback URLs
-      const callbackURL = import.meta.env.VITE_APP_URL || window.location.origin;
+      // Always use current origin so OAuth redirects back to wherever the app is deployed.
+      // (A build-time env var would bake in the wrong URL for production.)
       await authClient.signIn.social({
         provider,
-        callbackURL,
+        callbackURL: window.location.origin,
       });
     } catch (err: any) {
       setError(err?.message || `${provider} login failed`);
