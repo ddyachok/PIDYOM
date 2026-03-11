@@ -2,16 +2,10 @@
   "buildCommand": "cd kettlebell-tracker && npm install && npm run build",
   "outputDirectory": "kettlebell-tracker/dist",
   "installCommand": "echo 'skip root install'",
-  "routes": [
+  "rewrites": [
     {
-      "src": "/neondb/auth/(.*)",
-      "dest": "/api/auth/$1",
-      "status": 308
-    },
-    { "handle": "filesystem" },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
