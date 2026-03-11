@@ -11,12 +11,13 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      // Proxy Neon Auth requests so session cookies are same-origin in dev too.
-      // Matches the Vercel rewrite in vercel.json for production parity.
-      '/neondb/auth': {
+      // Mirrors the Vercel Edge Function in api/auth/[...path].ts.
+      // /api/auth/sign-in/email → neonauth.../neondb/auth/sign-in/email
+      '/api/auth': {
         target: 'https://ep-plain-art-ag9lypls.neonauth.c-2.eu-central-1.aws.neon.tech',
         changeOrigin: true,
         secure: true,
+        rewrite: (path) => path.replace(/^\/api\/auth/, '/neondb/auth'),
       },
     },
   },
