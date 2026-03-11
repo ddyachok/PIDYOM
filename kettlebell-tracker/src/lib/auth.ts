@@ -1,18 +1,14 @@
 import { createInternalNeonAuth } from '@neondatabase/neon-js/auth';
 import { BetterAuthReactAdapter } from '@neondatabase/neon-js/auth/react/adapters';
 
-const authUrl = import.meta.env.VITE_NEON_AUTH_URL;
-
-if (!authUrl) {
-  console.warn(
-    '[PIDYOM] VITE_NEON_AUTH_URL is not set. Auth will not work.\n' +
-    'Get your Auth URL from: Neon Console → Auth → Configuration'
-  );
-}
+// Use a same-origin proxied path so Safari's ITP does not block session cookies.
+// In dev:        Vite proxy  /neondb/auth → neonauth server  (see vite.config.ts)
+// In production: Vercel edge fn /neondb/auth → neonauth server (see api/auth/[...path].js)
+const authUrl = `${window.location.origin}/neondb/auth`;
 
 // createInternalNeonAuth returns { adapter, getJWTToken }
 // createAuthClient only returns the adapter — no getJWTToken!
-const neonAuth = createInternalNeonAuth(authUrl || '', {
+const neonAuth = createInternalNeonAuth(authUrl, {
   adapter: BetterAuthReactAdapter(),
 });
 
