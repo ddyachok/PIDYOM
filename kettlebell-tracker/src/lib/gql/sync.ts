@@ -61,7 +61,7 @@ export function syncUpdateUserName(authUserId: string, name: string) {
 
 /**
  * Deletes the user's profile row from Hasura (cascades to workouts, schedule,
- * exercise unlocks via FK constraints), then deletes the auth user via Neon Auth.
+ * and exercise unlocks via FK constraints).
  * Throws on failure so the caller can surface the error.
  */
 export async function syncDeleteAccount(authUserId: string): Promise<void> {
