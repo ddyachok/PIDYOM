@@ -1,55 +1,85 @@
 /**
- * Vercel Edge Function — Neon Auth reverse proxy.
+ * Vercel Node.js Serverless Function — Neon Auth reverse proxy.
  *
  * Safari's ITP blocks third-party cookies. By proxying Neon Auth through
  * the same origin (pidyom.vercel.app), session cookies become first-party
  * and Safari can't block them.
  *
- * Better Auth also performs an Origin header check (CSRF protection), so
- * we spoof the Origin to the Neon Auth server's domain.
+ * Uses Node.js runtime (not edge) for reliable response/cookie handling.
  */
-
-export const config = {
-  runtime: 'edge',
-};
 
 const NEON_AUTH_BASE =
   'https://ep-plain-art-ag9lypls.neonauth.c-2.eu-central-1.aws.neon.tech';
 
-export default async function handler(req) {
-  const url = new URL(req.url);
+/** Headers we must not forward to the upstream server. */
+const HOP_BY_HOP = new Set([
+  'connection', 'keep-alive', 'proxy-authenticate', 'proxy-authorization',
+  'te', 'trailer', 'transfer-encoding', 'upgrade',
+]);
 
-  // /api/auth/sign-in/email → /neondb/auth/sign-in/email
-  const neonPath = url.pathname.replace(/^\/api\/auth/, '/neondb/auth');
-  const targetUrl = `${NEON_AUTH_BASE}${neonPath}${url.search}`;
+export default async function handler(req, res) {
+  // req.query.path is the [...path] catch-all, e.g. ['sign-in', 'social']
+  const pathParts = req.query.path ?? [];
+  const pathStr = Array.isArray(pathParts) ? pathParts.join('/') : pathParts;
 
-  // Forward headers, but spoof Origin so Neon Auth trusts the request.
-  const forwardHeaders = new Headers(req.headers);
-  forwardHeaders.set('Origin', NEON_AUTH_BASE);
-  forwardHeaders.set('Referer', `${NEON_AUTH_BASE}/`);
-  forwardHeaders.delete('host');
+  // Rebuild query string without the 'path' catch-all param
+  const qs = new URLSearchParams();
+  for (const [k, v] of Object.entries(req.query)) {
+    if (k !== 'path') qs.append(k, v);
+  }
+  const qsPart = qs.toString() ? `?${qs.toString()}` : '';
+  const targetUrl = `${NEON_AUTH_BASE}/neondb/auth/${pathStr}${qsPart}`;
 
-  const hasBody = req.method !== 'GET' && req.method !== 'HEAD';
+  // Build forwarded headers
+  const forwardHeaders = {};
+  for (const [k, v] of Object.entries(req.headers)) {
+    if (!HOP_BY_HOP.has(k.toLowerCase())) {
+      forwardHeaders[k] = v;
+    }
+  }
+  // Point Host at the upstream server so it knows which vhost to use
+  forwardHeaders['host'] = new URL(NEON_AUTH_BASE).host;
+  // Remove Accept-Encoding so we get a plain (non-compressed) response body
+  // that we can forward without worrying about double-decompression.
+  delete forwardHeaders['accept-encoding'];
+
+  // Buffer the request body (needed for POST /sign-in/email etc.)
+  let body = undefined;
+  if (req.method !== 'GET' && req.method !== 'HEAD') {
+    const chunks = [];
+    for await (const chunk of req) chunks.push(chunk);
+    body = Buffer.concat(chunks);
+  }
 
   const upstream = await fetch(targetUrl, {
     method: req.method,
     headers: forwardHeaders,
-    body: hasBody ? req.body : null,
-    duplex: hasBody ? 'half' : undefined,
-    // CRITICAL: don't follow redirects server-side. Social login returns a
-    // 302 to Google/GitHub OAuth — the *browser* must follow that redirect,
-    // not the edge function.
+    body,
+    // Don't follow redirects — social login returns a 302 to Google/GitHub.
+    // The browser must follow that redirect, not this function.
     redirect: 'manual',
   });
 
-  // Forward upstream response headers (including Set-Cookie).
-  // Without an explicit Domain attribute the browser stores them as
-  // first-party cookies for pidyom.vercel.app — visible to Safari.
-  const responseHeaders = new Headers(upstream.headers);
+  // Forward status
+  res.status(upstream.status);
 
-  return new Response(upstream.body, {
-    status: upstream.status,
-    statusText: upstream.statusText,
-    headers: responseHeaders,
-  });
+  // Forward response headers, fixing up Set-Cookie so cookies land on
+  // pidyom.vercel.app instead of the upstream neonauth domain.
+  for (const [k, v] of upstream.headers.entries()) {
+    const lower = k.toLowerCase();
+    if (HOP_BY_HOP.has(lower)) continue;
+
+    if (lower === 'set-cookie') {
+      // Strip explicit Domain attribute — browser will default to current host
+      const cleaned = v.replace(/;\s*domain=[^;]*/gi, '');
+      // Append each Set-Cookie separately (res.setHeader overwrites)
+      res.appendHeader('set-cookie', cleaned);
+    } else {
+      res.setHeader(k, v);
+    }
+  }
+
+  // Stream the response body
+  const buffer = await upstream.arrayBuffer();
+  res.end(Buffer.from(buffer));
 }
