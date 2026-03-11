@@ -53,18 +53,13 @@ export default function AuthPage() {
     }
   };
 
-  const handleSocialLogin = async (provider: 'github' | 'google') => {
+  const handleSocialLogin = (provider: 'github' | 'google') => {
     setError('');
-    try {
-      // Always use current origin so OAuth redirects back to wherever the app is deployed.
-      // (A build-time env var would bake in the wrong URL for production.)
-      await authClient.signIn.social({
-        provider,
-        callbackURL: window.location.origin,
-      });
-    } catch (err: any) {
-      setError(err?.message || `${provider} login failed`);
-    }
+    // Navigate directly to the Neon Auth social endpoint (GET redirect).
+    // This avoids a cross-origin POST which triggers Better Auth's CSRF 403.
+    const authUrl = import.meta.env.VITE_NEON_AUTH_URL;
+    const callbackURL = encodeURIComponent(window.location.origin);
+    window.location.href = `${authUrl}/sign-in/social?provider=${provider}&callbackURL=${callbackURL}`;
   };
 
   return (

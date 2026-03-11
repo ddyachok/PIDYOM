@@ -1,11 +1,7 @@
 import { createInternalNeonAuth } from '@neondatabase/neon-js/auth';
 import { BetterAuthReactAdapter } from '@neondatabase/neon-js/auth/react/adapters';
 
-// In production, proxy through Vercel rewrites (same-origin → no CSRF 403).
-// In dev, hit the Neon Auth server directly.
-const authUrl = import.meta.env.PROD
-  ? `${window.location.origin}/neondb/auth`
-  : import.meta.env.VITE_NEON_AUTH_URL;
+const authUrl = import.meta.env.VITE_NEON_AUTH_URL;
 
 if (!authUrl) {
   console.warn(
