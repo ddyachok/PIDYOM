@@ -3,11 +3,6 @@
   "outputDirectory": "kettlebell-tracker/dist",
   "installCommand": "echo 'skip root install'",
   "framework": null,
-  "functions": {
-    "api/auth/[...path].js": {
-      "runtime": "@vercel/node@3"
-    }
-  },
   "rewrites": [
     {
       "source": "/neondb/auth/:path*",
