@@ -4,12 +4,13 @@ import PageTransition from '../components/ui/PageTransition';
 import { useStore } from '../store/useStore';
 import { useToastStore } from '../store/toastStore';
 import { authClient } from '../lib/auth';
+import { syncDeleteAccount } from '../lib/gql/sync';
 import { Equipment } from '../lib/types';
 import { EXERCISES, getProgressionRoots } from '../data/exercises';
 import {
   IconKettlebell, IconRings, IconRope, IconBodyweight,
   IconPullupBar, IconParallettes, IconResistanceBand,
-  IconChevronRight, IconSignOut,
+  IconChevronRight, IconSignOut, IconClose,
 } from '../components/icons/Icons';
 import ProgressionTree from '../components/workout/ProgressionTree';
 
@@ -24,12 +25,15 @@ const EQUIPMENT_INFO: Record<Equipment, { label: string; icon: typeof IconKettle
 };
 
 export default function ProfilePage() {
-  const { userEquipment, toggleEquipment, unlockedExercises, userName, userEmail, setUserName, theme, setTheme } = useStore();
+  const { userEquipment, toggleEquipment, unlockedExercises, userName, userEmail, authUserId, setUserName, theme, setTheme } = useStore();
   const addToast = useToastStore((s) => s.addToast);
   const [showProgressions, setShowProgressions] = useState(false);
   const [selectedExercise, setSelectedExercise] = useState<string | null>(null);
   const [editingName, setEditingName] = useState(false);
   const [nameInput, setNameInput] = useState(userName);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteConfirmInput, setDeleteConfirmInput] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const isLight = theme === 'light';
 
@@ -55,6 +59,19 @@ export default function ProfilePage() {
   );
 
   const handleSignOut = async () => { await authClient.signOut(); };
+
+  const handleDeleteAccount = async () => {
+    if (deleteConfirmInput !== 'DELETE') return;
+    setIsDeleting(true);
+    try {
+      if (authUserId) await syncDeleteAccount(authUserId);
+      await authClient.deleteUser();
+    } catch (err) {
+      console.error('[PIDYOM] Account deletion failed:', err);
+      addToast('Deletion failed — try again');
+      setIsDeleting(false);
+    }
+  };
 
   const handleNameSave = () => {
     if (nameInput.trim()) { setUserName(nameInput.trim()); addToast('Name updated'); }
@@ -346,23 +363,171 @@ export default function ProfilePage() {
         {/* Heavy rule */}
         <div style={heavyRule} />
 
-        {/* ── Sign Out ───────────────────────────────────────── */}
+        {/* ── 06 // SESSION ──────────────────────────────────── */}
+        <Section num="06" label="SESSION" rule={rule} steel={steel} />
+
         <div className="py-4 md:py-6">
           <button onClick={handleSignOut} className="btn btn-solid btn-full">
             <IconSignOut size={16} />
             Sign Out
           </button>
+        </div>
+
+        {/* Thin rule */}
+        <div style={{ height: 1, background: rule, marginBottom: 32 }} />
+
+        {/* ── 07 // DANGER ZONE ──────────────────────────────── */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
+          <span style={{ fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#ef4444', fontFamily: 'Space Mono, monospace', flexShrink: 0 }}>07</span>
+          <div style={{ height: 1, background: 'rgba(239,68,68,0.3)', flex: 1 }} />
+          <span style={{ fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#ef4444', fontFamily: 'Space Mono, monospace', flexShrink: 0 }}>DANGER ZONE</span>
+        </div>
+
+        <div style={{
+          border: '1px solid rgba(239,68,68,0.3)',
+          padding: '16px 20px',
+          marginBottom: 40,
+        }}>
           <div style={{
-            textAlign: 'center', marginTop: 24,
-            fontSize: 8, letterSpacing: '0.1em',
-            color: isLight ? 'rgba(10,10,10,0.22)' : 'rgba(255,255,255,0.14)',
-            textTransform: 'uppercase', fontFamily: 'Space Mono, monospace',
+            fontSize: 10, letterSpacing: '0.08em', color: ink,
+            fontFamily: 'Space Mono, monospace', marginBottom: 6,
+            textTransform: 'uppercase', fontWeight: 700,
           }}>
-            PIDYOM v1.0 // MOVEMENT FRAMEWORK
+            Delete Account
           </div>
+          <p style={{ fontSize: 9, color: steel, fontFamily: 'Space Mono, monospace', lineHeight: 1.7, marginBottom: 16 }}>
+            Permanently removes your profile, all workouts, schedule entries, and exercise unlocks. This action cannot be undone.
+          </p>
+          <button
+            onClick={() => { setDeleteConfirmInput(''); setShowDeleteModal(true); }}
+            style={{
+              fontSize: 9, letterSpacing: '0.14em', textTransform: 'uppercase',
+              fontFamily: 'Space Mono, monospace', fontWeight: 700,
+              padding: '8px 16px',
+              background: 'transparent',
+              border: '1px solid rgba(239,68,68,0.6)',
+              color: '#ef4444',
+              cursor: 'pointer',
+            }}
+          >
+            Delete Account →
+          </button>
+        </div>
+
+        <div style={{
+          textAlign: 'center', marginBottom: 40,
+          fontSize: 8, letterSpacing: '0.1em',
+          color: isLight ? 'rgba(10,10,10,0.22)' : 'rgba(255,255,255,0.14)',
+          textTransform: 'uppercase', fontFamily: 'Space Mono, monospace',
+        }}>
+          PIDYOM v1.0 // MOVEMENT FRAMEWORK
         </div>
 
       </PageTransition>
+
+      {/* ── Delete Confirmation Modal ──────────────────────── */}
+      <AnimatePresence>
+        {showDeleteModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="modal-backdrop"
+            style={{ alignItems: 'center', justifyContent: 'center' }}
+            onClick={() => !isDeleting && setShowDeleteModal(false)}
+          >
+            <motion.div
+              role="dialog"
+              aria-modal="true"
+              initial={{ y: 12, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 12, opacity: 0 }}
+              style={{
+                background: isLight ? '#E8E8E1' : '#0D0D0D',
+                color: ink,
+                padding: 28,
+                maxWidth: 360,
+                width: '100%',
+                border: '1px solid rgba(239,68,68,0.4)',
+                boxShadow: '4px 4px 0 rgba(239,68,68,0.25)',
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between mb-4">
+                <div style={{
+                  fontFamily: "'Barlow Condensed', sans-serif",
+                  fontWeight: 900, fontSize: 22,
+                  color: '#ef4444', textTransform: 'uppercase', letterSpacing: '0.02em',
+                }}>
+                  Delete Account
+                </div>
+                {!isDeleting && (
+                  <button
+                    onClick={() => setShowDeleteModal(false)}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: steel, padding: 4 }}
+                    aria-label="Close"
+                  >
+                    <IconClose size={16} />
+                  </button>
+                )}
+              </div>
+
+              <div style={{ height: 2, background: '#ef4444', marginBottom: 20, opacity: 0.5 }} />
+
+              <p style={{ fontSize: 9, color: steel, fontFamily: 'Space Mono, monospace', lineHeight: 1.8, marginBottom: 20 }}>
+                This will permanently delete your account and all associated data — workouts, schedule, and exercise progress. There is no recovery.
+              </p>
+
+              {/* Confirm input */}
+              <div style={{ marginBottom: 20 }}>
+                <div style={{ fontSize: 8, letterSpacing: '0.18em', textTransform: 'uppercase', color: steel, marginBottom: 8, fontFamily: 'Space Mono, monospace' }}>
+                  Type <span style={{ color: '#ef4444', fontWeight: 700 }}>DELETE</span> to confirm
+                </div>
+                <input
+                  type="text"
+                  value={deleteConfirmInput}
+                  onChange={(e) => setDeleteConfirmInput(e.target.value)}
+                  placeholder="DELETE"
+                  disabled={isDeleting}
+                  style={{
+                    width: '100%',
+                    background: 'transparent',
+                    border: `1px solid ${deleteConfirmInput === 'DELETE' ? '#ef4444' : (isLight ? '#C0C0B8' : 'rgba(255,255,255,0.15)')}`,
+                    color: ink,
+                    padding: '10px 12px',
+                    fontSize: 12,
+                    fontFamily: 'Space Mono, monospace',
+                    letterSpacing: '0.12em',
+                    outline: 'none',
+                    boxSizing: 'border-box',
+                    opacity: isDeleting ? 0.5 : 1,
+                  }}
+                />
+              </div>
+
+              <button
+                onClick={handleDeleteAccount}
+                disabled={deleteConfirmInput !== 'DELETE' || isDeleting}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  fontSize: 10, letterSpacing: '0.14em',
+                  fontFamily: 'Space Mono, monospace', fontWeight: 700,
+                  textTransform: 'uppercase',
+                  background: deleteConfirmInput === 'DELETE' && !isDeleting ? '#ef4444' : 'transparent',
+                  color: deleteConfirmInput === 'DELETE' && !isDeleting ? '#fff' : steel,
+                  border: `1px solid ${deleteConfirmInput === 'DELETE' && !isDeleting ? '#ef4444' : (isLight ? '#C0C0B8' : 'rgba(255,255,255,0.15)')}`,
+                  cursor: deleteConfirmInput === 'DELETE' && !isDeleting ? 'pointer' : 'not-allowed',
+                  transition: 'all 0.15s',
+                }}
+              >
+                {isDeleting ? 'Deleting…' : 'Permanently Delete Account →'}
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
