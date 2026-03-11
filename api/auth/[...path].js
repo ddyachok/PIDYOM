@@ -36,6 +36,10 @@ export default async function handler(req) {
     headers: forwardHeaders,
     body: hasBody ? req.body : null,
     duplex: hasBody ? 'half' : undefined,
+    // CRITICAL: don't follow redirects server-side. Social login returns a
+    // 302 to Google/GitHub OAuth — the *browser* must follow that redirect,
+    // not the edge function.
+    redirect: 'manual',
   });
 
   // Forward upstream response headers (including Set-Cookie).
