@@ -19,6 +19,7 @@ import {
   INSERT_EXERCISE_UNLOCK,
   UPDATE_USER_PROFILE,
   UPSERT_USER_PROFILE,
+  DELETE_USER_PROFILE,
 } from './mutations';
 import type { Workout, WorkoutExercise, ScheduleEntry, Equipment } from '../types';
 
@@ -54,6 +55,19 @@ export function syncUpdateUserName(authUserId: string, name: string) {
       _set: { name },
     })
   );
+}
+
+// ── Account Deletion ──
+
+/**
+ * Deletes the user's profile row from Hasura (cascades to workouts, schedule,
+ * exercise unlocks via FK constraints), then deletes the auth user via Neon Auth.
+ * Throws on failure so the caller can surface the error.
+ */
+export async function syncDeleteAccount(authUserId: string): Promise<void> {
+  await gqlRequest(DELETE_USER_PROFILE, {
+    where: { auth_user_id: { _eq: authUserId } },
+  });
 }
 
 // ── Workouts ──

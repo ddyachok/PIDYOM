@@ -113,6 +113,15 @@ export const DELETE_SCHEDULE_ENTRY = `
   }
 `;
 
+// ── User Profile Deletion ──
+export const DELETE_USER_PROFILE = `
+  mutation DeleteUserProfile($where: user_profiles_bool_exp!) {
+    delete_user_profiles(where: $where) {
+      affected_rows
+    }
+  }
+`;
+
 // ── Exercise Unlocks ──
 export const INSERT_EXERCISE_UNLOCK = `
   mutation InsertExerciseUnlock($objects: [user_exercise_unlocks_insert_input!]!) {
