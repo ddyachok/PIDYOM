@@ -21,7 +21,7 @@ export const config = {
 const NEON_AUTH_BASE =
   'https://ep-plain-art-ag9lypls.neonauth.c-2.eu-central-1.aws.neon.tech';
 
-export default async function handler(req: Request): Promise<Response> {
+export default async function handler(req) {
   const url = new URL(req.url);
 
   // /api/auth/sign-in/email → /neondb/auth/sign-in/email
@@ -41,7 +41,6 @@ export default async function handler(req: Request): Promise<Response> {
     headers: forwardHeaders,
     body: hasBody ? req.body : null,
     // Required for streaming request bodies on the Edge runtime
-    // @ts-ignore
     duplex: hasBody ? 'half' : undefined,
   });
 
