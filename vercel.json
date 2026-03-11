@@ -4,6 +4,10 @@
   "installCommand": "echo 'skip root install'",
   "rewrites": [
     {
+      "source": "/neondb/auth/:path*",
+      "destination": "https://ep-plain-art-ag9lypls.neonauth.c-2.eu-central-1.aws.neon.tech/neondb/auth/:path*"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
