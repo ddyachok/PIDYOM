@@ -53,13 +53,16 @@ export default function AuthPage() {
     }
   };
 
-  const handleSocialLogin = (provider: 'github' | 'google') => {
+  const handleSocialLogin = async (provider: 'github' | 'google') => {
     setError('');
-    // Navigate directly to the Neon Auth social endpoint (GET redirect).
-    // This avoids a cross-origin POST which triggers Better Auth's CSRF 403.
-    const authUrl = import.meta.env.VITE_NEON_AUTH_URL;
-    const callbackURL = encodeURIComponent(window.location.origin);
-    window.location.href = `${authUrl}/sign-in/social?provider=${provider}&callbackURL=${callbackURL}`;
+    try {
+      await authClient.signIn.social({
+        provider,
+        callbackURL: window.location.origin,
+      });
+    } catch (err: any) {
+      setError(err?.message || `${provider} login failed`);
+    }
   };
 
   return (
