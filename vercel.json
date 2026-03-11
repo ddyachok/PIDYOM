@@ -5,7 +5,7 @@
   "rewrites": [
     {
       "source": "/neondb/auth/:path*",
-      "destination": "https://ep-plain-art-ag9lypls.neonauth.c-2.eu-central-1.aws.neon.tech/neondb/auth/:path*"
+      "destination": "/api/auth/:path*"
     },
     {
       "source": "/(.*)",
