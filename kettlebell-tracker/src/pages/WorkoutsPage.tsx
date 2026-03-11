@@ -5,7 +5,7 @@ import { useStore } from '../store/useStore';
 import { useToastStore } from '../store/toastStore';
 import { EXERCISES } from '../data/exercises';
 import { WORKOUT_TEMPLATES, WORKOUT_TYPE_INFO } from '../data/workouts';
-import { Workout, WorkoutExercise, Exercise, TrainingGoal, goalToType, typeToGoal, TRAINING_GOAL_INFO, FocusArea, ScheduleEntry } from '../lib/types';
+import { Workout, WorkoutExercise, Exercise, TrainingGoal, goalToType, typeToGoal, TRAINING_GOAL_INFO, FocusArea } from '../lib/types';
 import { format, startOfWeek, addDays, isToday, isBefore, parseISO } from 'date-fns';
 import { IconPlus, IconCheck, IconTrash, IconChevronLeft, IconTree, IconClose, IconLock } from '../components/icons/Icons';
 import ProgressionTree from '../components/workout/ProgressionTree';
@@ -469,7 +469,7 @@ function WorkoutDetail({ workout, onBack }: { workout: Workout; onBack: () => vo
 }
 
 /* ===== WEEK STRIP ===== */
-function WeekStrip({ schedule, workouts }: { schedule: ScheduleEntry[]; workouts: Workout[] }) {
+function WeekStrip({ schedule, workouts }: { schedule: ReturnType<typeof useStore>['schedule']; workouts: Workout[] }) {
   const today = new Date();
   const weekStart = startOfWeek(today, { weekStartsOn: 1 }); // Monday
   const days = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
