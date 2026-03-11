@@ -65,7 +65,7 @@ export default function ProfilePage() {
     setIsDeleting(true);
     try {
       if (authUserId) await syncDeleteAccount(authUserId);
-      await authClient.deleteUser();
+      await authClient.signOut();
     } catch (err) {
       console.error('[PIDYOM] Account deletion failed:', err);
       addToast('Deletion failed — try again');

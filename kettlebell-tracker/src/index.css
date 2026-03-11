@@ -596,19 +596,21 @@ input::placeholder { color: rgba(255,255,255,0.2); }
 /* ===== CALENDAR ===== */
 .cal-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   border: 1px solid #C0C0B8;
   border-right: none;
   border-bottom: none;
 }
 .cal-cell {
-  padding: 8px 6px;
+  padding: 8px 4px;
   border-right: 1px solid #C0C0B8;
   border-bottom: 1px solid #C0C0B8;
   min-height: 60px;
   position: relative;
   cursor: pointer;
   transition: background 0.15s;
+  overflow: hidden;
+  min-width: 0;
 }
 .cal-cell:hover { background: rgba(10,10,10,0.04); }
 .cal-cell--today {
