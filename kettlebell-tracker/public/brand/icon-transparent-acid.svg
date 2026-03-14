@@ -1,0 +1,18 @@
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <!-- PIDYOM Icon Mark — Acid, transparent bg -->
+  <path d="M60 8 L112 60 L60 112 L8 60 Z" stroke="#C6FF00" stroke-width="2.5" fill="none"/>
+  <path d="
+    M60 28
+    C53 28 48 33 48 38
+    C48 42.5 51 46 55 47.5
+    L53.5 52
+    C47 54.5 42 60 42 68
+    C42 78 50 86 60 86
+    C70 86 78 78 78 68
+    C78 60 73 54.5 66.5 52
+    L65 47.5
+    C69 46 72 42.5 72 38
+    C72 33 67 28 60 28Z
+  " fill="#C6FF00"/>
+  <ellipse cx="60" cy="37" rx="6" ry="5" fill="none" stroke="#C6FF00" stroke-width="1.5"/>
+</svg>

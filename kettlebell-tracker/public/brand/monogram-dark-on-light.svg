@@ -1,0 +1,10 @@
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <!-- PIDYOM Monogram "P" — Dark on Light -->
+  <rect width="120" height="120" fill="#E8E8E1"/>
+  <path d="M60 8 L112 60 L60 112 L8 60 Z" stroke="#0A0A0A" stroke-width="2.5" fill="none"/>
+  <text x="60" y="78" text-anchor="middle"
+        font-family="'Barlow Condensed', 'Arial Narrow', sans-serif"
+        font-weight="800" font-size="68" fill="#0A0A0A">
+    P
+  </text>
+</svg>
