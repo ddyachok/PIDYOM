@@ -1,0 +1,77 @@
+<svg viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+  <!--
+    PIDYOM — Full Logo (Detailed Version)
+    Light background variant
+  -->
+  <rect width="800" height="400" fill="#F0EDE8"/>
+
+  <!-- ===== MARK ===== -->
+  <g transform="translate(100, 140) rotate(5) scale(0.85)">
+    <circle cx="0" cy="48" r="40" fill="#1A1A1A"/>
+    <path d="
+      M-25 17
+      C-27 2 -24 -15 -17 -25
+      C-10 -35 -3 -40 0 -42
+      C3 -40 10 -35 17 -25
+      C24 -15 27 2 25 17
+      L17 13
+      C19 2 17 -9 12 -17
+      C7 -25 3 -30 0 -32
+      C-3 -30 -7 -25 -12 -17
+      C-17 -9 -19 2 -17 13
+      Z
+    " fill="#1A1A1A"/>
+  </g>
+
+  <!-- ===== WORDMARK ===== -->
+  <g transform="translate(195, 120)">
+    <path d="M0 130 L0 0 L40 0 C58 0 65 12 65 28 C65 45 55 58 40 58 L20 58 L20 130Z"
+          fill="#1A1A1A"/>
+    <path d="M18 16 L36 16 C42 16 46 22 46 28 C46 35 42 40 36 40 L18 40Z"
+          fill="#F0EDE8"/>
+
+    <path d="M80 130 L80 0 L100 0 L100 130Z" fill="#1A1A1A"/>
+
+    <path d="M115 0 L148 0 C178 0 192 22 192 65 C192 108 178 130 148 130 L115 130Z"
+          fill="#1A1A1A"/>
+    <path d="M133 18 L145 18 C163 18 172 35 172 65 C172 95 163 112 145 112 L133 112Z"
+          fill="#F0EDE8"/>
+
+    <path d="M207 0 L227 55 L247 0 L268 0 L238 78 L238 130 L218 130 L218 78 L188 0Z"
+          fill="#1A1A1A"/>
+
+    <path d="M283 0 L333 0 C350 0 358 15 358 32 L358 98 C358 115 350 130 333 130
+             L283 130 C266 130 258 115 258 98 L258 32 C258 15 266 0 283 0Z"
+          fill="#1A1A1A"/>
+    <path d="M288 20 L328 20 C336 20 340 26 340 32 L340 98
+             C340 104 336 110 328 110 L288 110 C280 110 276 104 276 98
+             L276 32 C276 26 280 20 288 20Z"
+          fill="#F0EDE8"/>
+
+    <path d="M375 130 L375 0 L395 0 L415 50 L435 0 L455 0 L455 130 L437 130
+             L437 40 L420 82 L410 82 L393 40 L393 130Z"
+          fill="#1A1A1A"/>
+  </g>
+
+  <!-- ===== METADATA ===== -->
+  <g font-family="'Space Mono', 'Courier New', monospace">
+    <line x1="195" y1="270" x2="650" y2="270" stroke="#1A1A1A" stroke-width="0.5" opacity="0.12"/>
+
+    <text x="195" y="295" font-size="9" letter-spacing="2" fill="#6A6A62">ПІДЙОМ</text>
+    <text x="195" y="310" font-size="9" letter-spacing="2" fill="#6A6A62">EST.2025</text>
+
+    <text x="320" y="295" font-size="9" letter-spacing="2" fill="#3D5A00" opacity="0.5">//</text>
+
+    <text x="350" y="295" font-size="9" letter-spacing="2" fill="#6A6A62">KETTLEBELL</text>
+    <text x="350" y="310" font-size="9" letter-spacing="2" fill="#6A6A62">TRACKER</text>
+
+    <text x="490" y="295" font-size="9" letter-spacing="2" fill="#3D5A00" opacity="0.5">//</text>
+
+    <text x="520" y="295" font-size="9" letter-spacing="2" fill="#6A6A62">LIFT</text>
+    <text x="520" y="310" font-size="9" letter-spacing="2" fill="#6A6A62">RISE</text>
+    <text x="580" y="295" font-size="9" letter-spacing="2" fill="#6A6A62">MOVE</text>
+    <text x="580" y="310" font-size="9" letter-spacing="2" fill="#6A6A62">FLOW</text>
+  </g>
+
+  <circle cx="180" cy="295" r="3" fill="#3D5A00"/>
+</svg>
