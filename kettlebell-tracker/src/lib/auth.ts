@@ -1,22 +1,19 @@
 import { createInternalNeonAuth } from '@neondatabase/neon-js/auth';
 import { BetterAuthReactAdapter } from '@neondatabase/neon-js/auth/react/adapters';
 
-// In production, proxy through Vercel rewrites (same-origin → no CSRF 403).
-// In dev, hit the Neon Auth server directly.
-const authUrl = import.meta.env.PROD
-  ? '/neondb/auth'
-  : import.meta.env.VITE_NEON_AUTH_URL;
-
-if (!authUrl) {
-  console.warn(
-    '[PIDYOM] VITE_NEON_AUTH_URL is not set. Auth will not work.\n' +
-    'Get your Auth URL from: Neon Console → Auth → Configuration'
-  );
-}
+// Route auth through our same-origin Edge Function proxy (/api/auth/*).
+// The proxy spoofs the Origin header so Better Auth's CSRF check passes,
+// and forwards Set-Cookie responses from the Neon Auth server. Because the
+// browser sees the response as coming from pidyom.vercel.app, the session
+// cookie is stored as a first-party cookie — not blocked by Safari ITP.
+//
+// In dev:        Vite proxy  /api/auth → neonauth server  (see vite.config.ts)
+// In production: Vercel Edge Function api/auth/[...path].ts  (see api/)
+const authUrl = `${window.location.origin}/api/auth`;
 
 // createInternalNeonAuth returns { adapter, getJWTToken }
 // createAuthClient only returns the adapter — no getJWTToken!
-const neonAuth = createInternalNeonAuth(authUrl || '', {
+const neonAuth = createInternalNeonAuth(authUrl, {
   adapter: BetterAuthReactAdapter(),
 });
 
