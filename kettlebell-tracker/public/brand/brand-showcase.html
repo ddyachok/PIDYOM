@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PIDYOM — Brand Assets</title>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #0D0D0D;
+      color: #fff;
+      font-family: 'Space Mono', monospace;
+      padding: 40px 20px;
+      min-height: 100vh;
+    }
+    .container { max-width: 1100px; margin: 0 auto; }
+    h1 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 48px;
+      letter-spacing: 8px;
+      color: #C6FF00;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      color: #6A6A62;
+      font-size: 12px;
+      letter-spacing: 4px;
+      margin-bottom: 60px;
+    }
+    h2 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 24px;
+      letter-spacing: 4px;
+      color: #C6FF00;
+      margin-bottom: 24px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(198,255,0,0.15);
+    }
+    .section { margin-bottom: 60px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 24px;
+    }
+    .grid-wide {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+      gap: 24px;
+    }
+    .card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 4px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .card img {
+      width: 100%;
+      max-width: 300px;
+      height: auto;
+    }
+    .card-label {
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: #6A6A62;
+      text-transform: uppercase;
+    }
+    .color-row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .swatch {
+      width: 100px;
+      height: 100px;
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 8px;
+      font-size: 10px;
+      letter-spacing: 1px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .swatch-name { font-weight: 700; margin-bottom: 2px; }
+    .swatch-hex { opacity: 0.7; }
+    .font-sample {
+      padding: 20px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 4px;
+      margin-bottom: 16px;
+    }
+    .font-sample h3 {
+      font-size: 12px;
+      color: #6A6A62;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+    }
+    .font-display {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 36px;
+      letter-spacing: 6px;
+      color: #C6FF00;
+    }
+    .font-mono-sample {
+      font-family: 'Space Mono', monospace;
+      font-weight: 400;
+      font-size: 18px;
+      color: #fff;
+    }
+    .card.light-bg {
+      background: #E8E8E1;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>PIDYOM</h1>
+    <p class="subtitle">BRAND IDENTITY &amp; ASSET GUIDE</p>
+
+    <!-- ICONS -->
+    <div class="section">
+      <h2>ICON MARK</h2>
+      <div class="grid">
+        <div class="card">
+          <img src="icon-acid-on-dark.svg" alt="Icon acid on dark">
+          <span class="card-label">Acid on Dark</span>
+        </div>
+        <div class="card">
+          <img src="icon-white-on-dark.svg" alt="Icon white on dark">
+          <span class="card-label">White on Dark</span>
+        </div>
+        <div class="card light-bg">
+          <img src="icon-dark-on-light.svg" alt="Icon dark on light">
+          <span class="card-label" style="color:#0A0A0A">Dark on Light</span>
+        </div>
+        <div class="card">
+          <img src="icon-transparent-acid.svg" alt="Icon transparent">
+          <span class="card-label">Transparent / Acid</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- WORDMARKS -->
+    <div class="section">
+      <h2>WORDMARK</h2>
+      <div class="grid-wide">
+        <div class="card">
+          <img src="wordmark-acid-on-dark.svg" alt="Wordmark acid">
+          <span class="card-label">Barlow Condensed / Acid</span>
+        </div>
+        <div class="card">
+          <img src="wordmark-white-on-dark.svg" alt="Wordmark white">
+          <span class="card-label">Barlow Condensed / White</span>
+        </div>
+        <div class="card light-bg">
+          <img src="wordmark-dark-on-light.svg" alt="Wordmark dark">
+          <span class="card-label" style="color:#0A0A0A">Barlow Condensed / Dark</span>
+        </div>
+        <div class="card">
+          <img src="wordmark-mono-acid-on-dark.svg" alt="Wordmark mono">
+          <span class="card-label">Space Mono / Acid</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- FULL LOGOS -->
+    <div class="section">
+      <h2>FULL LOGO</h2>
+      <div class="grid-wide">
+        <div class="card">
+          <img src="logo-full-horizontal-acid-on-dark.svg" alt="Full logo acid horizontal">
+          <span class="card-label">Horizontal / Acid</span>
+        </div>
+        <div class="card">
+          <img src="logo-full-horizontal-white-on-dark.svg" alt="Full logo white horizontal">
+          <span class="card-label">Horizontal / White</span>
+        </div>
+      </div>
+      <div class="grid" style="margin-top:24px">
+        <div class="card">
+          <img src="logo-full-vertical-acid-on-dark.svg" alt="Full logo vertical">
+          <span class="card-label">Vertical / Acid</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MONOGRAMS -->
+    <div class="section">
+      <h2>MONOGRAM</h2>
+      <div class="grid">
+        <div class="card">
+          <img src="monogram-acid-on-dark.svg" alt="Monogram acid">
+          <span class="card-label">Acid on Dark</span>
+        </div>
+        <div class="card">
+          <img src="monogram-white-on-dark.svg" alt="Monogram white">
+          <span class="card-label">White on Dark</span>
+        </div>
+        <div class="card light-bg">
+          <img src="monogram-dark-on-light.svg" alt="Monogram light">
+          <span class="card-label" style="color:#0A0A0A">Dark on Light</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAVICON -->
+    <div class="section">
+      <h2>FAVICON</h2>
+      <div class="grid">
+        <div class="card">
+          <img src="favicon-32.svg" alt="Favicon" style="max-width:64px;image-rendering:pixelated">
+          <span class="card-label">32x32 SVG</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- COLORS -->
+    <div class="section">
+      <h2>COLOR PALETTE</h2>
+      <div class="color-row">
+        <div class="swatch" style="background:#C6FF00;color:#0A0A0A">
+          <span class="swatch-name">ACID</span>
+          <span class="swatch-hex">#C6FF00</span>
+        </div>
+        <div class="swatch" style="background:#0D0D0D;color:#fff">
+          <span class="swatch-name">VOID</span>
+          <span class="swatch-hex">#0D0D0D</span>
+        </div>
+        <div class="swatch" style="background:#0A0A0A;color:#fff">
+          <span class="swatch-name">INK</span>
+          <span class="swatch-hex">#0A0A0A</span>
+        </div>
+        <div class="swatch" style="background:#E8E8E1;color:#0A0A0A">
+          <span class="swatch-name">PAPER</span>
+          <span class="swatch-hex">#E8E8E1</span>
+        </div>
+        <div class="swatch" style="background:#6A6A62;color:#fff">
+          <span class="swatch-name">STEEL</span>
+          <span class="swatch-hex">#6A6A62</span>
+        </div>
+        <div class="swatch" style="background:#C0C0B8;color:#0A0A0A">
+          <span class="swatch-name">RULE</span>
+          <span class="swatch-hex">#C0C0B8</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TYPOGRAPHY -->
+    <div class="section">
+      <h2>TYPOGRAPHY</h2>
+      <div class="font-sample">
+        <h3>DISPLAY — BARLOW CONDENSED 700</h3>
+        <div class="font-display">PIDYOM KETTLEBELL TRACKER</div>
+      </div>
+      <div class="font-sample">
+        <h3>BODY — SPACE MONO 400</h3>
+        <div class="font-mono-sample">The quick brown fox jumps over the lazy dog. 0123456789</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

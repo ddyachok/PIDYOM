@@ -1,0 +1,11 @@
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <!-- PIDYOM Monogram "P" — Acid on Dark -->
+  <rect width="120" height="120" fill="#0D0D0D"/>
+  <path d="M60 8 L112 60 L60 112 L8 60 Z" stroke="#C6FF00" stroke-width="2.5" fill="none"/>
+  <!-- Stylized P using Barlow Condensed bold geometry -->
+  <text x="60" y="78" text-anchor="middle"
+        font-family="'Barlow Condensed', 'Arial Narrow', sans-serif"
+        font-weight="800" font-size="68" fill="#C6FF00">
+    P
+  </text>
+</svg>

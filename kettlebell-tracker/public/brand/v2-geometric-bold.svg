@@ -1,0 +1,73 @@
+<svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg">
+  <!-- PIDYOM v2 — Bold Geometric Custom Wordmark (Puralisca-inspired) -->
+  <rect width="700" height="300" fill="#0D0D0D"/>
+
+  <!-- Abstract kettlebell icon above -->
+  <g transform="translate(290, 20)">
+    <!-- Stylized kettlebell as geometric mountain/weight shape -->
+    <path d="
+      M60 65 L45 45 L55 25 C55 15 65 5 75 5 C85 5 95 15 95 25
+      L105 45 L90 65
+    " fill="none" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/>
+    <!-- Handle arc -->
+    <path d="M62 30 C62 18 72 10 75 10 C78 10 88 18 88 30"
+      fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- Weight base -->
+    <path d="M40 65 L50 85 L100 85 L110 65Z" fill="#fff"/>
+  </g>
+
+  <!-- Custom geometric "PIDYOM" letterforms -->
+  <g transform="translate(50, 115)" fill="#fff">
+    <!-- P — chunky rounded -->
+    <path d="
+      M0 130 L0 0 L55 0 C85 0 100 18 100 40
+      C100 62 85 80 55 80 L30 80 L30 130Z
+    "/>
+    <rect x="25" y="22" width="28" height="36" rx="8" fill="#0D0D0D"/>
+
+    <!-- I — with diagonal slash accent (like Puralisca's í) -->
+    <path d="M120 130 L120 0 L150 0 L150 130Z"/>
+    <!-- Slash accent -->
+    <line x1="128" y1="-15" x2="155" y2="-35" stroke="#C6FF00" stroke-width="3.5" stroke-linecap="round"/>
+
+    <!-- D — bold geometric -->
+    <path d="
+      M175 0 L225 0 C275 0 300 30 300 65
+      C300 100 275 130 225 130 L175 130Z
+    "/>
+    <path d="
+      M205 25 L225 25 C255 25 270 42 270 65
+      C270 88 255 105 225 105 L205 105Z
+    " fill="#0D0D0D"/>
+
+    <!-- Y — sharp angular -->
+    <path d="
+      M320 0 L345 55 L370 0 L402 0 L360 75 L360 130 L330 130 L330 75 L288 0Z
+    "/>
+
+    <!-- O — bold with offset inner -->
+    <path d="
+      M420 0 L490 0 C510 0 520 15 520 35 L520 95
+      C520 115 510 130 490 130 L420 130
+      C400 130 390 115 390 95 L390 35 C390 15 400 0 420 0Z
+    "/>
+    <path d="
+      M425 28 L485 28 C492 28 495 33 495 38 L495 92
+      C495 97 492 102 485 102 L425 102
+      C418 102 415 97 415 92 L415 38 C415 33 418 28 425 28Z
+    " fill="#0D0D0D"/>
+
+    <!-- M — wide geometric -->
+    <path d="
+      M540 130 L540 0 L570 0 L595 55 L620 0 L650 0 L650 130
+      L622 130 L622 50 L600 100 L590 100 L568 50 L568 130Z
+    "/>
+  </g>
+
+  <!-- Tagline -->
+  <text x="350" y="275" text-anchor="middle"
+        font-family="'Space Mono', 'Courier New', monospace"
+        font-weight="400" font-size="13" letter-spacing="6" fill="#6A6A62">
+    KETTLEBELL TRACKER
+  </text>
+</svg>

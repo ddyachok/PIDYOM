@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PIDYOM — Brand Identity v3</title>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --charcoal: #1A1A1A;
+      --chalk: #F0EDE8;
+      --volt: #C6FF00;
+      --slate: #6A6A62;
+      --iron: #2D2A26;
+    }
+
+    body {
+      background: var(--charcoal);
+      color: var(--chalk);
+      font-family: 'Space Mono', monospace;
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 60px 40px;
+      position: relative;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 40px;
+      right: 40px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(198,255,0,0.15), transparent);
+    }
+    .hero-mark {
+      width: 160px;
+      height: auto;
+      margin-bottom: 48px;
+    }
+    .hero-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: clamp(48px, 10vw, 120px);
+      letter-spacing: 12px;
+      text-align: center;
+      line-height: 0.95;
+    }
+    .hero-subtitle {
+      font-size: 11px;
+      letter-spacing: 6px;
+      color: var(--slate);
+      margin-top: 24px;
+    }
+    .hero-meaning {
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: var(--volt);
+      opacity: 0.6;
+      margin-top: 12px;
+    }
+
+    /* ===== SECTIONS ===== */
+    .section {
+      padding: 80px 40px;
+      border-bottom: 1px solid rgba(240,237,232,0.04);
+    }
+    .section-label {
+      font-size: 8px;
+      letter-spacing: 4px;
+      color: var(--volt);
+      opacity: 0.6;
+      margin-bottom: 40px;
+    }
+    .section-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 28px;
+      letter-spacing: 4px;
+      margin-bottom: 12px;
+    }
+    .section-desc {
+      font-size: 11px;
+      color: var(--slate);
+      line-height: 1.8;
+      max-width: 600px;
+      letter-spacing: 0.5px;
+    }
+
+    /* ===== MARK SHOWCASE ===== */
+    .marks-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 40px;
+    }
+    .mark-card {
+      aspect-ratio: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(240,237,232,0.06);
+      border-radius: 4px;
+      padding: 32px;
+      position: relative;
+    }
+    .mark-card img {
+      width: 80px;
+      height: auto;
+    }
+    .mark-card.dark { background: var(--charcoal); }
+    .mark-card.light { background: var(--chalk); }
+    .mark-card.volt-bg { background: var(--charcoal); }
+    .mark-label {
+      position: absolute;
+      bottom: 12px;
+      font-size: 8px;
+      letter-spacing: 2px;
+      color: var(--slate);
+    }
+
+    /* ===== FULL LOGO ===== */
+    .logo-showcase {
+      margin-top: 40px;
+    }
+    .logo-frame {
+      border: 1px solid rgba(240,237,232,0.06);
+      border-radius: 4px;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+    .logo-frame img {
+      width: 100%;
+      height: auto;
+    }
+
+    /* ===== ICON SIZES ===== */
+    .icon-sizes {
+      display: flex;
+      align-items: flex-end;
+      gap: 32px;
+      margin-top: 40px;
+      padding: 40px;
+      background: rgba(240,237,232,0.02);
+      border-radius: 4px;
+    }
+    .icon-size {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .icon-size img {
+      image-rendering: pixelated;
+    }
+    .icon-size span {
+      font-size: 8px;
+      letter-spacing: 2px;
+      color: var(--slate);
+    }
+
+    /* ===== COLORS ===== */
+    .colors-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+      margin-top: 40px;
+    }
+    .color-swatch {
+      aspect-ratio: 1;
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 12px;
+      border: 1px solid rgba(240,237,232,0.08);
+    }
+    .color-name {
+      font-size: 9px;
+      letter-spacing: 1px;
+      margin-bottom: 2px;
+    }
+    .color-hex {
+      font-size: 8px;
+      opacity: 0.6;
+    }
+
+    /* ===== TYPOGRAPHY ===== */
+    .type-sample {
+      margin-top: 40px;
+    }
+    .type-row {
+      display: flex;
+      align-items: baseline;
+      gap: 24px;
+      padding: 20px 0;
+      border-bottom: 1px solid rgba(240,237,232,0.04);
+    }
+    .type-label {
+      font-size: 8px;
+      letter-spacing: 2px;
+      color: var(--volt);
+      opacity: 0.5;
+      min-width: 80px;
+    }
+    .type-display {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 48px;
+      letter-spacing: 6px;
+    }
+    .type-body {
+      font-family: 'Space Mono', monospace;
+      font-size: 14px;
+      letter-spacing: 1px;
+    }
+    .type-accent {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 400;
+      font-size: 16px;
+      letter-spacing: 4px;
+      color: var(--slate);
+    }
+
+    /* ===== RESEARCH NOTES ===== */
+    .research-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 32px;
+      margin-top: 40px;
+    }
+    .research-card {
+      padding: 24px;
+      background: rgba(240,237,232,0.02);
+      border: 1px solid rgba(240,237,232,0.04);
+      border-radius: 4px;
+    }
+    .research-card h4 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 3px;
+      margin-bottom: 12px;
+      color: var(--volt);
+      opacity: 0.7;
+    }
+    .research-card p {
+      font-size: 10px;
+      line-height: 1.8;
+      color: var(--slate);
+      letter-spacing: 0.3px;
+    }
+
+    /* ===== POSTER ===== */
+    .poster-frame {
+      margin-top: 40px;
+      border: 1px solid rgba(240,237,232,0.06);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .poster-frame img {
+      width: 100%;
+      max-width: 600px;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      padding: 40px;
+      text-align: center;
+    }
+    .footer p {
+      font-size: 9px;
+      letter-spacing: 3px;
+      color: var(--slate);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HERO -->
+  <section class="hero">
+    <img src="v3-mark-dark.svg" alt="PIDYOM Mark" class="hero-mark">
+    <h1 class="hero-title">PIDYOM</h1>
+    <p class="hero-subtitle">KETTLEBELL TRACKER</p>
+    <p class="hero-meaning">ПІДЙОМ — LIFT / RISE / REDEMPTION</p>
+  </section>
+
+  <!-- 01: THE MARK -->
+  <section class="section">
+    <div class="section-label">01 // THE MARK</div>
+    <h2 class="section-title">THE RISING ARC</h2>
+    <p class="section-desc">
+      A circle (the rock, the weight, the kettlebell body) topped by an arc
+      (the handle, the swing path, the rising gesture). Tilted 5 degrees
+      for dynamic tension — always in motion, never static. Every proportion
+      derived from the Fibonacci sequence. Canvas ratio = 1:φ.
+    </p>
+
+    <div class="marks-grid">
+      <div class="mark-card dark">
+        <img src="v3-mark-dark.svg" alt="Mark on dark">
+        <span class="mark-label">CHALK ON CHARCOAL</span>
+      </div>
+      <div class="mark-card light">
+        <img src="v3-mark-light.svg" alt="Mark on light">
+        <span class="mark-label">CHARCOAL ON CHALK</span>
+      </div>
+      <div class="mark-card volt-bg">
+        <img src="v3-mark-volt.svg" alt="Mark in volt">
+        <span class="mark-label">VOLT ON CHARCOAL</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02: FULL LOGO -->
+  <section class="section">
+    <div class="section-label">02 // FULL LOGO</div>
+    <h2 class="section-title">MARK + WORDMARK + METADATA</h2>
+    <p class="section-desc">
+      The complete logo includes the mark, custom geometric wordmark,
+      and structured metadata grid. Used at 200px+ width.
+    </p>
+
+    <div class="logo-showcase">
+      <div class="logo-frame">
+        <img src="v3-full-logo-dark.svg" alt="Full logo dark">
+      </div>
+      <div class="logo-frame" style="background: var(--chalk);">
+        <img src="v3-full-logo-light.svg" alt="Full logo light">
+      </div>
+    </div>
+  </section>
+
+  <!-- 03: ICON SIZES -->
+  <section class="section">
+    <div class="section-label">03 // SIMPLIFIED ICON</div>
+    <h2 class="section-title">RECOGNIZABLE AT 16×16</h2>
+    <p class="section-desc">
+      Reduced to two features: circle + arc. The silhouette remains
+      unmistakable even at favicon size. Pixel-aligned for maximum clarity.
+    </p>
+
+    <div class="icon-sizes">
+      <div class="icon-size">
+        <img src="v3-icon-16.svg" alt="64px" width="64" height="64">
+        <span>64PX</span>
+      </div>
+      <div class="icon-size">
+        <img src="v3-icon-16.svg" alt="48px" width="48" height="48">
+        <span>48PX</span>
+      </div>
+      <div class="icon-size">
+        <img src="v3-icon-16.svg" alt="32px" width="32" height="32">
+        <span>32PX</span>
+      </div>
+      <div class="icon-size">
+        <img src="v3-icon-16.svg" alt="16px" width="16" height="16">
+        <span>16PX</span>
+      </div>
+      <div style="width: 1px; height: 60px; background: rgba(240,237,232,0.08);"></div>
+      <div class="icon-size">
+        <img src="v3-icon-16-light.svg" alt="Light 32px" width="32" height="32">
+        <span>LIGHT</span>
+      </div>
+      <div class="icon-size">
+        <img src="v3-icon-16-volt.svg" alt="Volt 32px" width="32" height="32">
+        <span>VOLT</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04: COLORS -->
+  <section class="section">
+    <div class="section-label">04 // COLOR SYSTEM</div>
+    <h2 class="section-title">STONE × LIGHTNING</h2>
+    <p class="section-desc">
+      Dark earth tones grounded in heritage (cast iron, basalt, river rock),
+      pierced by a single volt accent that signals fresh energy.
+      Not trend-driven — derived from the material reality of kettlebells
+      and the visual language of natural force.
+    </p>
+
+    <div class="colors-grid">
+      <div class="color-swatch" style="background: #1A1A1A;">
+        <span class="color-name" style="color: #F0EDE8;">Charcoal</span>
+        <span class="color-hex" style="color: #6A6A62;">#1A1A1A</span>
+      </div>
+      <div class="color-swatch" style="background: #2D2A26;">
+        <span class="color-name" style="color: #F0EDE8;">Warm Stone</span>
+        <span class="color-hex" style="color: #6A6A62;">#2D2A26</span>
+      </div>
+      <div class="color-swatch" style="background: #F0EDE8;">
+        <span class="color-name" style="color: #1A1A1A;">Chalk</span>
+        <span class="color-hex" style="color: #6A6A62;">#F0EDE8</span>
+      </div>
+      <div class="color-swatch" style="background: #C6FF00;">
+        <span class="color-name" style="color: #1A1A1A;">Volt</span>
+        <span class="color-hex" style="color: #3D5A00;">#C6FF00</span>
+      </div>
+      <div class="color-swatch" style="background: #6A6A62;">
+        <span class="color-name" style="color: #F0EDE8;">Slate</span>
+        <span class="color-hex" style="color: #F0EDE8;">#6A6A62</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05: TYPOGRAPHY -->
+  <section class="section">
+    <div class="section-label">05 // TYPOGRAPHY</div>
+    <h2 class="section-title">CONDENSED × MONO</h2>
+    <p class="section-desc">
+      Barlow Condensed (vertical, industrial, strong) for display.
+      Space Mono (technical, precise) for data and body.
+      The contrast mirrors the brand: primal simplicity meets modern tracking.
+    </p>
+
+    <div class="type-sample">
+      <div class="type-row">
+        <span class="type-label">DISPLAY</span>
+        <span class="type-display">ПІДЙОМ</span>
+      </div>
+      <div class="type-row">
+        <span class="type-label">BODY</span>
+        <span class="type-body">Track your kettlebell workouts with precision.</span>
+      </div>
+      <div class="type-row">
+        <span class="type-label">ACCENT</span>
+        <span class="type-accent">LIFT · RISE · MOVE · FLOW</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06: RESEARCH -->
+  <section class="section">
+    <div class="section-label">06 // RESEARCH FOUNDATION</div>
+    <h2 class="section-title">WHY EVERYTHING MEANS SOMETHING</h2>
+
+    <div class="research-grid">
+      <div class="research-card">
+        <h4>THE NAME</h4>
+        <p>
+          PIDYOM (Підйом) — Ukrainian for "lift, rise, ascent."
+          Military reveille command meaning "Get up!"
+          Hebrew root P-D-Y (פדיון) means "redemption."
+          Combined: Liberation through lifting.
+        </p>
+      </div>
+      <div class="research-card">
+        <h4>THE SHAPE</h4>
+        <p>
+          Circle = the rock, the original training tool. Humanity's
+          first expression of strength was picking up a stone.
+          Arc = the swing path, grip, rising trajectory.
+          5° tilt = dynamic tension, always in motion.
+          All ratios from Fibonacci sequence → golden proportion.
+        </p>
+      </div>
+      <div class="research-card">
+        <h4>THE COLOR</h4>
+        <p>
+          Charcoal = cast iron (kettlebells are raw iron).
+          Chalk = lifting chalk, limestone, pale granite.
+          Volt = bioluminescence, new growth, spring energy.
+          Not trend colors — material reality of the training environment.
+        </p>
+      </div>
+      <div class="research-card">
+        <h4>THE POSITION</h4>
+        <p>
+          PIDYOM occupies a space no competitor does:
+          heritage tool + modern approach.
+          Not Peloton (too corporate), not CrossFit (too aggressive),
+          not Whoop (too clinical). PIDYOM is ancient energy
+          tracked with modern precision.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07: IDENTITY POSTER -->
+  <section class="section">
+    <div class="section-label">07 // IDENTITY POSTER</div>
+    <h2 class="section-title">SYSTEM OVERVIEW</h2>
+
+    <div class="poster-frame">
+      <img src="v3-identity-poster.svg" alt="Identity System Poster">
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <p>PIDYOM BRAND IDENTITY V3 // EST.2025 // FIBONACCI CONSTRUCTION</p>
+  </footer>
+
+</body>
+</html>

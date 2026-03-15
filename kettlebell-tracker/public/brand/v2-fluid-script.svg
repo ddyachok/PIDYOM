@@ -1,0 +1,124 @@
+<svg viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg">
+  <!-- PIDYOM v2 — Organic Fluid Script (HIT-inspired) -->
+  <rect width="900" height="500" fill="#E8E8E1"/>
+
+  <!-- Organic fluid "pidyom" hand-drawn blob lettering -->
+  <g transform="translate(80, 140)">
+    <!-- P - organic blob -->
+    <path d="
+      M30 220 C28 200 25 170 28 140 C30 120 26 95 30 75
+      C33 58 28 35 35 20 C40 10 48 5 55 8
+      C65 12 80 15 95 22 C110 28 120 40 118 55
+      C116 70 108 82 95 88 C82 92 65 90 52 86
+      C45 83 40 82 38 90 C36 100 37 115 35 135
+      C33 160 38 190 35 210 C33 225 32 235 30 220Z
+    " fill="none" stroke="#0A0A0A" stroke-width="2.2"
+      stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- P inner blob fill -->
+    <path d="
+      M55 25 C68 30 82 35 90 45 C96 53 95 65 88 72
+      C80 80 65 78 55 74 C48 71 44 65 46 55
+      C47 45 52 35 55 25Z
+    " fill="#0A0A0A" opacity="0.85"/>
+
+    <!-- i - fluid dot + stroke -->
+    <path d="
+      M145 90 C142 110 140 135 138 160 C136 180 140 200 137 215
+      C135 225 134 230 136 220
+    " fill="none" stroke="#0A0A0A" stroke-width="2.2"
+      stroke-linecap="round"/>
+    <!-- i dot - organic blob -->
+    <path d="
+      M148 55 C155 50 162 55 160 63 C158 72 148 75 145 68
+      C142 62 143 58 148 55Z
+    " fill="#0A0A0A"/>
+
+    <!-- d - organic -->
+    <path d="
+      M175 215 C173 195 170 165 172 140 C174 120 168 100 173 80
+      C176 65 178 40 182 20 C185 8 190 2 193 5
+      C196 10 198 25 196 45 C194 65 192 85 190 105
+      C195 95 205 82 220 78 C235 75 250 82 255 95
+      C260 110 258 130 250 148 C242 165 228 178 212 182
+      C198 186 188 178 185 168
+      C182 155 178 230 175 215Z
+    " fill="none" stroke="#0A0A0A" stroke-width="2.2"
+      stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="
+      M205 92 C218 88 232 95 236 108
+      C240 122 235 140 225 152
+      C215 162 200 160 195 148
+      C190 135 195 96 205 92Z
+    " fill="#0A0A0A" opacity="0.7"/>
+
+    <!-- y - flowing down -->
+    <path d="
+      M280 80 C278 95 282 115 285 135 C288 150 292 165 290 175
+    " fill="none" stroke="#0A0A0A" stroke-width="2.2" stroke-linecap="round"/>
+    <path d="
+      M320 78 C318 95 315 115 310 140 C305 165 298 195 290 220
+      C282 245 270 265 260 275 C252 282 245 278 250 270
+    " fill="none" stroke="#0A0A0A" stroke-width="2.2" stroke-linecap="round"/>
+
+    <!-- o - organic blob -->
+    <path d="
+      M360 100 C380 85 405 82 420 92 C435 102 440 122 435 142
+      C430 160 415 175 395 178 C375 180 355 170 348 152
+      C342 135 345 112 360 100Z
+    " fill="none" stroke="#0A0A0A" stroke-width="2.2"
+      stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="
+      M375 105 C390 98 408 100 415 112
+      C422 125 418 145 408 155
+      C398 165 380 163 372 150
+      C364 138 365 115 375 105Z
+    " fill="#0A0A0A" opacity="0.6"/>
+
+    <!-- m - organic waves -->
+    <path d="
+      M460 175 C458 155 455 130 460 110 C463 95 468 85 475 82
+      C482 80 490 85 495 95 C500 108 498 125 500 110
+      C502 95 508 82 518 78 C528 75 538 82 542 95
+      C546 108 545 125 548 110 C550 95 555 82 565 78
+      C575 75 585 85 588 100 C590 115 588 140 585 165
+      C583 180 580 195 578 185
+    " fill="none" stroke="#0A0A0A" stroke-width="2.2"
+      stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- Large accent blob (like HIT's filled sections) -->
+    <path d="
+      M520 95 C535 88 550 92 555 105
+      C560 118 555 135 545 142
+      C535 148 522 142 518 130
+      C514 118 510 100 520 95Z
+    " fill="#0A0A0A" opacity="0.9"/>
+  </g>
+
+  <!-- Structured metadata grid (HIT-inspired) -->
+  <g transform="translate(80, 30)" font-family="'Space Mono', 'Courier New', monospace">
+    <!-- Circle letters P-I-D -->
+    <circle cx="15" cy="15" r="13" fill="none" stroke="#0A0A0A" stroke-width="1.5"/>
+    <text x="15" y="20" text-anchor="middle" font-size="14" font-weight="700" fill="#0A0A0A">P</text>
+    <circle cx="45" cy="15" r="13" fill="none" stroke="#0A0A0A" stroke-width="1.5"/>
+    <text x="45" y="20" text-anchor="middle" font-size="14" font-weight="700" fill="#0A0A0A">I</text>
+    <circle cx="30" cy="43" r="13" fill="none" stroke="#0A0A0A" stroke-width="1.5"/>
+    <text x="30" y="48" text-anchor="middle" font-size="14" font-weight="700" fill="#0A0A0A">D</text>
+
+    <!-- Metadata text block 1 -->
+    <text x="75" y="15" font-size="10" letter-spacing="1" fill="#0A0A0A">Kettlebell</text>
+    <text x="75" y="28" font-size="10" letter-spacing="1" fill="#0A0A0A">est.2025</text>
+    <text x="75" y="41" font-size="10" letter-spacing="1" fill="#0A0A0A">Track</text>
+    <text x="75" y="54" font-size="10" letter-spacing="1" fill="#0A0A0A">Progress</text>
+
+    <!-- Divider slashes -->
+    <text x="180" y="28" font-size="16" fill="#0A0A0A" opacity="0.4">//</text>
+
+    <!-- Metadata text block 2 -->
+    <text x="210" y="15" font-size="10" letter-spacing="1" fill="#0A0A0A">Workout</text>
+    <text x="290" y="15" font-size="10" letter-spacing="1" fill="#0A0A0A">Strength</text>
+    <text x="210" y="28" font-size="10" letter-spacing="1" fill="#0A0A0A">Schedule</text>
+    <text x="290" y="28" font-size="10" letter-spacing="1" fill="#0A0A0A">Power</text>
+    <text x="210" y="41" font-size="10" letter-spacing="1" fill="#0A0A0A">Analytics</text>
+    <text x="290" y="41" font-size="10" letter-spacing="1" fill="#0A0A0A">Community</text>
+  </g>
+</svg>

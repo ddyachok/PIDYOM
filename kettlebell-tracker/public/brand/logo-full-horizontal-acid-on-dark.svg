@@ -1,0 +1,35 @@
+<svg viewBox="0 0 520 120" xmlns="http://www.w3.org/2000/svg">
+  <!-- PIDYOM Full Logo Horizontal — Icon + Wordmark / Acid on Dark -->
+  <rect width="520" height="120" fill="#0D0D0D"/>
+
+  <!-- Icon -->
+  <g transform="translate(10, 10)">
+    <path d="M50 4 L96 50 L50 96 L4 50 Z" stroke="#C6FF00" stroke-width="2" fill="none"/>
+    <path d="
+      M50 22
+      C44.5 22 40.5 26 40.5 30
+      C40.5 33.5 43 36.5 46 37.5
+      L44.5 42
+      C39.5 44 36 49 36 55
+      C36 63 42.5 69.5 50 69.5
+      C57.5 69.5 64 63 64 55
+      C64 49 60.5 44 55.5 42
+      L54 37.5
+      C57 36.5 59.5 33.5 59.5 30
+      C59.5 26 55.5 22 50 22Z
+    " fill="#C6FF00"/>
+    <ellipse cx="50" cy="29.5" rx="5" ry="4" fill="#0D0D0D"/>
+  </g>
+
+  <!-- Wordmark -->
+  <text x="140" y="72" font-family="'Barlow Condensed', 'Arial Narrow', sans-serif"
+        font-weight="700" font-size="52" letter-spacing="12" fill="#C6FF00">
+    PIDYOM
+  </text>
+
+  <!-- Tagline -->
+  <text x="142" y="95" font-family="'Space Mono', 'Courier New', monospace"
+        font-weight="400" font-size="11" letter-spacing="4" fill="#6A6A62">
+    KETTLEBELL TRACKER
+  </text>
+</svg>
