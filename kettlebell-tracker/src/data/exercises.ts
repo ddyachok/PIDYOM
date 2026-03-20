@@ -14,6 +14,7 @@ export const EXERCISES: Exercise[] = [
     cues: ['Hinge at hips', 'Flat back', 'Drive through heels'],
     progressionChildren: ['kb-single-deadlift'],
     unlocked: true,
+    exerciseType: 'main' as const,
   },
   {
     id: 'kb-single-deadlift',
@@ -28,6 +29,7 @@ export const EXERCISES: Exercise[] = [
     progressionParentId: 'kb-deadlift',
     progressionChildren: ['kb-two-hand-swing'],
     unlocked: true,
+    exerciseType: 'main' as const,
   },
   {
     id: 'kb-two-hand-swing',
@@ -42,6 +44,7 @@ export const EXERCISES: Exercise[] = [
     progressionParentId: 'kb-single-deadlift',
     progressionChildren: ['kb-one-hand-swing'],
     unlocked: true,
+    exerciseType: 'main' as const,
   },
   {
     id: 'kb-one-hand-swing',
@@ -56,6 +59,7 @@ export const EXERCISES: Exercise[] = [
     progressionParentId: 'kb-two-hand-swing',
     progressionChildren: ['kb-clean', 'kb-high-pull', 'kb-h2h-swing'],
     unlocked: true,
+    exerciseType: 'main' as const,
   },
   {
     id: 'kb-clean',
@@ -70,6 +74,7 @@ export const EXERCISES: Exercise[] = [
     progressionParentId: 'kb-one-hand-swing',
     progressionChildren: ['kb-clean-press', 'kb-clean-squat'],
     unlocked: false,
+    exerciseType: 'main' as const,
   },
   {
     id: 'kb-high-pull',
@@ -84,6 +89,7 @@ export const EXERCISES: Exercise[] = [
     progressionParentId: 'kb-one-hand-swing',
     progressionChildren: ['kb-snatch'],
     unlocked: false,
+    exerciseType: 'main' as const,
   },
   {
     id: 'kb-h2h-swing',
@@ -97,6 +103,7 @@ export const EXERCISES: Exercise[] = [
     cues: ['Switch at apex', 'Brief float', 'Stay square'],
     progressionParentId: 'kb-one-hand-swing',
     unlocked: false,
+    exerciseType: 'main' as const,
   },
   {
     id: 'kb-snatch',
@@ -110,6 +117,7 @@ export const EXERCISES: Exercise[] = [
     cues: ['Punch through at top', 'Soft lockout', 'One fluid motion'],
     progressionParentId: 'kb-high-pull',
     unlocked: false,
+    exerciseType: 'main' as const,
   },
 
   // ===== SQUAT PATTERN =====
@@ -125,6 +133,7 @@ export const EXERCISES: Exercise[] = [
     cues: ['Elbows between knees', 'Chest up', 'Sit between heels'],
     progressionChildren: ['kb-racked-squat', 'kb-overhead-squat'],
     unlocked: true,
+    exerciseType: 'main' as const,
   },
   {
     id: 'kb-racked-squat',
@@ -139,6 +148,7 @@ export const EXERCISES: Exercise[] = [
     progressionParentId: 'goblet-squat',
     progressionChildren: ['kb-double-squat', 'kb-pistol-squat'],
     unlocked: false,
+    exerciseType: 'main' as const,
   },
   {
     id: 'kb-overhead-squat',
@@ -152,6 +162,7 @@ export const EXERCISES: Exercise[] = [
     cues: ['Active shoulder', 'Stack joints', 'Slow descent'],
     progressionParentId: 'goblet-squat',
     unlocked: false,
+    exerciseType: 'main' as const,
   },
   {
     id: 'kb-double-squat',
@@ -165,6 +176,7 @@ export const EXERCISES: Exercise[] = [
     cues: ['Two clean to rack', 'Stay stacked', 'Fight for position'],
     progressionParentId: 'kb-racked-squat',
     unlocked: false,
+    exerciseType: 'main' as const,
   },
   {
     id: 'kb-pistol-squat',
@@ -178,6 +190,7 @@ export const EXERCISES: Exercise[] = [
     cues: ['KB as counterweight', 'Control descent', 'Drive through heel'],
     progressionParentId: 'kb-racked-squat',
     unlocked: false,
+    exerciseType: 'main' as const,
   },
 
   // ===== PRESS PATTERN =====
@@ -193,6 +206,7 @@ export const EXERCISES: Exercise[] = [
     cues: ['Pack shoulder', 'Slow lower', 'Press from lat'],
     progressionChildren: ['kb-half-kneel-press'],
     unlocked: true,
+    exerciseType: 'main' as const,
   },
   {
     id: 'kb-half-kneel-press',
@@ -207,6 +221,7 @@ export const EXERCISES: Exercise[] = [
     progressionParentId: 'kb-floor-press',
     progressionChildren: ['kb-military-press'],
     unlocked: true,
+    exerciseType: 'main' as const,
   },
   {
     id: 'kb-military-press',
@@ -221,6 +236,7 @@ export const EXERCISES: Exercise[] = [
     progressionParentId: 'kb-half-kneel-press',
     progressionChildren: ['kb-push-press', 'kb-bottoms-up-press'],
     unlocked: false,
+    exerciseType: 'main' as const,
   },
   {
     id: 'kb-push-press',
@@ -235,6 +251,7 @@ export const EXERCISES: Exercise[] = [
     progressionParentId: 'kb-military-press',
     progressionChildren: ['kb-jerk'],
     unlocked: false,
+    exerciseType: 'main' as const,
   },
   {
     id: 'kb-bottoms-up-press',
@@ -248,6 +265,7 @@ export const EXERCISES: Exercise[] = [
     cues: ['Crush grip', 'Slow and controlled', 'Total tension'],
     progressionParentId: 'kb-military-press',
     unlocked: false,
+    exerciseType: 'main' as const,
   },
   {
     id: 'kb-jerk',
@@ -261,6 +279,7 @@ export const EXERCISES: Exercise[] = [
     cues: ['First dip', 'Drive', 'Second dip under', 'Fixation'],
     progressionParentId: 'kb-push-press',
     unlocked: false,
+    exerciseType: 'main' as const,
   },
 
   // ===== PULL PATTERN =====
@@ -276,6 +295,7 @@ export const EXERCISES: Exercise[] = [
     cues: ['Flat back', 'Pull to hip', 'Squeeze at top'],
     progressionChildren: ['kb-renegade-row', 'kb-gorilla-row'],
     unlocked: true,
+    exerciseType: 'main' as const,
   },
   {
     id: 'kb-renegade-row',
@@ -289,6 +309,7 @@ export const EXERCISES: Exercise[] = [
     cues: ['Wide feet', 'No rotation', 'Pull to hip'],
     progressionParentId: 'kb-bent-row',
     unlocked: false,
+    exerciseType: 'main' as const,
   },
   {
     id: 'kb-gorilla-row',
@@ -302,6 +323,7 @@ export const EXERCISES: Exercise[] = [
     cues: ['Low hinge', 'Alternate pulls', 'Ground the other bell'],
     progressionParentId: 'kb-bent-row',
     unlocked: false,
+    exerciseType: 'main' as const,
   },
 
   // ===== CORE / GET-UP =====
@@ -316,6 +338,7 @@ export const EXERCISES: Exercise[] = [
     description: 'Circular movement around the head',
     cues: ['Keep bell close', 'Circle both directions', 'Shoulders packed'],
     unlocked: true,
+    exerciseType: 'main' as const,
   },
   {
     id: 'tgu-partial',
@@ -329,6 +352,7 @@ export const EXERCISES: Exercise[] = [
     cues: ['Roll to press', 'Eyes on bell', 'Elbow under shoulder'],
     progressionChildren: ['tgu-half'],
     unlocked: true,
+    exerciseType: 'main' as const,
   },
   {
     id: 'tgu-half',
@@ -343,6 +367,7 @@ export const EXERCISES: Exercise[] = [
     progressionParentId: 'tgu-partial',
     progressionChildren: ['tgu-full'],
     unlocked: false,
+    exerciseType: 'main' as const,
   },
   {
     id: 'tgu-full',
@@ -357,6 +382,7 @@ export const EXERCISES: Exercise[] = [
     progressionParentId: 'tgu-half',
     progressionChildren: ['tgu-heavy', 'kb-windmill'],
     unlocked: false,
+    exerciseType: 'main' as const,
   },
   {
     id: 'tgu-heavy',
@@ -370,6 +396,7 @@ export const EXERCISES: Exercise[] = [
     cues: ['Same technique', 'Total tension', 'No rushing'],
     progressionParentId: 'tgu-full',
     unlocked: false,
+    exerciseType: 'main' as const,
   },
   {
     id: 'kb-windmill',
@@ -383,6 +410,7 @@ export const EXERCISES: Exercise[] = [
     cues: ['Push hip out', 'Follow hand down', 'Lock top arm'],
     progressionParentId: 'tgu-full',
     unlocked: false,
+    exerciseType: 'main' as const,
   },
 
   // ===== CARRY =====
@@ -398,6 +426,7 @@ export const EXERCISES: Exercise[] = [
     cues: ['Tall posture', 'Shoulders packed', 'Even steps'],
     progressionChildren: ['kb-rack-carry', 'kb-suitcase-carry'],
     unlocked: true,
+    exerciseType: 'main' as const,
   },
   {
     id: 'kb-rack-carry',
@@ -412,6 +441,7 @@ export const EXERCISES: Exercise[] = [
     progressionParentId: 'kb-farmers-carry',
     progressionChildren: ['kb-waiter-carry'],
     unlocked: false,
+    exerciseType: 'main' as const,
   },
   {
     id: 'kb-suitcase-carry',
@@ -425,6 +455,7 @@ export const EXERCISES: Exercise[] = [
     cues: ['No lean', 'Core braced', 'Walk the line'],
     progressionParentId: 'kb-farmers-carry',
     unlocked: false,
+    exerciseType: 'main' as const,
   },
   {
     id: 'kb-waiter-carry',
@@ -438,6 +469,7 @@ export const EXERCISES: Exercise[] = [
     cues: ['Pack shoulder', 'Steady arm', 'Short steps'],
     progressionParentId: 'kb-rack-carry',
     unlocked: false,
+    exerciseType: 'main' as const,
   },
 
   // ===== COMPOUND / COMPLEX =====
@@ -453,6 +485,7 @@ export const EXERCISES: Exercise[] = [
     cues: ['Clean first', 'Settle rack', 'Press from lat'],
     progressionParentId: 'kb-clean',
     unlocked: false,
+    exerciseType: 'main' as const,
   },
   {
     id: 'kb-clean-squat',
@@ -466,6 +499,7 @@ export const EXERCISES: Exercise[] = [
     cues: ['Clean to rack', 'Squat with control', 'Drive up'],
     progressionParentId: 'kb-clean',
     unlocked: false,
+    exerciseType: 'main' as const,
   },
 
   // ===== BODYWEIGHT / RINGS =====
@@ -481,6 +515,7 @@ export const EXERCISES: Exercise[] = [
     cues: ['Rings turned out', 'Shoulders down', 'Total tension'],
     progressionChildren: ['ring-pushup'],
     unlocked: true,
+    exerciseType: 'main' as const,
   },
   {
     id: 'ring-pushup',
@@ -495,6 +530,7 @@ export const EXERCISES: Exercise[] = [
     progressionParentId: 'ring-support',
     progressionChildren: ['ring-dip'],
     unlocked: false,
+    exerciseType: 'main' as const,
   },
   {
     id: 'ring-dip',
@@ -509,6 +545,7 @@ export const EXERCISES: Exercise[] = [
     progressionParentId: 'ring-pushup',
     progressionChildren: ['ring-muscle-up'],
     unlocked: false,
+    exerciseType: 'main' as const,
   },
   {
     id: 'ring-muscle-up',
@@ -522,6 +559,7 @@ export const EXERCISES: Exercise[] = [
     cues: ['False grip', 'Deep pull', 'Fast transition', 'Press out'],
     progressionParentId: 'ring-dip',
     unlocked: false,
+    exerciseType: 'main' as const,
   },
   {
     id: 'ring-row',
@@ -535,6 +573,7 @@ export const EXERCISES: Exercise[] = [
     cues: ['Body straight', 'Pull to chest', 'Squeeze back'],
     progressionChildren: ['ring-pullup'],
     unlocked: true,
+    exerciseType: 'main' as const,
   },
   {
     id: 'ring-pullup',
@@ -548,6 +587,7 @@ export const EXERCISES: Exercise[] = [
     cues: ['Dead hang start', 'Chin over rings', 'Control descent'],
     progressionParentId: 'ring-row',
     unlocked: false,
+    exerciseType: 'main' as const,
   },
 
   // ===== BODYWEIGHT =====
@@ -563,6 +603,7 @@ export const EXERCISES: Exercise[] = [
     cues: ['Plank position', 'Elbows 45°', 'Full range'],
     progressionChildren: ['bw-diamond-pushup'],
     unlocked: true,
+    exerciseType: 'main' as const,
   },
   {
     id: 'bw-diamond-pushup',
@@ -576,6 +617,7 @@ export const EXERCISES: Exercise[] = [
     cues: ['Hands together', 'Elbows tight', 'Chest to hands'],
     progressionParentId: 'bw-pushup',
     unlocked: false,
+    exerciseType: 'main' as const,
   },
   {
     id: 'bw-pullup',
@@ -588,6 +630,7 @@ export const EXERCISES: Exercise[] = [
     description: 'Standard pull-up',
     cues: ['Dead hang', 'Chin over bar', 'Control descent'],
     unlocked: true,
+    exerciseType: 'main' as const,
   },
   {
     id: 'bw-lsit',
@@ -600,6 +643,7 @@ export const EXERCISES: Exercise[] = [
     description: 'Static hold with legs parallel to ground',
     cues: ['Press shoulders down', 'Point toes', 'Engage quads'],
     unlocked: false,
+    exerciseType: 'main' as const,
   },
 
   // ===== CONDITIONING =====
@@ -615,6 +659,7 @@ export const EXERCISES: Exercise[] = [
     cues: ['Relaxed grip', 'Breathe with rhythm', 'Full body flow'],
     progressionChildren: ['rope-figure8'],
     unlocked: true,
+    exerciseType: 'main' as const,
   },
   {
     id: 'rope-figure8',
@@ -629,6 +674,7 @@ export const EXERCISES: Exercise[] = [
     progressionParentId: 'rope-flow',
     progressionChildren: ['rope-shield-cast'],
     unlocked: false,
+    exerciseType: 'main' as const,
   },
   {
     id: 'rope-shield-cast',
@@ -642,6 +688,7 @@ export const EXERCISES: Exercise[] = [
     cues: ['Hip rotation', 'Arm extension', 'Rhythm first'],
     progressionParentId: 'rope-figure8',
     unlocked: false,
+    exerciseType: 'main' as const,
   },
   {
     id: 'sprint-intervals',
@@ -654,6 +701,93 @@ export const EXERCISES: Exercise[] = [
     description: 'Short burst running intervals',
     cues: ['Full effort sprints', 'Walk recovery', 'Gradual warmup'],
     unlocked: true,
+    exerciseType: 'main' as const,
+  },
+
+  // ===== WARMUP EXERCISES =====
+  {
+    id: 'shoulder-dislocates',
+    name: 'Shoulder Dislocates',
+    category: 'hybrid' as const,
+    movementPattern: 'flow' as const,
+    equipment: ['resistance_band'] as const,
+    focusAreas: ['mobility'] as const,
+    difficulty: 'beginner' as const,
+    description: 'Shoulder mobility drill with resistance band or dowel',
+    cues: ['Straight arms throughout', 'Slow and controlled motion', 'Avoid shrugging shoulders'],
+    unlocked: true,
+    exerciseType: 'warmup' as const,
+    warmupDefaults: { sets: 2, reps: '10-15', hint: 'Straight arms, slow and controlled' },
+  },
+  {
+    id: 'scapular-pushups',
+    name: 'Scapular Push-ups',
+    category: 'grind' as const,
+    movementPattern: 'push' as const,
+    equipment: ['bodyweight'] as const,
+    focusAreas: ['strength', 'mobility'] as const,
+    difficulty: 'beginner' as const,
+    description: 'Scapular protraction and retraction from push-up position',
+    cues: ['Arms stay straight', 'Only scapular movement', 'Forward and back'],
+    unlocked: true,
+    exerciseType: 'warmup' as const,
+    warmupDefaults: { sets: 2, reps: '15', hint: 'Only scapular movement, arms straight' },
+  },
+  {
+    id: 'jumping-jacks',
+    name: 'Jumping Jacks',
+    category: 'ballistic' as const,
+    movementPattern: 'flow' as const,
+    equipment: ['bodyweight'] as const,
+    focusAreas: ['conditioning'] as const,
+    difficulty: 'beginner' as const,
+    description: 'Full-body warm-up movement',
+    cues: ['Light pace', 'Full range of motion', 'Arms reach overhead'],
+    unlocked: true,
+    exerciseType: 'warmup' as const,
+    warmupDefaults: { sets: 2, reps: '20', hint: 'Light pace, full range of motion' },
+  },
+  {
+    id: 'arm-circles',
+    name: 'Arm Circles',
+    category: 'hybrid' as const,
+    movementPattern: 'flow' as const,
+    equipment: ['bodyweight'] as const,
+    focusAreas: ['mobility'] as const,
+    difficulty: 'beginner' as const,
+    description: 'Shoulder warm-up circles in both directions',
+    cues: ['Each direction', 'Gradually increase range', 'Relaxed shoulders'],
+    unlocked: true,
+    exerciseType: 'warmup' as const,
+    warmupDefaults: { sets: 1, reps: '15', hint: 'Each direction' },
+  },
+  {
+    id: 'hip-circles',
+    name: 'Hip Circles',
+    category: 'hybrid' as const,
+    movementPattern: 'flow' as const,
+    equipment: ['bodyweight'] as const,
+    focusAreas: ['mobility'] as const,
+    difficulty: 'beginner' as const,
+    description: 'Hip mobility circles to warm up the hip joint',
+    cues: ['Each direction', 'Hands on hips', 'Full range'],
+    unlocked: true,
+    exerciseType: 'warmup' as const,
+    warmupDefaults: { sets: 1, reps: '10', hint: 'Each direction' },
+  },
+  {
+    id: 'bodyweight-squat',
+    name: 'Bodyweight Squat',
+    category: 'grind' as const,
+    movementPattern: 'squat' as const,
+    equipment: ['bodyweight'] as const,
+    focusAreas: ['mobility', 'strength'] as const,
+    difficulty: 'beginner' as const,
+    description: 'Unloaded squat to warm up hips, knees and ankles',
+    cues: ['Focus on depth', 'Control the descent', 'Chest tall'],
+    unlocked: true,
+    exerciseType: 'warmup' as const,
+    warmupDefaults: { sets: 2, reps: '10', hint: 'Focus on depth and control' },
   },
 ];
 

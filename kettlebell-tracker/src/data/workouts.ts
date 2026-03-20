@@ -9,7 +9,6 @@ export interface WorkoutTemplate {
   durationMinutes: number;
   focusAreas: string[];
   equipment: string[];
-  warmup?: string;
   notes?: string;
   /** Exercise IDs to pre-populate */
   exerciseIds: string[];
@@ -29,7 +28,6 @@ export const WORKOUT_TEMPLATES: Record<string, WorkoutTemplate> = {
     durationMinutes: 30,
     focusAreas: ['strength', 'mobility'],
     equipment: ['kettlebell'],
-    warmup: 'KB Halo x8 each way → Goblet Squat Prying x5',
     notes: 'Focus on slow, strict reps. Own each position.',
     exerciseIds: ['goblet-squat', 'kb-press', 'kb-row'],
     defaultSets: 3,
@@ -43,7 +41,6 @@ export const WORKOUT_TEMPLATES: Record<string, WorkoutTemplate> = {
     durationMinutes: 40,
     focusAreas: ['strength'],
     equipment: ['kettlebell', 'rings', 'bodyweight'],
-    warmup: 'Arm circles → Ring rows x5 → KB Halo x8',
     notes: 'Press and pull balance. Quality over quantity.',
     exerciseIds: ['ring-row', 'ring-dip', 'kb-press'],
     defaultSets: 3,
@@ -57,7 +54,6 @@ export const WORKOUT_TEMPLATES: Record<string, WorkoutTemplate> = {
     durationMinutes: 35,
     focusAreas: ['strength', 'mobility'],
     equipment: ['kettlebell', 'bodyweight'],
-    warmup: 'Bodyweight squats x10 → Hip bridges x10 → KB Deadlift x5',
     notes: 'Deep positions. Patience in the hole.',
     exerciseIds: ['kb-deadlift', 'goblet-squat', 'kb-two-hand-swing'],
     defaultSets: 4,
@@ -71,7 +67,6 @@ export const WORKOUT_TEMPLATES: Record<string, WorkoutTemplate> = {
     durationMinutes: 30,
     focusAreas: ['conditioning', 'power'],
     equipment: ['kettlebell', 'bodyweight'],
-    warmup: 'Joint rotations → Light swings x20',
     notes: 'Rhythm and breathing. Controlled aggression.',
     exerciseIds: ['kb-two-hand-swing', 'kb-clean', 'kb-snatch'],
     defaultSets: 4,
@@ -85,7 +80,6 @@ export const WORKOUT_TEMPLATES: Record<string, WorkoutTemplate> = {
     durationMinutes: 25,
     focusAreas: ['conditioning', 'coordination'],
     equipment: ['kettlebell', 'rope', 'bodyweight'],
-    warmup: 'Rope Flow 5min → Dynamic stretches',
     notes: 'Work:rest ratios. Keep heart rate in zone.',
     exerciseIds: ['kb-snatch', 'kb-two-hand-swing'],
     defaultSets: 5,
@@ -99,7 +93,6 @@ export const WORKOUT_TEMPLATES: Record<string, WorkoutTemplate> = {
     durationMinutes: 40,
     focusAreas: ['conditioning', 'coordination', 'mobility'],
     equipment: ['kettlebell', 'rope', 'bodyweight'],
-    warmup: 'Joint circles → Rope Flow 3min → Light KB complex',
     notes: 'Movement quality. Seamless transitions.',
     exerciseIds: ['turkish-getup', 'kb-windmill'],
     defaultSets: 3,
@@ -113,7 +106,6 @@ export const WORKOUT_TEMPLATES: Record<string, WorkoutTemplate> = {
     durationMinutes: 25,
     focusAreas: ['mobility'],
     equipment: ['kettlebell', 'bodyweight'],
-    warmup: 'Full body joint circles',
     notes: 'Range of motion is the goal. Breathe deep.',
     exerciseIds: ['kb-windmill', 'kb-halo', 'goblet-squat'],
     defaultSets: 3,
@@ -127,7 +119,6 @@ export const WORKOUT_TEMPLATES: Record<string, WorkoutTemplate> = {
     durationMinutes: 45,
     focusAreas: ['coordination', 'strength'],
     equipment: ['kettlebell', 'bodyweight'],
-    warmup: 'TGU walkthrough x2 each side → Light presses',
     notes: 'Precision work. Every rep intentional.',
     exerciseIds: ['turkish-getup', 'kb-bottoms-up-press'],
     defaultSets: 3,
