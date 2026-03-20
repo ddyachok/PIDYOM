@@ -26,7 +26,6 @@ export const GET_USER_WORKOUTS = `
       focus_areas
       notes
       place
-      warmup
       user_id
     }
   }
@@ -37,6 +36,7 @@ export const GET_WORKOUT_EXERCISES = `
     workout_exercises(where: { workout_id: { _in: $workoutIds } }) {
       id
       workout_id
+      section_id
       exercise_id
       exercise_order
       notes
@@ -95,6 +95,17 @@ export const GET_ALL_EXERCISES = `
       description
       cues
       progression_parent_id
+    }
+  }
+`;
+
+export const GET_WORKOUT_SECTIONS = `
+  query GetWorkoutSections($workoutIds: [String!]!) {
+    workout_sections(where: { workout_id: { _in: $workoutIds } }, order_by: { position: asc }) {
+      id
+      workout_id
+      name
+      position
     }
   }
 `;
