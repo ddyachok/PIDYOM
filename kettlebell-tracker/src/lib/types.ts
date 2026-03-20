@@ -8,6 +8,14 @@ export type ExerciseCategory = 'ballistic' | 'grind' | 'hybrid';
 export type MovementPattern = 'hinge' | 'squat' | 'push' | 'pull' | 'carry' | 'core' | 'flow';
 export type DifficultyLevel = 'beginner' | 'intermediate' | 'advanced' | 'elite';
 
+export type ExerciseType = 'main' | 'warmup';
+
+export interface WarmupDefaults {
+  sets: number;
+  reps: string; // e.g. "10-15", "20 sec", "8"
+  hint: string; // shown as primary cue on warmup card
+}
+
 export interface Exercise {
   id: string;
   name: string;
@@ -21,6 +29,8 @@ export interface Exercise {
   progressionParentId?: string;
   progressionChildren?: string[];
   unlocked: boolean;
+  exerciseType: ExerciseType;
+  warmupDefaults?: WarmupDefaults;
 }
 
 export interface ExerciseSet {
@@ -41,13 +51,18 @@ export interface WorkoutExercise {
   order: number;
 }
 
+export interface WorkoutSection {
+  id: string;
+  name: string; // user-editable
+  exercises: WorkoutExercise[];
+}
+
 export interface Workout {
   id: string;
   name: string;
   type: WorkoutType; // Legacy DB field — maps to/from trainingGoal
   date: string;
-  exercises: WorkoutExercise[];
-  warmup?: string;
+  sections: WorkoutSection[];
   notes?: string;
   focusAreas: FocusArea[];
   equipment: Equipment[];
