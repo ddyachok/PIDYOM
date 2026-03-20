@@ -130,3 +130,28 @@ export const INSERT_EXERCISE_UNLOCK = `
     }
   }
 `;
+
+// ── Workout Sections ──
+export const INSERT_WORKOUT_SECTIONS = `
+  mutation InsertWorkoutSections($objects: [workout_sections_insert_input!]!) {
+    insert_workout_sections(objects: $objects) {
+      affected_rows
+    }
+  }
+`;
+
+export const DELETE_WORKOUT_SECTIONS = `
+  mutation DeleteWorkoutSections($where: workout_sections_bool_exp!) {
+    delete_workout_sections(where: $where) {
+      affected_rows
+    }
+  }
+`;
+
+export const UPDATE_WORKOUT_SECTION = `
+  mutation UpdateWorkoutSection($where: workout_sections_bool_exp!, $_set: workout_sections_set_input!) {
+    update_workout_sections(where: $where, _set: $_set) {
+      affected_rows
+    }
+  }
+`;
