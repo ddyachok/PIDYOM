@@ -6,9 +6,15 @@ import { useToastStore } from '../store/toastStore';
 import { EXERCISES } from '../data/exercises';
 import { WORKOUT_TEMPLATES, WORKOUT_TYPE_INFO } from '../data/workouts';
 import { Workout, WorkoutExercise, Exercise, TrainingGoal, goalToType, typeToGoal, TRAINING_GOAL_INFO, FocusArea, ScheduleEntry } from '../lib/types';
+import type { WorkoutSection as WorkoutSectionType } from '../lib/types';
 import { format, startOfWeek, addDays, isToday, isBefore, parseISO } from 'date-fns';
 import { IconPlus, IconCheck, IconTrash, IconChevronLeft, IconTree, IconClose, IconLock } from '../components/icons/Icons';
 import ProgressionTree from '../components/workout/ProgressionTree';
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import type { DragEndEvent } from '@dnd-kit/core';
+import { SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { WorkoutSectionComponent } from '../components/workout/WorkoutSection';
 
 function generateId() {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
@@ -132,53 +138,57 @@ function getRelevantFocusAreas(goal: TrainingGoal): FocusArea[] {
   }
 }
 
+/* ===== SORTABLE SECTION WRAPPER ===== */
+function SortableSection({ workout, section }: { workout: Workout; section: WorkoutSectionType }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: section.id });
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+  return (
+    <div ref={setNodeRef} style={style}>
+      <WorkoutSectionComponent
+        workout={workout}
+        section={section}
+        dragHandleProps={{ ...attributes, ...listeners }}
+      />
+    </div>
+  );
+}
+
 /* ===== WORKOUT DETAIL VIEW ===== */
 function WorkoutDetail({ workout, onBack }: { workout: Workout; onBack: () => void }) {
-  const { toggleSetComplete, updateSetData, addSetToExercise, addExerciseToWorkout, removeExerciseFromWorkout, completeWorkout, deleteWorkout } = useStore();
+  const { completeWorkout, deleteWorkout, addSection, reorderSections } = useStore();
   const addToast = useToastStore((s) => s.addToast);
-  const [showAddExercise, setShowAddExercise] = useState(false);
   const [selectedExerciseForTree, setSelectedExerciseForTree] = useState<string | null>(null);
   const [previewExercise, setPreviewExercise] = useState<Exercise | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const userEquipment = useStore(s => s.userEquipment);
-  const unlockedExercises = useStore(s => s.unlockedExercises);
+  const [addingSection, setAddingSection] = useState(false);
+  const [newSectionName, setNewSectionName] = useState('');
 
-  const allCompleted = workout.exercises.length > 0 && workout.exercises.every(ex => ex.sets.every(s => s.completed));
-  const totalSets = workout.exercises.reduce((a, e) => a + e.sets.length, 0);
-  const completedSets = workout.exercises.reduce((a, e) => a + e.sets.filter(s => s.completed).length, 0);
+  const allExercises = workout.sections.flatMap(s => s.exercises);
+  const allCompleted = allExercises.length > 0 && allExercises.every(ex => ex.sets.every(s => s.completed));
+  const totalSets = allExercises.reduce((a, e) => a + e.sets.length, 0);
+  const completedSets = allExercises.reduce((a, e) => a + e.sets.filter(s => s.completed).length, 0);
   const progressPct = totalSets > 0 ? Math.round((completedSets / totalSets) * 100) : 0;
 
-  const workoutGoal = typeToGoal(workout.type);
-  const relevantFocusAreas = getRelevantFocusAreas(workoutGoal);
-
-  const availableExercises = EXERCISES.filter(e =>
-    unlockedExercises.includes(e.id) &&
-    e.equipment.some(eq => userEquipment.includes(eq)) &&
-    !workout.exercises.find(we => we.exerciseId === e.id)
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 
-  const recommendedExercises = availableExercises.filter(e =>
-    e.focusAreas.some(fa => relevantFocusAreas.includes(fa))
-  );
-  const otherExercises = availableExercises.filter(e =>
-    !e.focusAreas.some(fa => relevantFocusAreas.includes(fa))
-  );
-
-  const handleAddExercise = (exercise: Exercise) => {
-    const newExercise: WorkoutExercise = {
-      id: generateId(),
-      exerciseId: exercise.id,
-      exercise,
-      sets: [
-        { id: generateId(), reps: 10, weight: 16, completed: false },
-        { id: generateId(), reps: 10, weight: 16, completed: false },
-        { id: generateId(), reps: 10, weight: 16, completed: false },
-      ],
-      restSeconds: 60,
-      order: workout.exercises.length,
-    };
-    addExerciseToWorkout(workout.id, newExercise);
-    setShowAddExercise(false);
+  const handleSectionDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const currentOrder = workout.sections.map(s => s.id);
+      const oldIndex = currentOrder.indexOf(String(active.id));
+      const newIndex = currentOrder.indexOf(String(over.id));
+      const reordered = [...currentOrder];
+      reordered.splice(oldIndex, 1);
+      reordered.splice(newIndex, 0, String(active.id));
+      reorderSections(workout.id, reordered);
+    }
   };
 
   const handleDeleteWorkout = () => {
@@ -250,107 +260,54 @@ function WorkoutDetail({ workout, onBack }: { workout: Workout; onBack: () => vo
         </div>
       </div>
 
-      {workout.warmup && (
-        <div className="bracket-card mb-8 md:mb-10 relative">
-          <div className="absolute left-0 top-4 bottom-4 w-[2px] bg-[#C6FF00]/40" />
-          <div className="pl-4">
-            <span className="data-label">Warmup</span>
-            <p className="text-[10px] md:text-[12px] text-white/50 leading-relaxed mt-2">{workout.warmup}</p>
-          </div>
-        </div>
-      )}
-
-      <div className="space-y-0">
-        {workout.exercises.map((ex, idx) => (
-          <motion.div
-            key={ex.id}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: idx * 0.04 }}
-          >
-            {idx > 0 && <div className="divider-full" />}
-            <div className="py-3">
-              <div className="flex items-center justify-between mb-4">
-                <button
-                  className="flex-1 text-left flex items-center gap-3 hover:opacity-80 transition-opacity min-w-0"
-                  onClick={() => setPreviewExercise(ex.exercise)}
-                >
-                  <span className="text-[10px] text-white/25 w-5 text-right tabular-nums">{String(idx + 1).padStart(2, '0')}</span>
-                  <span className="text-[12px] md:text-[14px] tracking-[0.06em] font-bold truncate">{ex.exercise.name}</span>
-                  <IconTree size={12} className="text-white/25 shrink-0" />
-                </button>
-                <div className="flex items-center gap-3 ml-2">
-                  {!workout.completed && (
-                    <button
-                      onClick={() => removeExerciseFromWorkout(workout.id, ex.id)}
-                      className="p-1.5 hover:bg-white/5 transition-colors text-white/25 hover:text-white/60"
-                    >
-                      <IconTrash size={12} />
-                    </button>
-                  )}
-                </div>
-              </div>
-
-              <div className="ml-8">
-                <div className="grid grid-cols-[24px_1fr_1fr_1fr] gap-3 mb-3">
-                  <span className="text-[8px] text-white/25 tracking-wider">#</span>
-                  <span className="text-[8px] text-white/25 tracking-wider">REPS</span>
-                  <span className="text-[8px] text-white/25 tracking-wider">KG</span>
-                  <span className="text-[8px] text-white/25 tracking-wider text-right">DONE</span>
-                </div>
-                {ex.sets.map((set, setIdx) => (
-                  <div
-                    key={set.id}
-                    className={`grid grid-cols-[24px_1fr_1fr_1fr] gap-3 items-center py-2.5 transition-colors ${
-                      set.completed ? 'bg-[#C6FF00]/[0.03]' : ''
-                    } ${setIdx > 0 ? 'border-t border-white/[0.04]' : ''}`}
-                  >
-                    <span className="text-[10px] text-white/30 tabular-nums">{setIdx + 1}</span>
-                    <input
-                      type="number"
-                      value={set.reps}
-                      onChange={(e) => updateSetData(workout.id, ex.id, set.id, { reps: parseInt(e.target.value) || 0 })}
-                      className="w-full"
-                      disabled={workout.completed}
-                    />
-                    <input
-                      type="number"
-                      value={set.weight}
-                      onChange={(e) => updateSetData(workout.id, ex.id, set.id, { weight: parseFloat(e.target.value) || 0 })}
-                      className="w-full"
-                      disabled={workout.completed}
-                    />
-                    <div className="flex justify-end">
-                      <input
-                        type="checkbox"
-                        checked={set.completed}
-                        onChange={() => toggleSetComplete(workout.id, ex.id, set.id)}
-                        disabled={workout.completed}
-                      />
-                    </div>
-                  </div>
-                ))}
-                {!workout.completed && (
-                  <button
-                    onClick={() => addSetToExercise(workout.id, ex.id)}
-                    className="w-full mt-3 py-2.5 text-[9px] text-white/25 hover:text-white/50 hover:bg-white/[0.02] transition-colors flex items-center justify-center gap-1 border-t border-white/[0.04]"
-                  >
-                    <IconPlus size={10} /> Add Set
-                  </button>
-                )}
-              </div>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-
-      {!workout.completed && (
-        <button
-          onClick={() => setShowAddExercise(true)}
-          className="btn btn-ghost btn-full mt-8"
+      {/* DnD sortable sections */}
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleSectionDragEnd}
+      >
+        <SortableContext
+          items={workout.sections.map(s => s.id)}
+          strategy={verticalListSortingStrategy}
         >
-          <IconPlus size={14} /> Add Exercise
-        </button>
+          {workout.sections.map(section => (
+            <SortableSection key={section.id} workout={workout} section={section} />
+          ))}
+        </SortableContext>
+      </DndContext>
+
+      {/* Add section */}
+      {!workout.completed && (
+        addingSection ? (
+          <form
+            onSubmit={e => {
+              e.preventDefault();
+              const v = newSectionName.trim();
+              if (v) addSection(workout.id, v);
+              setAddingSection(false);
+              setNewSectionName('');
+            }}
+            className="flex items-center gap-2 mt-4"
+          >
+            <input
+              autoFocus
+              value={newSectionName}
+              onChange={e => setNewSectionName(e.target.value)}
+              onKeyDown={e => { if (e.key === 'Escape') { setAddingSection(false); setNewSectionName(''); } }}
+              placeholder="Section name"
+              className="bg-white/[0.04] border border-white/15 text-[11px] text-white py-1 px-2 focus:outline-none focus:border-white/30 flex-1"
+            />
+            <button type="submit" className="text-[9px] text-white/50 hover:text-white/80 tracking-[0.1em] uppercase px-2">Add</button>
+            <button type="button" onClick={() => { setAddingSection(false); setNewSectionName(''); }} className="text-[9px] text-white/30 hover:text-white/60 tracking-[0.1em] uppercase px-1">Cancel</button>
+          </form>
+        ) : (
+          <button
+            onClick={() => setAddingSection(true)}
+            className="flex items-center gap-2 text-[9px] text-white/25 hover:text-white/50 transition-colors tracking-[0.1em] uppercase mt-4"
+          >
+            <IconPlus size={11} /> Add section
+          </button>
+        )
       )}
 
       <AnimatePresence>
@@ -372,80 +329,6 @@ function WorkoutDetail({ workout, onBack }: { workout: Workout; onBack: () => vo
                 <button onClick={() => setShowDeleteConfirm(false)} className="btn btn-ghost flex-1">Cancel</button>
                 <button onClick={handleDeleteWorkout} className="btn flex-1" style={{ borderColor: 'rgba(239,68,68,0.5)', color: '#ef4444' }}>Delete</button>
               </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {showAddExercise && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="modal-backdrop" onClick={() => setShowAddExercise(false)}>
-            <motion.div
-              initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
-              transition={{ type: 'spring', damping: 28, stiffness: 300 }}
-              className="modal-panel" onClick={e => e.stopPropagation()}
-            >
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-[13px] tracking-[0.2em] uppercase font-bold">Add Exercise</h3>
-                <button onClick={() => setShowAddExercise(false)} className="p-2 hover:bg-white/5 transition-colors">
-                  <IconClose size={18} className="text-white/40" />
-                </button>
-              </div>
-
-              {recommendedExercises.length > 0 && (
-                <div className="mb-6">
-                  <div className="section-label">Recommended for {TRAINING_GOAL_INFO[workoutGoal].label}</div>
-                  <div className="flex flex-col gap-1">
-                    {recommendedExercises.map(ex => (
-                      <button
-                        key={ex.id}
-                        onClick={() => handleAddExercise(ex)}
-                        className="flex items-center justify-between py-3.5 px-3 text-left hover:bg-white/[0.02] transition-colors group"
-                      >
-                        <div className="min-w-0 flex-1">
-                          <div className="text-[12px] tracking-[0.04em] text-white/80 group-hover:text-white transition-colors truncate">{ex.name}</div>
-                          <div className="text-[9px] text-white/30 mt-1.5 flex gap-2 flex-wrap">
-                            <span>{ex.movementPattern}</span>
-                            <span>{ex.difficulty}</span>
-                            <span className="text-[#C6FF00]/60">{ex.focusAreas.join(', ')}</span>
-                          </div>
-                        </div>
-                        <IconPlus size={14} className="text-white/25 shrink-0 ml-2" />
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {otherExercises.length > 0 && (
-                <div>
-                  {recommendedExercises.length > 0 && <div className="section-label">Other Exercises</div>}
-                  <div className="flex flex-col gap-1">
-                    {otherExercises.map(ex => (
-                      <button
-                        key={ex.id}
-                        onClick={() => handleAddExercise(ex)}
-                        className="flex items-center justify-between py-3.5 px-3 text-left hover:bg-white/[0.02] transition-colors group"
-                      >
-                        <div className="min-w-0 flex-1">
-                          <div className="text-[12px] tracking-[0.04em] text-white/60 group-hover:text-white transition-colors truncate">{ex.name}</div>
-                          <div className="text-[9px] text-white/25 mt-1.5 flex gap-2 flex-wrap">
-                            <span>{ex.movementPattern}</span>
-                            <span>{ex.difficulty}</span>
-                          </div>
-                        </div>
-                        <IconPlus size={14} className="text-white/20 shrink-0 ml-2" />
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {availableExercises.length === 0 && (
-                <p className="text-[10px] text-white/30 text-center py-8">
-                  No more exercises available. Unlock more in the YOU tab.
-                </p>
-              )}
             </motion.div>
           </motion.div>
         )}
@@ -565,8 +448,9 @@ function TodayCard({
   else if (todaySchedule) status = 'scheduled';
 
   const typeInfo = todaySchedule ? WORKOUT_TYPE_INFO[todaySchedule.workoutType] : null;
-  const totalSets = todayWorkout ? todayWorkout.exercises.reduce((a, e) => a + e.sets.length, 0) : 0;
-  const doneSets = todayWorkout ? todayWorkout.exercises.reduce((a, e) => a + e.sets.filter(s => s.completed).length, 0) : 0;
+  const todayExercises = todayWorkout ? todayWorkout.sections.flatMap(s => s.exercises) : [];
+  const totalSets = todayExercises.reduce((a, e) => a + e.sets.length, 0);
+  const doneSets = todayExercises.reduce((a, e) => a + e.sets.filter(s => s.completed).length, 0);
   const progressPct = totalSets > 0 ? Math.round((doneSets / totalSets) * 100) : 0;
 
   const dayLabel = format(new Date(), 'EEEE').toUpperCase();
@@ -931,7 +815,7 @@ function HistoryView({ workouts, onBack, onSelect }: {
 
                 {/* Right: ex count + status */}
                 <div className="flex items-center gap-3 shrink-0">
-                  <span style={{ fontSize: 9, color: 'var(--c-fg-20)' }}>{w.exercises.length} ex</span>
+                  <span style={{ fontSize: 9, color: 'var(--c-fg-20)' }}>{w.sections.flatMap(s => s.exercises).length} ex</span>
                   {w.completed
                     ? <IconCheck size={12} className="text-green-400/40" />
                     : <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--c-fg-12)' }} />
@@ -960,7 +844,7 @@ export default function WorkoutsPage() {
   const handleCreateWorkout = () => {
     const template = selectedTemplate ? WORKOUT_TEMPLATES[selectedTemplate] : null;
 
-    const exercises: WorkoutExercise[] = [];
+    const templateExercises: WorkoutExercise[] = [];
     if (template) {
       template.exerciseIds.forEach((exId, idx) => {
         const exercise = EXERCISES.find(e => e.id === exId);
@@ -971,7 +855,7 @@ export default function WorkoutsPage() {
             weight: template.defaultWeight,
             completed: false,
           }));
-          exercises.push({
+          templateExercises.push({
             id: generateId(),
             exerciseId: exercise.id,
             exercise,
@@ -988,8 +872,18 @@ export default function WorkoutsPage() {
       name: newName || template?.name || 'New Workout',
       type: goalToType(selectedGoal),
       date: new Date().toISOString().split('T')[0],
-      exercises,
-      warmup: template?.warmup,
+      sections: [
+        {
+          id: generateId(),
+          name: 'Warmup',
+          exercises: [],
+        },
+        {
+          id: generateId(),
+          name: 'Main',
+          exercises: templateExercises,
+        },
+      ],
       notes: template?.notes,
       focusAreas: (template?.focusAreas || [selectedGoal]) as any,
       equipment: (template?.equipment || []) as any,
@@ -1014,7 +908,10 @@ export default function WorkoutsPage() {
       name: typeInfo.subtitle,
       type: entry.workoutType,
       date: entry.date,
-      exercises: [],
+      sections: [
+        { id: generateId(), name: 'Warmup', exercises: [] },
+        { id: generateId(), name: 'Main', exercises: [] },
+      ],
       focusAreas: [...typeInfo.focusAreas] as any,
       equipment: [...typeInfo.equipment] as any,
       completed: false,

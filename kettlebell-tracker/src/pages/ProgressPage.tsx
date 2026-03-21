@@ -384,12 +384,12 @@ export default function ProgressPage() {
 
   const stats = useMemo(() => {
     const totalWorkouts = filteredWorkouts.length;
-    const totalSets     = filteredWorkouts.reduce((a, w) => a + w.exercises.reduce((b, e) => b + e.sets.filter(s => s.completed).length, 0), 0);
-    const totalVolume   = filteredWorkouts.reduce((a, w) => a + w.exercises.reduce((b, e) => b + e.sets.filter(s => s.completed).reduce((c, s) => c + s.reps * s.weight, 0), 0), 0);
-    const maxWeight     = filteredWorkouts.reduce((a, w) => Math.max(a, ...w.exercises.flatMap(e => e.sets.filter(s => s.completed).map(s => s.weight))), 0);
+    const totalSets     = filteredWorkouts.reduce((a, w) => a + w.sections.flatMap(s => s.exercises).reduce((b, e) => b + e.sets.filter(s => s.completed).length, 0), 0);
+    const totalVolume   = filteredWorkouts.reduce((a, w) => a + w.sections.flatMap(s => s.exercises).reduce((b, e) => b + e.sets.filter(s => s.completed).reduce((c, s) => c + s.reps * s.weight, 0), 0), 0);
+    const maxWeight     = filteredWorkouts.reduce((a, w) => Math.max(a, ...w.sections.flatMap(s => s.exercises).flatMap(e => e.sets.filter(s => s.completed).map(s => s.weight))), 0);
 
     const exerciseCounts: Record<string, number> = {};
-    filteredWorkouts.forEach(w => w.exercises.forEach(e => {
+    filteredWorkouts.forEach(w => w.sections.flatMap(s => s.exercises).forEach(e => {
       exerciseCounts[e.exercise.movementPattern] = (exerciseCounts[e.exercise.movementPattern] || 0) + e.sets.filter(s => s.completed).length;
     }));
 
@@ -397,7 +397,7 @@ export default function ProgressPage() {
     const periodData = Array.from({ length: daysToShow }, (_, i) => {
       const dayDate = subDays(new Date(), daysToShow - 1 - i);
       const date    = format(dayDate, 'yyyy-MM-dd');
-      const vol     = filteredWorkouts.filter(w => w.date === date).reduce((a, w) => a + w.exercises.reduce((b, e) => b + e.sets.filter(s => s.completed).reduce((c, s) => c + s.reps * s.weight, 0), 0), 0);
+      const vol     = filteredWorkouts.filter(w => w.date === date).reduce((a, w) => a + w.sections.flatMap(s => s.exercises).reduce((b, e) => b + e.sets.filter(s => s.completed).reduce((c, s) => c + s.reps * s.weight, 0), 0), 0);
       return { label: format(dayDate, 'EEE').slice(0, 2), value: vol, date };
     });
 
@@ -406,7 +406,7 @@ export default function ProgressPage() {
 
   const personalRecords = useMemo(() => {
     const prMap: Record<string, { exerciseName: string; maxWeight: number; maxReps: number; bestVolume: number }> = {};
-    workouts.filter(w => w.completed).forEach(w => w.exercises.forEach(e => {
+    workouts.filter(w => w.completed).forEach(w => w.sections.flatMap(s => s.exercises).forEach(e => {
       const completed = e.sets.filter(s => s.completed);
       if (!completed.length) return;
       const best = prMap[e.exerciseId] || { exerciseName: e.exercise.name, maxWeight: 0, maxReps: 0, bestVolume: 0 };
@@ -453,7 +453,7 @@ export default function ProgressPage() {
       const date = format(d, 'yyyy-MM-dd');
       const vol = filteredWorkouts
         .filter(w => w.date === date)
-        .reduce((a, w) => a + w.exercises.reduce((b, e) =>
+        .reduce((a, w) => a + w.sections.flatMap(s => s.exercises).reduce((b, e) =>
           b + e.sets.filter(s => s.completed).reduce((c, s) => c + s.reps * s.weight, 0), 0), 0);
       return { date, volume: vol };
     });
@@ -690,7 +690,7 @@ export default function ProgressPage() {
             </div>
             <div>
               {filteredWorkouts.slice(0, 8).map((w, i) => {
-                const vol = w.exercises.reduce((a, e) => a + e.sets.filter(s => s.completed).reduce((b, s) => b + s.reps * s.weight, 0), 0);
+                const vol = w.sections.flatMap(s => s.exercises).reduce((a, e) => a + e.sets.filter(s => s.completed).reduce((b, s) => b + s.reps * s.weight, 0), 0);
                 return (
                   <motion.button key={w.id}
                     initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }}
