@@ -79,7 +79,7 @@ export default function SchedulePage() {
     const typeInfo = WORKOUT_TYPE_INFO[entry.workoutType];
     const workout = {
       id: generateId(), name: typeInfo.subtitle, type: entry.workoutType,
-      date: entry.date, exercises: [], focusAreas: [...typeInfo.focusAreas] as any,
+      date: entry.date, sections: [{ id: generateId(), name: 'Warmup', exercises: [] }, { id: generateId(), name: 'Main', exercises: [] }], focusAreas: [...typeInfo.focusAreas] as any,
       equipment: [...typeInfo.equipment] as any, completed: false,
     };
     addWorkout(workout);
@@ -96,7 +96,6 @@ export default function SchedulePage() {
     let desc = `🏋️ PIDYOM Workout\n\nType: ${info.label} - ${info.subtitle}\nGoal: ${goalInfo.description}\n\n`;
     if (template) {
       desc += `📋 Plan: ${template.name}\n`;
-      if (template.warmup) desc += `\n🔥 Warmup:\n${template.warmup}\n`;
       desc += `\n💪 Exercises:\n`;
       template.exerciseIds.forEach((exId, i) => {
         const exercise = EXERCISES.find(e => e.id === exId);

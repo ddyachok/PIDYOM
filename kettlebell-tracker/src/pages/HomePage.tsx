@@ -35,8 +35,8 @@ export default function HomePage() {
   const todaySchedule = schedule.find(s => s.date === today);
   const todayWorkout = workouts.find(w => w.date === today);
   const completedWorkouts = workouts.filter(w => w.completed).length;
-  const totalSets = workouts.reduce((acc, w) => acc + w.exercises.reduce((a, e) => a + e.sets.filter(s => s.completed).length, 0), 0);
-  const totalVolume = workouts.reduce((acc, w) => acc + w.exercises.reduce((a, e) => a + e.sets.filter(s => s.completed).reduce((v, s) => v + s.weight * s.reps, 0), 0), 0);
+  const totalSets = workouts.reduce((acc, w) => acc + w.sections.flatMap(s => s.exercises).reduce((a, e) => a + e.sets.filter(s => s.completed).length, 0), 0);
+  const totalVolume = workouts.reduce((acc, w) => acc + w.sections.flatMap(s => s.exercises).reduce((a, e) => a + e.sets.filter(s => s.completed).reduce((v, s) => v + s.weight * s.reps, 0), 0), 0);
   const recentWorkouts = workouts.slice(0, 5);
 
   const formatVolume = (v: number) => v >= 1000 ? `${(v / 1000).toFixed(1)}K` : String(v);
@@ -300,7 +300,7 @@ export default function HomePage() {
                       {format(new Date(w.date), 'MMM d')}
                     </span>
                     <span style={{ fontSize: 8, color: '#6A6A62', flexShrink: 0 }}>
-                      {w.exercises.length}ex
+                      {w.sections.flatMap(s => s.exercises).length}ex
                     </span>
                   </motion.button>
                 ))}

@@ -7,6 +7,7 @@ import {
   GET_USER_PROFILE,
   GET_USER_WORKOUTS,
   GET_WORKOUT_EXERCISES,
+  GET_WORKOUT_SECTIONS,
   GET_EXERCISE_SETS,
   GET_USER_SCHEDULE,
   GET_USER_UNLOCKS,
@@ -16,6 +17,7 @@ import { EXERCISES } from '../../data/exercises';
 import type {
   Workout,
   WorkoutExercise,
+  WorkoutSection,
   ExerciseSet,
   ScheduleEntry,
   Equipment,
@@ -74,16 +76,22 @@ export async function hydrateFromServer(authUserId: string, email: string, name:
   const workoutIds = workoutsRes.workouts.map((w) => w.id);
   const workoutExercisesMap: Record<string, ServerWorkoutExercise[]> = {};
   const exerciseSetsMap: Record<string, ServerExerciseSet[]> = {};
+  const workoutSectionsMap: Record<string, ServerWorkoutSection[]> = {};
 
   if (workoutIds.length > 0) {
-    const weRes = await gqlRequest<{ workout_exercises: ServerWorkoutExercise[] }>(
-      GET_WORKOUT_EXERCISES,
-      { workoutIds }
-    );
+    const [weRes, sectionsRes] = await Promise.all([
+      gqlRequest<{ workout_exercises: ServerWorkoutExercise[] }>(GET_WORKOUT_EXERCISES, { workoutIds }),
+      gqlRequest<{ workout_sections: ServerWorkoutSection[] }>(GET_WORKOUT_SECTIONS, { workoutIds }),
+    ]);
 
     for (const we of weRes.workout_exercises) {
       if (!workoutExercisesMap[we.workout_id]) workoutExercisesMap[we.workout_id] = [];
       workoutExercisesMap[we.workout_id].push(we);
+    }
+
+    for (const sec of sectionsRes.workout_sections) {
+      if (!workoutSectionsMap[sec.workout_id]) workoutSectionsMap[sec.workout_id] = [];
+      workoutSectionsMap[sec.workout_id].push(sec);
     }
 
     const weIds = weRes.workout_exercises.map((we) => we.id);
@@ -102,13 +110,14 @@ export async function hydrateFromServer(authUserId: string, email: string, name:
   // 4. Transform server data to store format
   const workouts: Workout[] = workoutsRes.workouts.map((sw) => {
     const serverExercises = workoutExercisesMap[sw.id] || [];
-    const exercises: WorkoutExercise[] = serverExercises
+    const serverSections = workoutSectionsMap[sw.id] || [];
+
+    // Build WorkoutExercise objects
+    const workoutExercises = serverExercises
       .sort((a, b) => a.exercise_order - b.exercise_order)
       .map((swe) => {
         const exercise = EXERCISES.find((e) => e.id === swe.exercise_id);
-        const serverSets = (exerciseSetsMap[swe.id] || []).sort(
-          (a, b) => a.set_number - b.set_number
-        );
+        const serverSets = (exerciseSetsMap[swe.id] || []).sort((a, b) => a.set_number - b.set_number);
         const sets: ExerciseSet[] = serverSets.map((ss) => ({
           id: ss.id,
           reps: ss.reps,
@@ -131,21 +140,48 @@ export async function hydrateFromServer(authUserId: string, email: string, name:
             description: '',
             cues: [],
             unlocked: true,
+            exerciseType: 'main' as const,
           },
           sets,
           restSeconds: swe.rest_seconds ?? 60,
           notes: swe.notes ?? undefined,
           order: swe.exercise_order,
+          _sectionId: swe.section_id,  // temp field for grouping
         };
       });
+
+    // Group exercises into sections
+    let sections: WorkoutSection[];
+    if (serverSections.length > 0) {
+      sections = serverSections.map((sec) => ({
+        id: sec.id,
+        name: sec.name,
+        exercises: workoutExercises
+          .filter((ex: any) => ex._sectionId === sec.id)
+          .map(({ _sectionId, ...ex }: any) => ex),
+      }));
+      // Exercises without a section go into a fallback Main section
+      const unsectioned = workoutExercises
+        .filter((ex: any) => !ex._sectionId || !serverSections.find(s => s.id === ex._sectionId))
+        .map(({ _sectionId, ...ex }: any) => ex);
+      if (unsectioned.length > 0) {
+        sections.push({ id: `fallback-${sw.id}`, name: 'Main', exercises: unsectioned });
+      }
+    } else {
+      // No sections in DB — legacy workout, wrap in Main
+      sections = [{
+        id: `migrated-${sw.id}`,
+        name: 'Main',
+        exercises: workoutExercises.map(({ _sectionId, ...ex }: any) => ex),
+      }];
+    }
 
     return {
       id: sw.id,
       name: sw.name,
       type: sw.type as Workout['type'],
       date: sw.date,
-      exercises,
-      warmup: sw.warmup ?? undefined,
+      sections,
       notes: sw.notes ?? undefined,
       focusAreas: parseArrayField(sw.focus_areas) as Workout['focusAreas'],
       equipment: parseArrayField(sw.equipment) as Workout['equipment'],
@@ -199,8 +235,14 @@ interface ServerWorkout {
   focus_areas: string[] | string | null;
   notes: string | null;
   place: string | null;
-  warmup: string | null;
   user_id: number;
+}
+
+interface ServerWorkoutSection {
+  id: string;
+  workout_id: string;
+  name: string;
+  position: number;
 }
 
 interface ServerWorkoutExercise {
@@ -210,6 +252,7 @@ interface ServerWorkoutExercise {
   exercise_order: number;
   notes: string | null;
   rest_seconds: number | null;
+  section_id: string | null;
 }
 
 interface ServerExerciseSet {

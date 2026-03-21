@@ -1,13 +1,14 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { Workout, ScheduleEntry, Equipment, Exercise, WorkoutExercise, ExerciseSet, WorkoutType } from '../lib/types';
+import type { WorkoutSection, ExerciseType, WarmupDefaults } from '../lib/types';
+import { migrateWorkout } from '../lib/migrations';
 import { EXERCISES } from '../data/exercises';
 import {
   syncAddWorkout,
   syncUpdateWorkout,
   syncDeleteWorkout,
   syncCompleteWorkout,
-  syncAddExerciseToWorkout,
   syncRemoveExerciseFromWorkout,
   syncAddSet,
   syncToggleSetComplete,
@@ -60,12 +61,28 @@ interface AppState {
   updateWorkout: (id: string, updates: Partial<Workout>) => void;
   deleteWorkout: (id: string) => void;
   setActiveWorkout: (id: string | null) => void;
-  toggleSetComplete: (workoutId: string, exerciseId: string, setId: string) => void;
-  updateSetData: (workoutId: string, exerciseId: string, setId: string, data: Partial<ExerciseSet>) => void;
-  addExerciseToWorkout: (workoutId: string, exercise: WorkoutExercise) => void;
-  removeExerciseFromWorkout: (workoutId: string, exerciseId: string) => void;
-  addSetToExercise: (workoutId: string, exerciseId: string) => void;
   completeWorkout: (id: string) => void;
+
+  // Modified actions (now require sectionId)
+  toggleSetComplete: (workoutId: string, sectionId: string, exerciseId: string, setId: string) => void;
+  updateSetData: (workoutId: string, sectionId: string, exerciseId: string, setId: string, data: Partial<ExerciseSet>) => void;
+  addSetToExercise: (workoutId: string, sectionId: string, exerciseId: string) => void;
+
+  // New section actions
+  addExerciseToSection: (workoutId: string, sectionId: string, exercise: Exercise) => void;
+  removeExerciseFromSection: (workoutId: string, sectionId: string, exerciseId: string) => void;
+  addSection: (workoutId: string, name: string) => void;
+  removeSection: (workoutId: string, sectionId: string) => void;
+  renameSection: (workoutId: string, sectionId: string, name: string) => void;
+  reorderSections: (workoutId: string, orderedSectionIds: string[]) => void;
+
+  // New exercise type actions
+  setExerciseType: (exerciseId: string, type: ExerciseType) => void;
+  updateWarmupDefaults: (exerciseId: string, defaults: WarmupDefaults) => void;
+
+  // UI state
+  sectionCollapseState: Record<string, boolean>;
+  toggleSectionCollapsed: (sectionId: string) => void;
 
   // Schedule
   schedule: ScheduleEntry[];
@@ -143,7 +160,7 @@ export const useStore = create<AppState>()(
         userName: data.userName,
         userEmail: data.userEmail,
         userEquipment: data.userEquipment.length > 0 ? data.userEquipment : ['kettlebell', 'bodyweight'],
-        workouts: data.workouts,
+        workouts: data.workouts.map(migrateWorkout),
         schedule: data.schedule,
         unlockedExercises: data.unlockedExercises,
         isHydrated: true,
@@ -187,9 +204,16 @@ export const useStore = create<AppState>()(
       workouts: [],
       activeWorkoutId: null,
       addWorkout: (workout) => {
-        set((state) => ({ workouts: [workout, ...state.workouts] }));
+        const migratedWorkout = migrateWorkout(workout);
+        if (migratedWorkout.sections.length === 0) {
+          migratedWorkout.sections = [
+            { id: `${Date.now()}-warmup`, name: 'Warmup', exercises: [] },
+            { id: `${Date.now()}-main`, name: 'Main', exercises: [] },
+          ];
+        }
+        set((state) => ({ workouts: [migratedWorkout, ...state.workouts] }));
         const { profileId } = get();
-        if (profileId) syncAddWorkout(workout, profileId);
+        if (profileId) syncAddWorkout(migratedWorkout, profileId);
       },
       updateWorkout: (id, updates) => {
         set((state) => ({
@@ -202,23 +226,28 @@ export const useStore = create<AppState>()(
         syncDeleteWorkout(id);
       },
       setActiveWorkout: (id) => set({ activeWorkoutId: id }),
-      toggleSetComplete: (workoutId, exerciseId, setId) => {
+      toggleSetComplete: (workoutId, sectionId, exerciseId, setId) => {
         const state = get();
         const workout = state.workouts.find(w => w.id === workoutId);
-        const exercise = workout?.exercises.find(ex => ex.id === exerciseId);
+        const section = workout?.sections.find(s => s.id === sectionId);
+        const exercise = section?.exercises.find(ex => ex.id === exerciseId);
         const setItem = exercise?.sets.find(s => s.id === setId);
-        const newCompleted = !(setItem?.completed);
+        if (!setItem) { console.warn('[store] toggleSetComplete: sectionId not found', sectionId); return; }
+        const newCompleted = !setItem.completed;
 
         set((state) => ({
           workouts: state.workouts.map(w => {
             if (w.id !== workoutId) return w;
             return {
               ...w,
-              exercises: w.exercises.map(ex => {
-                if (ex.id !== exerciseId) return ex;
+              sections: w.sections.map(sec => {
+                if (sec.id !== sectionId) return sec;
                 return {
-                  ...ex,
-                  sets: ex.sets.map(s => s.id === setId ? { ...s, completed: !s.completed } : s),
+                  ...sec,
+                  exercises: sec.exercises.map(ex => {
+                    if (ex.id !== exerciseId) return ex;
+                    return { ...ex, sets: ex.sets.map(s => s.id === setId ? { ...s, completed: !s.completed } : s) };
+                  }),
                 };
               }),
             };
@@ -226,17 +255,20 @@ export const useStore = create<AppState>()(
         }));
         syncToggleSetComplete(setId, newCompleted);
       },
-      updateSetData: (workoutId, exerciseId, setId, data) => {
+      updateSetData: (workoutId, sectionId, exerciseId, setId, data) => {
         set((state) => ({
           workouts: state.workouts.map(w => {
             if (w.id !== workoutId) return w;
             return {
               ...w,
-              exercises: w.exercises.map(ex => {
-                if (ex.id !== exerciseId) return ex;
+              sections: w.sections.map(sec => {
+                if (sec.id !== sectionId) return sec;
                 return {
-                  ...ex,
-                  sets: ex.sets.map(s => s.id === setId ? { ...s, ...data } : s),
+                  ...sec,
+                  exercises: sec.exercises.map(ex => {
+                    if (ex.id !== exerciseId) return ex;
+                    return { ...ex, sets: ex.sets.map(s => s.id === setId ? { ...s, ...data } : s) };
+                  }),
                 };
               }),
             };
@@ -244,43 +276,77 @@ export const useStore = create<AppState>()(
         }));
         syncUpdateSetData(setId, data);
       },
-      addExerciseToWorkout: (workoutId, exercise) => {
-        set((state) => ({
-          workouts: state.workouts.map(w => {
-            if (w.id !== workoutId) return w;
-            return { ...w, exercises: [...w.exercises, exercise] };
-          }),
-        }));
-        syncAddExerciseToWorkout(workoutId, exercise);
-      },
-      removeExerciseFromWorkout: (workoutId, exerciseId) => {
-        set((state) => ({
-          workouts: state.workouts.map(w => {
-            if (w.id !== workoutId) return w;
-            return { ...w, exercises: w.exercises.filter(e => e.id !== exerciseId) };
-          }),
-        }));
-        syncRemoveExerciseFromWorkout(exerciseId);
-      },
-      addSetToExercise: (workoutId, exerciseId) => {
-        let newSetId = '';
+      addExerciseToSection: (workoutId, sectionId, exercise) => {
+        const workout = get().workouts.find(w => w.id === workoutId);
+        const section = workout?.sections.find(s => s.id === sectionId);
+        if (!section) { console.warn('[store] addExerciseToSection: sectionId not found', sectionId); return; }
+
+        const makeId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+        const newWorkoutExercise: WorkoutExercise = {
+          id: makeId(),
+          exerciseId: exercise.id,
+          exercise,
+          sets: [
+            { id: makeId(), reps: 10, weight: 16, completed: false },
+            { id: makeId(), reps: 10, weight: 16, completed: false },
+            { id: makeId(), reps: 10, weight: 16, completed: false },
+          ],
+          restSeconds: 60,
+          order: section.exercises.length,
+        };
+
         set((state) => ({
           workouts: state.workouts.map(w => {
             if (w.id !== workoutId) return w;
             return {
               ...w,
-              exercises: w.exercises.map(ex => {
-                if (ex.id !== exerciseId) return ex;
-                const lastSet = ex.sets[ex.sets.length - 1];
-                const newSet: ExerciseSet = {
-                  id: `set-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
-                  reps: lastSet?.reps || 10,
-                  weight: lastSet?.weight || 16,
-                  completed: false,
+              sections: w.sections.map(sec => {
+                if (sec.id !== sectionId) return sec;
+                return { ...sec, exercises: [...sec.exercises, newWorkoutExercise] };
+              }),
+            };
+          }),
+        }));
+        // TODO: syncAddExerciseToSection will be wired up in Task 7
+      },
+      removeExerciseFromSection: (workoutId, sectionId, exerciseId) => {
+        set((state) => ({
+          workouts: state.workouts.map(w => {
+            if (w.id !== workoutId) return w;
+            return {
+              ...w,
+              sections: w.sections.map(sec => {
+                if (sec.id !== sectionId) return sec;
+                return { ...sec, exercises: sec.exercises.filter(e => e.id !== exerciseId) };
+              }),
+            };
+          }),
+        }));
+        syncRemoveExerciseFromWorkout(exerciseId);
+      },
+      addSetToExercise: (workoutId, sectionId, exerciseId) => {
+        set((state) => ({
+          workouts: state.workouts.map(w => {
+            if (w.id !== workoutId) return w;
+            return {
+              ...w,
+              sections: w.sections.map(sec => {
+                if (sec.id !== sectionId) return sec;
+                return {
+                  ...sec,
+                  exercises: sec.exercises.map(ex => {
+                    if (ex.id !== exerciseId) return ex;
+                    const lastSet = ex.sets[ex.sets.length - 1];
+                    const newSet: ExerciseSet = {
+                      id: `set-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+                      reps: lastSet?.reps || 10,
+                      weight: lastSet?.weight || 16,
+                      completed: false,
+                    };
+                    syncAddSet(exerciseId, newSet.id, newSet.reps, newSet.weight, ex.sets.length + 1);
+                    return { ...ex, sets: [...ex.sets, newSet] };
+                  }),
                 };
-                newSetId = newSet.id;
-                syncAddSet(exerciseId, newSet.id, newSet.reps, newSet.weight, ex.sets.length + 1);
-                return { ...ex, sets: [...ex.sets, newSet] };
               }),
             };
           }),
@@ -291,6 +357,81 @@ export const useStore = create<AppState>()(
           workouts: state.workouts.map(w => w.id === id ? { ...w, completed: true } : w),
         }));
         syncCompleteWorkout(id);
+      },
+
+      // Section management actions
+      addSection: (workoutId, name) => {
+        const newSection: WorkoutSection = {
+          id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+          name,
+          exercises: [],
+        };
+        set((state) => ({
+          workouts: state.workouts.map(w => {
+            if (w.id !== workoutId) return w;
+            return { ...w, sections: [...w.sections, newSection] };
+          }),
+        }));
+      },
+
+      removeSection: (workoutId, sectionId) => {
+        set((state) => ({
+          workouts: state.workouts.map(w => {
+            if (w.id !== workoutId) return w;
+            return { ...w, sections: w.sections.filter(s => s.id !== sectionId) };
+          }),
+        }));
+      },
+
+      renameSection: (workoutId, sectionId, name) => {
+        set((state) => ({
+          workouts: state.workouts.map(w => {
+            if (w.id !== workoutId) return w;
+            return {
+              ...w,
+              sections: w.sections.map(s => s.id === sectionId ? { ...s, name } : s),
+            };
+          }),
+        }));
+      },
+
+      reorderSections: (workoutId, orderedSectionIds) => {
+        set((state) => ({
+          workouts: state.workouts.map(w => {
+            if (w.id !== workoutId) return w;
+            const sectionMap = Object.fromEntries(w.sections.map(s => [s.id, s]));
+            const reordered = orderedSectionIds.map(id => sectionMap[id]).filter(Boolean) as WorkoutSection[];
+            return { ...w, sections: reordered };
+          }),
+        }));
+      },
+
+      // Exercise type actions
+      setExerciseType: (exerciseId, type) => {
+        set((state) => ({
+          exercises: state.exercises.map(e =>
+            e.id === exerciseId ? { ...e, exerciseType: type } : e
+          ),
+        }));
+      },
+
+      updateWarmupDefaults: (exerciseId, defaults) => {
+        set((state) => ({
+          exercises: state.exercises.map(e =>
+            e.id === exerciseId ? { ...e, warmupDefaults: defaults } : e
+          ),
+        }));
+      },
+
+      // UI state
+      sectionCollapseState: {} as Record<string, boolean>,
+      toggleSectionCollapsed: (sectionId) => {
+        set((state) => ({
+          sectionCollapseState: {
+            ...state.sectionCollapseState,
+            [sectionId]: !state.sectionCollapseState[sectionId],
+          },
+        }));
       },
 
       // Schedule
@@ -334,10 +475,17 @@ export const useStore = create<AppState>()(
         profileId: state.profileId,
         userEquipment: state.userEquipment,
         unlockedExercises: state.unlockedExercises,
+        exercises: state.exercises,
         workouts: state.workouts,
         schedule: state.schedule,
         theme: state.theme,
+        sectionCollapseState: state.sectionCollapseState,
       }),
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          state.workouts = state.workouts.map(migrateWorkout);
+        }
+      },
     }
   )
 );

@@ -20,8 +20,10 @@ import {
   UPDATE_USER_PROFILE,
   UPSERT_USER_PROFILE,
   DELETE_USER_PROFILE,
+  INSERT_WORKOUT_SECTIONS,
+  DELETE_WORKOUT_SECTIONS,
 } from './mutations';
-import type { Workout, WorkoutExercise, ScheduleEntry, Equipment } from '../types';
+import type { Workout, WorkoutExercise, WorkoutSection, ScheduleEntry, Equipment } from '../types';
 
 // Hasura Cloud v2 accepts JSON arrays directly for array columns via variables
 
@@ -88,18 +90,21 @@ export function syncAddWorkout(workout: Workout, userId: number) {
           focus_areas: workout.focusAreas,
           notes: workout.notes ?? null,
           place: workout.place ?? null,
-          warmup: workout.warmup ?? null,
         },
       ],
     }).then(() => {
-      if (workout.exercises.length > 0) {
-        syncInsertWorkoutExercises(workout.id, workout.exercises);
+      if (workout.sections.length > 0) {
+        return syncInsertSectionsAndExercises(workout.id, workout.sections);
       }
     })
   );
 }
 
-function syncInsertWorkoutExercises(workoutId: string, exercises: WorkoutExercise[]) {
+// Raw Promise — returns a Promise, does NOT call fire(). Used inside chains.
+function rawInsertWorkoutExercises(
+  workoutId: string,
+  exercises: (WorkoutExercise & { _sectionId?: string })[]
+): Promise<unknown> {
   const weObjects = exercises.map((ex) => ({
     id: ex.id,
     workout_id: workoutId,
@@ -107,26 +112,52 @@ function syncInsertWorkoutExercises(workoutId: string, exercises: WorkoutExercis
     exercise_order: ex.order,
     notes: ex.notes ?? null,
     rest_seconds: ex.restSeconds,
+    section_id: ex._sectionId ?? null,
   }));
 
-  fire(
-    gqlRequest(INSERT_WORKOUT_EXERCISES, { objects: weObjects }).then(() => {
-      const setObjects = exercises.flatMap((ex) =>
-        ex.sets.map((s, i) => ({
-          id: s.id,
-          workout_exercise_id: ex.id,
-          set_number: i + 1,
-          reps: s.reps,
-          weight: s.weight,
-          completed: s.completed,
-          notes: s.notes ?? null,
-        }))
-      );
-      if (setObjects.length > 0) {
-        return gqlRequest(INSERT_EXERCISE_SETS, { objects: setObjects });
-      }
-    })
-  );
+  return gqlRequest(INSERT_WORKOUT_EXERCISES, { objects: weObjects }).then(() => {
+    const setObjects = exercises.flatMap((ex) =>
+      ex.sets.map((s, i) => ({
+        id: s.id,
+        workout_exercise_id: ex.id,
+        set_number: i + 1,
+        reps: s.reps,
+        weight: s.weight,
+        completed: s.completed,
+        notes: s.notes ?? null,
+      }))
+    );
+    if (setObjects.length > 0) {
+      return gqlRequest(INSERT_EXERCISE_SETS, { objects: setObjects });
+    }
+  });
+}
+
+// Public fire-and-forget wrapper — used only at the top level (not inside other fire() chains)
+function syncInsertWorkoutExercises(
+  workoutId: string,
+  exercises: (WorkoutExercise & { _sectionId?: string })[]
+) {
+  fire(rawInsertWorkoutExercises(workoutId, exercises));
+}
+
+function syncInsertSectionsAndExercises(workoutId: string, sections: WorkoutSection[]) {
+  const sectionObjects = sections.map((sec, i) => ({
+    id: sec.id,
+    workout_id: workoutId,
+    name: sec.name,
+    position: i,
+  }));
+
+  return gqlRequest(INSERT_WORKOUT_SECTIONS, { objects: sectionObjects }).then(() => {
+    const allExercises = sections.flatMap(sec =>
+      sec.exercises.map(ex => ({ ...ex, _sectionId: sec.id }))
+    );
+    if (allExercises.length > 0) {
+      // Call the raw helper directly (no extra fire() wrapping — already inside fire() chain)
+      return rawInsertWorkoutExercises(workoutId, allExercises);
+    }
+  });
 }
 
 export function syncUpdateWorkout(workoutId: string, updates: Partial<Workout>) {
@@ -136,7 +167,6 @@ export function syncUpdateWorkout(workoutId: string, updates: Partial<Workout>) 
   if (updates.durationMinutes !== undefined) _set.duration_minutes = updates.durationMinutes;
   if (updates.notes !== undefined) _set.notes = updates.notes;
   if (updates.place !== undefined) _set.place = updates.place;
-  if (updates.warmup !== undefined) _set.warmup = updates.warmup;
   if (updates.equipment) _set.equipment = updates.equipment;
   if (updates.focusAreas) _set.focus_areas = updates.focusAreas;
 
@@ -174,6 +204,37 @@ export function syncAddExerciseToWorkout(workoutId: string, exercise: WorkoutExe
           exercise_order: exercise.order,
           notes: exercise.notes ?? null,
           rest_seconds: exercise.restSeconds,
+        },
+      ],
+    }).then(() => {
+      if (exercise.sets.length > 0) {
+        const setObjects = exercise.sets.map((s, i) => ({
+          id: s.id,
+          workout_exercise_id: exercise.id,
+          set_number: i + 1,
+          reps: s.reps,
+          weight: s.weight,
+          completed: s.completed,
+          notes: s.notes ?? null,
+        }));
+        return gqlRequest(INSERT_EXERCISE_SETS, { objects: setObjects });
+      }
+    })
+  );
+}
+
+export function syncAddExerciseToSection(workoutId: string, sectionId: string, exercise: WorkoutExercise) {
+  fire(
+    gqlRequest(INSERT_WORKOUT_EXERCISES, {
+      objects: [
+        {
+          id: exercise.id,
+          workout_id: workoutId,
+          exercise_id: exercise.exerciseId,
+          exercise_order: exercise.order,
+          notes: exercise.notes ?? null,
+          rest_seconds: exercise.restSeconds,
+          section_id: sectionId,
         },
       ],
     }).then(() => {
