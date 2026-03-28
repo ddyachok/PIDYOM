@@ -366,8 +366,8 @@ export default function ProgressPage() {
   // Semantic tokens — same pattern as ProfilePage
   const ink      = isLight ? '#0A0A0A'             : '#E8E8E1';
   const rule     = isLight ? '#C0C0B8'             : 'rgba(255,255,255,0.12)';
-  const steel    = isLight ? '#6A6A62'             : 'rgba(255,255,255,0.38)';
-  const muted    = isLight ? 'rgba(10,10,10,0.35)' : 'rgba(255,255,255,0.28)';
+  const steel    = isLight ? '#6A6A62'             : 'rgba(255,255,255,0.55)';
+  const muted    = isLight ? 'rgba(10,10,10,0.35)' : 'rgba(255,255,255,0.40)';
   const heavyRule = isLight
     ? { height: 2, background: '#0A0A0A', marginBottom: 32 }
     : { height: 1, background: 'rgba(255,255,255,0.18)', marginBottom: 32 };
