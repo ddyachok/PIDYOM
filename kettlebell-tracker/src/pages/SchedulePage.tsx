@@ -172,7 +172,7 @@ export default function SchedulePage() {
           <button
             onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
             className="pill pill--outline"
-            style={{ cursor: 'pointer', background: 'transparent', border: `1px solid ${rule}`, color: '#6A6A62', fontSize: 9, padding: '5px 12px' }}
+            style={{ cursor: 'pointer', background: 'transparent', border: `1px solid ${rule}`, color: '#9A9A90', fontSize: 10, padding: '5px 12px' }}
             aria-label="Previous month"
           >
             ← PRV
@@ -192,7 +192,7 @@ export default function SchedulePage() {
           <button
             onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
             className="pill pill--outline"
-            style={{ cursor: 'pointer', background: 'transparent', border: `1px solid ${rule}`, color: '#6A6A62', fontSize: 9, padding: '5px 12px' }}
+            style={{ cursor: 'pointer', background: 'transparent', border: `1px solid ${rule}`, color: '#9A9A90', fontSize: 10, padding: '5px 12px' }}
             aria-label="Next month"
           >
             NXT →
@@ -204,7 +204,7 @@ export default function SchedulePage() {
           {['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'].map(d => (
             <div
               key={d}
-              style={{ textAlign: 'center', fontSize: 7, letterSpacing: '0.1em', color: '#6A6A62', padding: '4px 0', fontFamily: 'Space Mono, monospace' }}
+              style={{ textAlign: 'center', fontSize: 9, letterSpacing: '0.1em', color: '#9A9A90', padding: '4px 0', fontFamily: 'Space Mono, monospace' }}
             >
               {d}
             </div>
@@ -280,12 +280,12 @@ export default function SchedulePage() {
 
         {/* Legend */}
         <div className="flex items-center gap-4 mt-3">
-          <span style={{ fontSize: 8, color: '#6A6A62', letterSpacing: '0.1em', fontFamily: 'Space Mono, monospace' }}>TAP DAY TO PLAN</span>
+          <span style={{ fontSize: 10, color: '#9A9A90', letterSpacing: '0.1em', fontFamily: 'Space Mono, monospace' }}>TAP DAY TO PLAN</span>
           <div className="flex items-center gap-2 ml-auto">
             <span className="cal-tag cal-tag--ink" style={{ fontSize: 7 }}>A</span>
-            <span style={{ fontSize: 7, color: '#6A6A62' }}>Workout A</span>
+            <span style={{ fontSize: 9, color: '#9A9A90' }}>Workout A</span>
             <span className="cal-tag cal-tag--acid" style={{ fontSize: 7 }}>B</span>
-            <span style={{ fontSize: 7, color: '#6A6A62' }}>Workout B</span>
+            <span style={{ fontSize: 9, color: '#9A9A90' }}>Workout B</span>
           </div>
         </div>
 
@@ -313,7 +313,7 @@ export default function SchedulePage() {
               {scheduleMap[selectedDate] && (
                 <button
                   onClick={() => { removeScheduleEntry(scheduleMap[selectedDate].id); setSelectedDate(null); addToast('Workout removed'); }}
-                  style={{ fontSize: 8, letterSpacing: '0.15em', color: '#6A6A62', background: 'none', border: 'none', cursor: 'pointer', textTransform: 'uppercase' }}
+                  style={{ fontSize: 10, letterSpacing: '0.15em', color: '#9A9A90', background: 'none', border: 'none', cursor: 'pointer', textTransform: 'uppercase' }}
                 >
                   Remove
                 </button>
@@ -326,7 +326,7 @@ export default function SchedulePage() {
                   <span className={`cal-tag ${scheduleMap[selectedDate].workoutType === 'A' ? 'cal-tag--ink' : 'cal-tag--acid'}`}>
                     {WORKOUT_TYPE_INFO[scheduleMap[selectedDate].workoutType].label}
                   </span>
-                  <span style={{ fontSize: 10, color: '#6A6A62' }}>
+                  <span style={{ fontSize: 10, color: '#9A9A90' }}>
                     {WORKOUT_TYPE_INFO[scheduleMap[selectedDate].workoutType].subtitle}
                   </span>
                 </div>
@@ -356,7 +356,7 @@ export default function SchedulePage() {
               </div>
             ) : (
               <div>
-                <p style={{ fontSize: 10, color: '#6A6A62', marginBottom: 12 }}>No workout scheduled.</p>
+                <p style={{ fontSize: 11, color: '#9A9A90', marginBottom: 12 }}>No workout scheduled.</p>
                 <button
                   onClick={() => setShowScheduleModal(true)}
                   className="btn btn-outink btn-full"
@@ -373,7 +373,7 @@ export default function SchedulePage() {
         <div ref={upcomingRef} className="mt-10 md:mt-12">
           <div className="flex items-center gap-3 mb-5">
             <div style={{ height: 1, background: ink, width: 16 }} />
-            <span style={{ fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#6A6A62', fontFamily: 'Space Mono, monospace' }}>Upcoming</span>
+            <span style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#9A9A90', fontFamily: 'Space Mono, monospace' }}>Upcoming</span>
           </div>
           <div>
             {schedule
@@ -390,7 +390,7 @@ export default function SchedulePage() {
                   className="w-full text-left flex items-center gap-3 py-3"
                   style={{ borderBottom: `1px solid ${rule}`, cursor: 'pointer', background: 'none', border: 'none' }}
                 >
-                  <span style={{ fontSize: 9, color: '#6A6A62', width: 80, flexShrink: 0, fontVariantNumeric: 'tabular-nums', fontFamily: 'Space Mono, monospace' }}>
+                  <span style={{ fontSize: 10, color: '#9A9A90', width: 80, flexShrink: 0, fontVariantNumeric: 'tabular-nums', fontFamily: 'Space Mono, monospace' }}>
                     {format(new Date(s.date + 'T12:00:00'), 'EEE, MMM d')}
                   </span>
                   <div style={{ flex: 1, height: 1, borderBottom: `1px dotted ${rule}` }} />
@@ -400,7 +400,7 @@ export default function SchedulePage() {
                 </motion.button>
               ))}
             {schedule.filter(s => s.date >= today).length === 0 && (
-              <p style={{ fontSize: 9, color: '#6A6A62', textAlign: 'center', padding: '24px 0', fontFamily: 'Space Mono, monospace' }}>
+              <p style={{ fontSize: 11, color: '#9A9A90', textAlign: 'center', padding: '24px 0', fontFamily: 'Space Mono, monospace' }}>
                 No upcoming workouts. Tap AUTO to generate.
               </p>
             )}
@@ -451,13 +451,13 @@ export default function SchedulePage() {
                 </div>
                 <button
                   onClick={() => setShowScheduleModal(false)}
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6A6A62', padding: 4 }}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9A9A90', padding: 4 }}
                   aria-label="Close"
                 >
                   <IconClose size={16} />
                 </button>
               </div>
-              <p style={{ fontSize: 9, color: '#6A6A62', marginBottom: 20, fontFamily: 'Space Mono, monospace', letterSpacing: '0.1em' }}>
+              <p style={{ fontSize: 11, color: '#9A9A90', marginBottom: 20, fontFamily: 'Space Mono, monospace', letterSpacing: '0.1em' }}>
                 {format(new Date(selectedDate + 'T12:00:00'), 'EEEE, MMMM d')}
               </p>
 
@@ -490,7 +490,7 @@ export default function SchedulePage() {
                     >
                       {WORKOUT_TYPE_INFO[type].label}
                     </div>
-                    <div style={{ fontSize: 8, color: scheduleType === type ? (isLight ? 'rgba(232,232,225,0.6)' : 'rgba(10,10,10,0.5)') : '#6A6A62', fontFamily: 'Space Mono, monospace' }}>
+                    <div style={{ fontSize: 8, color: scheduleType === type ? (isLight ? 'rgba(232,232,225,0.6)' : 'rgba(10,10,10,0.5)') : '#9A9A90', fontFamily: 'Space Mono, monospace' }}>
                       {WORKOUT_TYPE_INFO[type].subtitle}
                     </div>
                   </button>
