@@ -38,7 +38,7 @@ export default function DesktopSidebar() {
           const isActive = currentTab === tab.id;
           const Icon = tab.icon;
           const activeColor = isLight ? '#0A0A0A' : '#E8E8E1';
-          const inactiveColor = '#6A6A62';
+          const inactiveColor = '#9A9A90';
           const hoverColor = isLight ? 'rgba(10,10,10,0.6)' : 'rgba(232,232,225,0.6)';
           return (
             <button
