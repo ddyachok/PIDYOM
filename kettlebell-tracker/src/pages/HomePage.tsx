@@ -76,7 +76,7 @@ export default function HomePage() {
                 <motion.p
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  style={{ fontSize: 9, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#6A6A62' }}
+                  style={{ fontSize: 9, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#9A9A90' }}
                 >
                   Movement Framework
                 </motion.p>
@@ -116,13 +116,13 @@ export default function HomePage() {
                 PIDYOM
               </div>
               <div className="flex items-center gap-2 mt-2">
-                <span style={{ fontSize: 9, letterSpacing: '0.12em', color: '#6A6A62' }}>
+                <span style={{ fontSize: 9, letterSpacing: '0.12em', color: '#9A9A90' }}>
                   {format(new Date(), 'dd.MM.yyyy')}
                 </span>
                 {userName && (
                   <>
                     <span style={{ color: faint }}>·</span>
-                    <span style={{ fontSize: 9, letterSpacing: '0.12em', color: '#6A6A62', textTransform: 'uppercase' }}>
+                    <span style={{ fontSize: 9, letterSpacing: '0.12em', color: '#9A9A90', textTransform: 'uppercase' }}>
                       {userName}
                     </span>
                   </>
@@ -202,7 +202,7 @@ export default function HomePage() {
                 >
                   {WORKOUT_TYPE_INFO[todaySchedule.workoutType].subtitle}
                 </div>
-                <p style={{ fontSize: 11, color: '#6A6A62', lineHeight: 1.6, marginBottom: 16 }}>
+                <p style={{ fontSize: 13, color: '#9A9A90', lineHeight: 1.6, marginBottom: 16 }}>
                   {WORKOUT_TYPE_INFO[todaySchedule.workoutType].description}
                 </p>
                 <button
@@ -228,7 +228,7 @@ export default function HomePage() {
                 >
                   {todayWorkout.name}
                 </div>
-                <p style={{ fontSize: 11, color: '#6A6A62', lineHeight: 1.6, marginBottom: 16 }}>
+                <p style={{ fontSize: 13, color: '#9A9A90', lineHeight: 1.6, marginBottom: 16 }}>
                   {todayWorkout.completed ? 'Workout completed today.' : 'Workout in progress — keep going.'}
                 </p>
                 <button
@@ -241,7 +241,7 @@ export default function HomePage() {
               </div>
             ) : (
               <div className="wk-card">
-                <p style={{ fontSize: 11, color: '#6A6A62', marginBottom: 16, lineHeight: 1.6 }}>
+                <p style={{ fontSize: 13, color: '#9A9A90', marginBottom: 16, lineHeight: 1.6 }}>
                   {workouts.length === 0
                     ? 'No workout planned. Start your first session.'
                     : 'Rest day. Recover and prepare.'}
@@ -269,7 +269,7 @@ export default function HomePage() {
                 <span className="section-tag">Recent Log</span>
                 <button
                   onClick={() => setCurrentTab('workouts')}
-                  style={{ fontSize: 8, letterSpacing: '0.15em', color: '#6A6A62', textTransform: 'uppercase', background: 'none', border: 'none', cursor: 'pointer' }}
+                  style={{ fontSize: 10, letterSpacing: '0.15em', color: '#9A9A90', textTransform: 'uppercase', background: 'none', border: 'none', cursor: 'pointer' }}
                 >
                   All →
                 </button>
@@ -288,7 +288,7 @@ export default function HomePage() {
                     className="ex-row w-full text-left"
                     style={{ cursor: 'pointer' }}
                   >
-                    <span style={{ fontSize: 9, color: '#6A6A62', width: 20, textAlign: 'right', flexShrink: 0, fontVariantNumeric: 'tabular-nums' }}>
+                    <span style={{ fontSize: 9, color: '#9A9A90', width: 20, textAlign: 'right', flexShrink: 0, fontVariantNumeric: 'tabular-nums' }}>
                       {String(i + 1).padStart(2, '0')}
                     </span>
                     <span className={`status-dot ${w.completed ? 'status-dot--done' : 'status-dot--idle'}`} />
@@ -296,10 +296,10 @@ export default function HomePage() {
                       {w.name}
                     </span>
                     <span className="dot-leader hidden md:block" />
-                    <span style={{ fontSize: 9, color: '#6A6A62', flexShrink: 0, fontVariantNumeric: 'tabular-nums' }}>
+                    <span style={{ fontSize: 10, color: '#9A9A90', flexShrink: 0, fontVariantNumeric: 'tabular-nums' }}>
                       {format(new Date(w.date), 'MMM d')}
                     </span>
-                    <span style={{ fontSize: 8, color: '#6A6A62', flexShrink: 0 }}>
+                    <span style={{ fontSize: 9, color: '#9A9A90', flexShrink: 0 }}>
                       {w.sections.flatMap(s => s.exercises).length}ex
                     </span>
                   </motion.button>
@@ -317,7 +317,7 @@ export default function HomePage() {
               className="bracket-card text-center py-12"
               style={{ borderTop: `1px solid ${faint}` }}
             >
-              <p style={{ fontSize: 11, color: '#6A6A62', marginBottom: 4 }}>No workouts logged yet.</p>
+              <p style={{ fontSize: 13, color: '#9A9A90', marginBottom: 4 }}>No workouts logged yet.</p>
               <p style={{ fontSize: 9, color: muted, marginBottom: 20 }}>Start building your framework.</p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center max-w-xs mx-auto">
                 <button onClick={() => setCurrentTab('workouts')} className="btn btn-acid flex-1" style={{ fontSize: 10 }}>
