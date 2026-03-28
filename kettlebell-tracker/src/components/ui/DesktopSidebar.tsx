@@ -25,7 +25,7 @@ export default function DesktopSidebar() {
         >
           PIDYOM
         </div>
-        <div style={{ fontSize: 8, letterSpacing: '0.2em', color: '#6A6A62', textTransform: 'uppercase', marginTop: 3 }}>
+        <div style={{ fontSize: 9, letterSpacing: '0.2em', color: '#9A9A90', textTransform: 'uppercase', marginTop: 3 }}>
           Movement Framework
         </div>
         {/* Acid rule */}
