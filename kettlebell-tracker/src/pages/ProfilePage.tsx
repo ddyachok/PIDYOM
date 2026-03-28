@@ -41,7 +41,7 @@ export default function ProfilePage() {
   const ink   = isLight ? '#0A0A0A'             : '#E8E8E1';
   const rule  = isLight ? '#C0C0B8'             : 'rgba(255,255,255,0.12)';
   // steel: mid-gray on light, visible muted white on dark
-  const steel = isLight ? '#6A6A62'             : 'rgba(255,255,255,0.38)';
+  const steel = isLight ? '#6A6A62'             : 'rgba(255,255,255,0.55)';
   // heavy rule: bold ink bar on light, subtle bright hairline on dark
   const heavyRule = isLight
     ? { height: 2, background: '#0A0A0A', marginBottom: 32 }

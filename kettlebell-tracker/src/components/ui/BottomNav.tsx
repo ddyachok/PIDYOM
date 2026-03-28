@@ -50,7 +50,7 @@ export default function BottomNav() {
               <span className="inline-flex shrink-0 w-5 h-5 items-center justify-center">
                 <Icon size={18} />
               </span>
-              <span style={{ fontSize: 8, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+              <span style={{ fontSize: 9, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
                 {tab.label}
               </span>
             </button>
