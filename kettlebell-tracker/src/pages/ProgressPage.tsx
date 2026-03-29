@@ -16,9 +16,13 @@ function RadarChart({ data, size = 280, isLight = false }: { data: RadarDataPoin
   const activeLineColor  = isLight ? 'rgba(0,0,0,0.35)'   : 'rgba(198,255,0,0.4)';
   const labelColor       = isLight ? 'rgba(0,0,0,0.45)'   : 'rgba(255,255,255,0.45)';
   const activeLabelColor = isLight ? 'rgba(0,0,0,0.85)'   : 'rgba(198,255,0,0.9)';
-  const tooltipBg        = isLight ? '#E8E8E1'             : '#0A0A0A';
+  const tooltipBg        = isLight ? '#D5D5CD'             : '#0A0A0A';
   const tooltipBorder    = isLight ? 'rgba(0,0,0,0.12)'   : 'rgba(255,255,255,0.12)';
   const tooltipLabel     = isLight ? 'rgba(0,0,0,0.55)'   : 'rgba(255,255,255,0.55)';
+  const accentDot        = '#C6FF00';
+  const radarFill        = 'rgba(198,255,0,0.06)';
+  const radarFillHover   = 'rgba(198,255,0,0.12)';
+  const radarStroke      = 'rgba(198,255,0,0.6)';
 
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [touchedIndex, setTouchedIndex] = useState<number | null>(null);
@@ -77,8 +81,8 @@ function RadarChart({ data, size = 280, isLight = false }: { data: RadarDataPoin
           );
         })}
         <motion.path d={dataPath}
-          fill={activeIndex !== null ? 'rgba(198,255,0,0.12)' : 'rgba(198,255,0,0.06)'}
-          stroke="rgba(198,255,0,0.6)" strokeWidth="1.5"
+          fill={activeIndex !== null ? radarFillHover : radarFill}
+          stroke={radarStroke} strokeWidth="1.5"
           initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.3, type: 'spring' }}
           style={{ transformOrigin: `${center}px ${center}px` }}
@@ -88,7 +92,7 @@ function RadarChart({ data, size = 280, isLight = false }: { data: RadarDataPoin
           const isActive = activeIndex === i;
           return (
             <motion.circle key={i} cx={pt.x} cy={pt.y} r={isActive ? 5 : 3}
-              fill="#C6FF00" initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }}
+              fill={accentDot} initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.5 + i * 0.1 }}
             />
           );
@@ -123,7 +127,7 @@ function RadarChart({ data, size = 280, isLight = false }: { data: RadarDataPoin
           }}
         >
           <span style={{ color: tooltipLabel, textTransform: 'uppercase' }}>{data[activeIndex].label}</span>
-          <span style={{ color: '#C6FF00', fontWeight: 700, marginLeft: 8 }}>{data[activeIndex].value} sets</span>
+          <span style={{ color: accentDot, fontWeight: 700, marginLeft: 8 }}>{data[activeIndex].value} sets</span>
         </motion.div>
       )}
     </div>
@@ -140,7 +144,7 @@ function VolumeChart({ data, onBarHover, hoveredIndex, isLight }: {
   const barColor   = isLight ? 'rgba(10,10,10,0.15)'   : 'rgba(255,255,255,0.18)';
   const labelColor = isLight ? 'rgba(10,10,10,0.35)'   : 'rgba(255,255,255,0.28)';
   const hoverLabel = isLight ? 'rgba(10,10,10,0.65)'   : 'rgba(255,255,255,0.65)';
-  const tooltipBg  = isLight ? '#E8E8E1'               : '#0A0A0A';
+  const tooltipBg  = isLight ? '#D5D5CD'               : '#0A0A0A';
   const tooltipBrd = isLight ? 'rgba(0,0,0,0.12)'      : 'rgba(255,255,255,0.12)';
   const tooltipTxt = isLight ? 'rgba(0,0,0,0.7)'       : 'rgba(255,255,255,0.75)';
 
@@ -341,7 +345,7 @@ function GridChart({ data, isLight }: {
               {stat.label}
             </div>
             <div style={{ fontFamily: 'inherit', lineHeight: 1.1 }}>
-              <span style={{ fontSize: 22, fontWeight: 700, color: stat.accent ? (isLight ? '#3D6000' : '#C6FF00') : 'inherit' }}>
+              <span style={{ fontSize: 22, fontWeight: 700, color: stat.accent ? '#C6FF00' : 'inherit' }}>
                 {stat.value}
               </span>
               {stat.sub && (
@@ -368,6 +372,8 @@ export default function ProgressPage() {
   const rule     = isLight ? '#C0C0B8'             : 'rgba(255,255,255,0.12)';
   const steel    = isLight ? '#6A6A62'             : 'rgba(255,255,255,0.55)';
   const muted    = isLight ? 'rgba(10,10,10,0.35)' : 'rgba(255,255,255,0.40)';
+  const accent   = '#C6FF00';
+  const accentBar = '#C6FF00';
   const heavyRule = isLight
     ? { height: 2, background: '#0A0A0A', marginBottom: 32 }
     : { height: 1, background: 'rgba(255,255,255,0.18)', marginBottom: 32 };
@@ -552,7 +558,7 @@ export default function ProgressPage() {
                   <div style={{ flex: 1, borderBottom: `1px dotted ${rule}`, alignSelf: 'flex-end', marginBottom: 3, minWidth: 16, display: 'none' }} className="md:block" />
                   <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexShrink: 0 }}>
                     <div style={{ textAlign: 'right' }}>
-                      <span style={{ fontSize: 12, fontWeight: 700, color: '#C6FF00', fontVariantNumeric: 'tabular-nums', fontFamily: 'Space Mono, monospace' }}>{pr.maxWeight}kg</span>
+                      <span style={{ fontSize: 12, fontWeight: 700, color: accent, fontVariantNumeric: 'tabular-nums', fontFamily: 'Space Mono, monospace' }}>{pr.maxWeight}kg</span>
                       <span style={{ fontSize: 8, color: muted, marginLeft: 4, fontFamily: 'Space Mono, monospace' }}>max</span>
                     </div>
                     <div style={{ textAlign: 'right' }}>
@@ -594,13 +600,13 @@ export default function ProgressPage() {
                     </span>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                       <span style={{ fontSize: 9, color: steel, fontFamily: 'Space Mono, monospace' }}>{tree.root.movementPattern}</span>
-                      <span style={{ fontSize: 10, color: '#C6FF00', fontWeight: 700, fontFamily: 'Space Mono, monospace', fontVariantNumeric: 'tabular-nums' }}>{tree.pct}%</span>
+                      <span style={{ fontSize: 10, color: accent, fontWeight: 700, fontFamily: 'Space Mono, monospace', fontVariantNumeric: 'tabular-nums' }}>{tree.pct}%</span>
                     </div>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                     <div style={{ flex: 1, height: 2, background: rule, position: 'relative', overflow: 'hidden' }}>
                       <motion.div
-                        style={{ position: 'absolute', left: 0, top: 0, height: '100%', background: '#C6FF00' }}
+                        style={{ position: 'absolute', left: 0, top: 0, height: '100%', background: accentBar }}
                         initial={{ width: 0 }} animate={{ width: `${tree.pct}%` }}
                         transition={{ duration: 0.6, delay: 0.3 + i * 0.05 }}
                       />
@@ -644,7 +650,7 @@ export default function ProgressPage() {
                   <span style={{ fontSize: 9, color: steel, width: 52, textTransform: 'uppercase', fontFamily: 'Space Mono, monospace', letterSpacing: '0.08em', flexShrink: 0 }}>{p}</span>
                   <div style={{ flex: 1, height: 2, background: rule, position: 'relative', overflow: 'hidden' }}>
                     <motion.div
-                      style={{ position: 'absolute', left: 0, top: 0, height: '100%', background: count > 0 ? '#C6FF00' : 'transparent', opacity: 0.5 }}
+                      style={{ position: 'absolute', left: 0, top: 0, height: '100%', background: count > 0 ? accentBar : 'transparent', opacity: 0.5 }}
                       initial={{ width: 0 }} animate={{ width: `${maxCount > 0 ? (count / maxCount) * 100 : 0}%` }}
                       transition={{ duration: 0.6, delay: 0.3 + i * 0.05 }}
                     />

@@ -20,7 +20,7 @@ export default function BottomNav() {
     <nav
       className="fixed bottom-0 left-0 right-0 z-50 safe-bottom"
       style={{
-        background: isLight ? '#E0E0D8' : '#0A0A0A',
+        background: isLight ? '#CCCCC4' : '#0A0A0A',
         borderTop: isLight ? '1px solid rgba(10,10,10,0.1)' : '1px solid rgba(255,255,255,0.06)',
       }}
     >
@@ -33,7 +33,7 @@ export default function BottomNav() {
               key={tab.id}
               onClick={() => setCurrentTab(tab.id)}
               className="relative flex flex-col items-center justify-center gap-1 flex-1 transition-colors"
-              style={{ color: isActive ? '#C6FF00' : (isLight ? 'rgba(10,10,10,0.4)' : '#6A6A62') }}
+              style={{ color: isActive ? (isLight ? 'var(--c-accent)' : '#C6FF00') : (isLight ? 'rgba(10,10,10,0.4)' : '#6A6A62') }}
               aria-current={isActive ? 'page' : undefined}
               aria-label={tab.label}
             >
@@ -42,7 +42,7 @@ export default function BottomNav() {
                 <motion.div
                   layoutId="bottom-nav-indicator"
                   className="absolute top-0 left-2 right-2 h-[2px]"
-                  style={{ background: '#C6FF00' }}
+                  style={{ background: isLight ? 'var(--c-accent)' : '#C6FF00' }}
                   transition={{ type: 'spring', stiffness: 500, damping: 35 }}
                 />
               )}

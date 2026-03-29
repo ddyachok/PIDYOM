@@ -14,6 +14,7 @@ export default function HomePage() {
   const faint = isLight ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.07)';
   const muted = isLight ? 'rgba(0,0,0,0.15)' : 'rgba(255,255,255,0.15)';
   const textMid = isLight ? 'rgba(0,0,0,0.7)' : 'rgba(232,232,225,0.7)';
+  const steel = isLight ? '#6A6A62' : '#9A9A90';
   const [showIntro, setShowIntro] = useState(() => !sessionStorage.getItem(INTRO_SHOWN_KEY));
   const [introPhase, setIntroPhase] = useState(0);
 
@@ -47,7 +48,7 @@ export default function HomePage() {
         <motion.div
           key="intro"
           className="fixed inset-0 z-50 flex flex-col items-center justify-center"
-          style={{ background: '#0D0D0D' }}
+          style={{ background: isLight ? '#D5D5CD' : '#0D0D0D' }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
         >
@@ -63,7 +64,7 @@ export default function HomePage() {
                     fontSize: 72,
                     letterSpacing: '-0.02em',
                     lineHeight: 1,
-                    color: '#E8E8E1',
+                    color: isLight ? '#0A0A0A' : '#E8E8E1',
                     textTransform: 'uppercase',
                   }}
                 >
@@ -76,7 +77,7 @@ export default function HomePage() {
                 <motion.p
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  style={{ fontSize: 9, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#9A9A90' }}
+                  style={{ fontSize: 9, letterSpacing: '0.3em', textTransform: 'uppercase', color: isLight ? '#6A6A62' : '#9A9A90' }}
                 >
                   Movement Framework
                 </motion.p>
@@ -116,13 +117,13 @@ export default function HomePage() {
                 PIDYOM
               </div>
               <div className="flex items-center gap-2 mt-2">
-                <span style={{ fontSize: 9, letterSpacing: '0.12em', color: '#9A9A90' }}>
+                <span style={{ fontSize: 9, letterSpacing: '0.12em', color: steel }}>
                   {format(new Date(), 'dd.MM.yyyy')}
                 </span>
                 {userName && (
                   <>
                     <span style={{ color: faint }}>·</span>
-                    <span style={{ fontSize: 9, letterSpacing: '0.12em', color: '#9A9A90', textTransform: 'uppercase' }}>
+                    <span style={{ fontSize: 9, letterSpacing: '0.12em', color: steel, textTransform: 'uppercase' }}>
                       {userName}
                     </span>
                   </>
@@ -202,7 +203,7 @@ export default function HomePage() {
                 >
                   {WORKOUT_TYPE_INFO[todaySchedule.workoutType].subtitle}
                 </div>
-                <p style={{ fontSize: 13, color: '#9A9A90', lineHeight: 1.6, marginBottom: 16 }}>
+                <p style={{ fontSize: 13, color: steel, lineHeight: 1.6, marginBottom: 16 }}>
                   {WORKOUT_TYPE_INFO[todaySchedule.workoutType].description}
                 </p>
                 <button
@@ -228,7 +229,7 @@ export default function HomePage() {
                 >
                   {todayWorkout.name}
                 </div>
-                <p style={{ fontSize: 13, color: '#9A9A90', lineHeight: 1.6, marginBottom: 16 }}>
+                <p style={{ fontSize: 13, color: steel, lineHeight: 1.6, marginBottom: 16 }}>
                   {todayWorkout.completed ? 'Workout completed today.' : 'Workout in progress — keep going.'}
                 </p>
                 <button
@@ -241,7 +242,7 @@ export default function HomePage() {
               </div>
             ) : (
               <div className="wk-card">
-                <p style={{ fontSize: 13, color: '#9A9A90', marginBottom: 16, lineHeight: 1.6 }}>
+                <p style={{ fontSize: 13, color: steel, marginBottom: 16, lineHeight: 1.6 }}>
                   {workouts.length === 0
                     ? 'No workout planned. Start your first session.'
                     : 'Rest day. Recover and prepare.'}
@@ -269,7 +270,7 @@ export default function HomePage() {
                 <span className="section-tag">Recent Log</span>
                 <button
                   onClick={() => setCurrentTab('workouts')}
-                  style={{ fontSize: 10, letterSpacing: '0.15em', color: '#9A9A90', textTransform: 'uppercase', background: 'none', border: 'none', cursor: 'pointer' }}
+                  style={{ fontSize: 10, letterSpacing: '0.15em', color: steel, textTransform: 'uppercase', background: 'none', border: 'none', cursor: 'pointer' }}
                 >
                   All →
                 </button>
@@ -288,7 +289,7 @@ export default function HomePage() {
                     className="ex-row w-full text-left"
                     style={{ cursor: 'pointer' }}
                   >
-                    <span style={{ fontSize: 9, color: '#9A9A90', width: 20, textAlign: 'right', flexShrink: 0, fontVariantNumeric: 'tabular-nums' }}>
+                    <span style={{ fontSize: 9, color: steel, width: 20, textAlign: 'right', flexShrink: 0, fontVariantNumeric: 'tabular-nums' }}>
                       {String(i + 1).padStart(2, '0')}
                     </span>
                     <span className={`status-dot ${w.completed ? 'status-dot--done' : 'status-dot--idle'}`} />
@@ -296,10 +297,10 @@ export default function HomePage() {
                       {w.name}
                     </span>
                     <span className="dot-leader hidden md:block" />
-                    <span style={{ fontSize: 10, color: '#9A9A90', flexShrink: 0, fontVariantNumeric: 'tabular-nums' }}>
+                    <span style={{ fontSize: 10, color: steel, flexShrink: 0, fontVariantNumeric: 'tabular-nums' }}>
                       {format(new Date(w.date), 'MMM d')}
                     </span>
-                    <span style={{ fontSize: 9, color: '#9A9A90', flexShrink: 0 }}>
+                    <span style={{ fontSize: 9, color: steel, flexShrink: 0 }}>
                       {w.sections.flatMap(s => s.exercises).length}ex
                     </span>
                   </motion.button>
@@ -317,7 +318,7 @@ export default function HomePage() {
               className="bracket-card text-center py-12"
               style={{ borderTop: `1px solid ${faint}` }}
             >
-              <p style={{ fontSize: 13, color: '#9A9A90', marginBottom: 4 }}>No workouts logged yet.</p>
+              <p style={{ fontSize: 13, color: steel, marginBottom: 4 }}>No workouts logged yet.</p>
               <p style={{ fontSize: 9, color: muted, marginBottom: 20 }}>Start building your framework.</p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center max-w-xs mx-auto">
                 <button onClick={() => setCurrentTab('workouts')} className="btn btn-acid flex-1" style={{ fontSize: 10 }}>

@@ -622,7 +622,7 @@ function TodayCard({
             </div>
             <div style={{ height: 2, background: 'var(--c-fg-06)', position: 'relative' }}>
               <motion.div
-                style={{ position: 'absolute', top: 0, left: 0, bottom: 0, background: '#C6FF00' }}
+                style={{ position: 'absolute', top: 0, left: 0, bottom: 0, background: 'var(--c-accent-bar, #C6FF00)' }}
                 initial={{ width: 0 }}
                 animate={{ width: `${progressPct}%` }}
                 transition={{ duration: 0.6 }}
@@ -642,8 +642,8 @@ function TodayCard({
               onClick={onStart}
               style={{
                 flex: 1,
-                background: '#C6FF00',
-                color: '#0D0D0D',
+                background: 'var(--c-accent, #C6FF00)',
+                color: 'var(--c-accent-on, #0A0A0A)',
                 fontFamily: "'Space Mono', monospace",
                 fontWeight: 700,
                 fontSize: 10,
