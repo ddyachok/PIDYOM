@@ -6,12 +6,12 @@
 
   /* BRUTUS color tokens */
   --color-void: #0D0D0D;
-  --color-paper: #E8E8E1;
+  --color-paper: #D5D5CD;
   --color-ink: #0A0A0A;
   --color-acid: #C6FF00;
   --color-steel: #9A9A90;
   --color-rule: #C0C0B8;
-  --color-surface: #E0E0D8;
+  --color-surface: #D0D0C8;
 
   /* Legacy aliases */
   --color-bg: #0D0D0D;
@@ -57,6 +57,13 @@ html, body, #root {
   --c-acid-border: rgba(198,255,0,0.22);
   --c-acid-bg: rgba(198,255,0,0.08);
   --c-acid-line: rgba(198,255,0,0.15);
+  /* Accent highlight — visible pop on the background */
+  --c-accent: #C6FF00;
+  --c-accent-muted: rgba(198,255,0,0.5);
+  --c-accent-on: #0A0A0A;          /* text ON accent bg */
+  --c-accent-bar: #C6FF00;          /* progress bars */
+  --c-accent-dot: #C6FF00;          /* active dots / indicators */
+  --c-accent-glow: rgba(198,255,0,0.5);
 }
 
 /* Dot grid background (dark) */
@@ -442,7 +449,7 @@ input::placeholder { color: rgba(255,255,255,0.2); }
 
 /* Light page (paper bg with dot grid) */
 .page-light {
-  background: #E8E8E1;
+  background: #D5D5CD;
   color: #0A0A0A;
   min-height: 100vh;
   min-height: 100dvh;
@@ -783,7 +790,7 @@ input::placeholder { color: rgba(255,255,255,0.2); }
 html[data-theme="light"],
 html[data-theme="light"] body,
 html[data-theme="light"] #root {
-  background: #E8E8E1;
+  background: #D5D5CD;
   color: #0A0A0A;
   --c-fg: #0A0A0A;
   --c-fg-60: rgba(10,10,10,0.65);
@@ -804,6 +811,13 @@ html[data-theme="light"] #root {
   --c-acid-border: rgba(10,10,10,0.22);
   --c-acid-bg: rgba(10,10,10,0.07);
   --c-acid-line: rgba(10,10,10,0.14);
+  /* Accent highlight — keep neon green, darker bg makes it pop */
+  --c-accent: #C6FF00;
+  --c-accent-muted: rgba(198,255,0,0.5);
+  --c-accent-on: #0A0A0A;           /* text ON accent bg */
+  --c-accent-bar: #C6FF00;          /* progress bars */
+  --c-accent-dot: #C6FF00;          /* active dots / indicators */
+  --c-accent-glow: rgba(198,255,0,0.5);
 }
 
 html[data-theme="light"] body::before {
@@ -829,7 +843,7 @@ html[data-theme="dark"] .page-light::before { display: none; }
 
 /* --- Navigation --- */
 html[data-theme="light"] .desktop-sidebar {
-  background: #E0E0D8 !important;
+  background: #CCCCC4 !important;
   border-right-color: rgba(10,10,10,0.1) !important;
 }
 
@@ -849,6 +863,9 @@ html[data-theme="light"] .page-title { color: #0A0A0A; }
 html[data-theme="light"] .coord-stamp { color: rgba(10,10,10,0.28); }
 html[data-theme="light"] .coord-stamp::before { background: rgba(10,10,10,0.35); }
 html[data-theme="light"] .dot-leader { border-bottom-color: rgba(10,10,10,0.15); }
+html[data-theme="light"] .section-tag { color: #6A6A62; }
+html[data-theme="light"] .section-tag::before { background: var(--c-accent); }
+html[data-theme="light"] .cal-tag--acid { background: var(--c-accent); color: var(--c-accent-on); }
 
 /* --- Cards --- */
 html[data-theme="light"] .card {
@@ -915,23 +932,31 @@ html[data-theme="light"] .tag {
   color: rgba(10,10,10,0.55);
 }
 
+/* --- Pills --- */
+html[data-theme="light"] .pill--acid {
+  background: var(--c-accent);
+  color: var(--c-accent-on);
+  border-color: var(--c-accent);
+}
+
 /* --- Status dots --- */
 html[data-theme="light"] .status-dot--idle { background: rgba(10,10,10,0.2); }
+html[data-theme="light"] .status-dot--done { background: #22c55e; }
 
 /* --- Progress / pbar --- */
 html[data-theme="light"] .pbar { background: rgba(10,10,10,0.1); }
 html[data-theme="light"] .progress-ring {
   background: conic-gradient(
-    #C6FF00 calc(var(--progress, 0) * 1%),
+    var(--c-accent-bar) calc(var(--progress, 0) * 1%),
     rgba(10,10,10,0.08) calc(var(--progress, 0) * 1%)
   );
 }
-html[data-theme="light"] .progress-ring-inner { background: #E8E8E1; }
+html[data-theme="light"] .progress-ring-inner { background: #D5D5CD; }
 
 /* --- Modal --- */
-html[data-theme="light"] .modal-backdrop { background: rgba(210,210,205,0.94); }
+html[data-theme="light"] .modal-backdrop { background: rgba(200,200,193,0.94); }
 html[data-theme="light"] .modal-panel {
-  background: #E8E8E1;
+  background: #D5D5CD;
   border-top-color: #0A0A0A;
   border-color: rgba(10,10,10,0.12);
 }
@@ -993,7 +1018,7 @@ html[data-theme="light"] .border-white\/\[0\.05\] { border-color: rgba(10,10,10,
 html[data-theme="light"] .border-white\/\[0\.04\] { border-color: rgba(10,10,10,0.08) !important; }
 
 /* bg-black tooltip in light mode */
-html[data-theme="light"] .bg-black { background-color: #E8E8E1 !important; }
+html[data-theme="light"] .bg-black { background-color: #D5D5CD !important; }
 
 /* Acid-green Tailwind utility overrides in light mode */
 html[data-theme="light"] .text-\[\#C6FF00\]    { color: #0A0A0A !important; }
@@ -1005,6 +1030,13 @@ html[data-theme="light"] .border-\[\#C6FF00\]\/50 { border-color: rgba(10,10,10,
 
 /* hover:border-white/* overrides */
 html[data-theme="light"] .hover\:border-white\/25:hover { border-color: rgba(10,10,10,0.2) !important; }
+
+/* --- Toast overrides --- */
+html[data-theme="light"] .toast-notification {
+  background: rgba(10,10,10,0.06) !important;
+  border-color: rgba(10,10,10,0.14) !important;
+  backdrop-filter: blur(12px);
+}
 
 /* Also handle the pill--ghost in light mode */
 html[data-theme="light"] .pill--ghost {
@@ -1083,11 +1115,11 @@ html[data-theme="light"] .btn-solid:disabled {
   border-color: transparent;
 }
 
-/* .btn-acid in light mode — keep acid look */
+/* .btn-acid in light mode — neon green on darker paper */
 html[data-theme="light"] .btn-acid {
-  background: #C6FF00;
-  color: #0A0A0A;
-  border-color: #C6FF00;
+  background: var(--c-accent);
+  color: var(--c-accent-on);
+  border-color: var(--c-accent);
 }
 html[data-theme="light"] .btn-acid:hover {
   background: #d4ff33;

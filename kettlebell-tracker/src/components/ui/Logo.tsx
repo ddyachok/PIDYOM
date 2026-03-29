@@ -31,7 +31,7 @@ export default function Logo({ size = 120, animate = true, className }: Props) {
       {/* Outer diamond */}
       <motion.path
         d="M100 8 L192 100 L100 192 L8 100 Z"
-        stroke="white"
+        stroke="currentColor"
         strokeWidth="1.2"
         fill="none"
         variants={animate ? variants : undefined}
@@ -43,7 +43,7 @@ export default function Logo({ size = 120, animate = true, className }: Props) {
       {/* Inner diamond */}
       <motion.path
         d="M100 38 L162 100 L100 162 L38 100 Z"
-        stroke="white"
+        stroke="currentColor"
         strokeWidth="0.8"
         fill="none"
         opacity={0.4}
@@ -60,7 +60,7 @@ export default function Logo({ size = 120, animate = true, className }: Props) {
         d="M70 98 
            C70 55 130 55 130 98 
            C130 130 70 130 70 98 Z"
-        stroke="white"
+        stroke="currentColor"
         strokeWidth="1.5"
         fill="none"
         strokeLinejoin="round"
@@ -73,7 +73,7 @@ export default function Logo({ size = 120, animate = true, className }: Props) {
       {/* Handle outer */}
       <motion.path
         d="M80 120 C80 158 120 158 120 120"
-        stroke="white"
+        stroke="currentColor"
         strokeWidth="1.8"
         fill="none"
         strokeLinecap="round"
@@ -86,7 +86,7 @@ export default function Logo({ size = 120, animate = true, className }: Props) {
       {/* Handle inner */}
       <motion.path
         d="M90 120 C90 148 110 148 110 120"
-        stroke="white"
+        stroke="currentColor"
         strokeWidth="1.2"
         fill="none"
         strokeLinecap="round"
@@ -103,7 +103,7 @@ export default function Logo({ size = 120, animate = true, className }: Props) {
            M176 24 L156 24 M176 24 L176 44 
            M24 176 L44 176 M24 176 L24 156 
            M176 176 L156 176 M176 176 L176 156"
-        stroke="white"
+        stroke="currentColor"
         strokeWidth="0.4"
         opacity={0.15}
         variants={animate ? variants : undefined}

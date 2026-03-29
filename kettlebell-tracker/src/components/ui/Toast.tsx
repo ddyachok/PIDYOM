@@ -20,7 +20,7 @@ export default function Toast() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="pointer-events-auto relative mb-2 md:mb-3 pl-4 pr-8 py-3 md:pl-5 md:pr-10 md:py-3.5 bg-white/[0.08] border border-white/15 backdrop-blur-sm shadow-lg min-w-[200px] max-w-[90vw] md:max-w-sm"
+            className="toast-notification pointer-events-auto relative mb-2 md:mb-3 pl-4 pr-8 py-3 md:pl-5 md:pr-10 md:py-3.5 bg-white/[0.08] border border-white/15 backdrop-blur-sm shadow-lg min-w-[200px] max-w-[90vw] md:max-w-sm"
             role="status"
           >
             <p className="text-[11px] md:text-[13px] tracking-[0.06em] text-white/90">{t.message}</p>

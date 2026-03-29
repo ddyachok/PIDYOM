@@ -25,7 +25,7 @@ export default function DesktopSidebar() {
         >
           PIDYOM
         </div>
-        <div style={{ fontSize: 9, letterSpacing: '0.2em', color: '#9A9A90', textTransform: 'uppercase', marginTop: 3 }}>
+        <div style={{ fontSize: 9, letterSpacing: '0.2em', color: isLight ? '#6A6A62' : '#9A9A90', textTransform: 'uppercase', marginTop: 3 }}>
           Movement Framework
         </div>
         {/* Acid rule */}
@@ -47,7 +47,7 @@ export default function DesktopSidebar() {
               className="relative flex items-center gap-3 px-6 py-3.5 text-left transition-all duration-200"
               style={{
                 color: isActive ? activeColor : inactiveColor,
-                background: isActive ? 'rgba(198,255,0,0.04)' : 'transparent',
+                background: isActive ? ('rgba(198,255,0,0.04)') : 'transparent',
               }}
               onMouseEnter={e => { if (!isActive) (e.currentTarget as HTMLButtonElement).style.color = hoverColor; }}
               onMouseLeave={e => { if (!isActive) (e.currentTarget as HTMLButtonElement).style.color = inactiveColor; }}
@@ -70,7 +70,7 @@ export default function DesktopSidebar() {
                   fontFamily: "'Barlow Condensed', sans-serif",
                   fontWeight: 700,
                   fontSize: 11,
-                  color: isActive ? '#C6FF00' : (isLight ? 'rgba(10,10,10,0.2)' : '#2a2a2a'),
+                  color: isActive ? ('#C6FF00') : (isLight ? 'rgba(10,10,10,0.2)' : '#2a2a2a'),
                   letterSpacing: '0.05em',
                   width: 20,
                   flexShrink: 0,

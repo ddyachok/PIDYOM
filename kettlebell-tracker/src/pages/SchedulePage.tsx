@@ -20,8 +20,8 @@ export default function SchedulePage() {
   // Semantic color tokens that adapt to theme
   const ink = isLight ? '#0A0A0A' : '#E8E8E1';
   const rule = isLight ? '#C0C0B8' : 'rgba(255,255,255,0.12)';
-  const surface = isLight ? '#E0E0D8' : 'rgba(255,255,255,0.04)';
-  const paper = isLight ? '#E8E8E1' : '#0D0D0D';
+  const surface = isLight ? '#CCCCC4' : 'rgba(255,255,255,0.04)';
+  const paper = isLight ? '#D5D5CD' : '#0D0D0D';
   const border = isLight ? '1px solid #C0C0B8' : '1px solid rgba(255,255,255,0.1)';
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -241,7 +241,7 @@ export default function SchedulePage() {
                   style={{
                     fontSize: 11,
                     fontVariantNumeric: 'tabular-nums',
-                    color: isToday ? '#C6FF00' : isCurrentMonth ? ink : '#6A6A62',
+                    color: isToday ? ('#C6FF00') : isCurrentMonth ? ink : '#6A6A62',
                     fontWeight: isToday ? 700 : 400,
                     display: 'block',
                     lineHeight: 1.2,

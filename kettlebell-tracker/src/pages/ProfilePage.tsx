@@ -207,7 +207,7 @@ export default function ProfilePage() {
                   border: isSelected
                     ? (isLight ? `2px solid #0A0A0A` : `1px solid rgba(255,255,255,0.2)`)
                     : (isLight ? `1px solid ${rule}` : `1px solid rgba(255,255,255,0.07)`),
-                  borderLeft: isSelected ? `3px solid #C6FF00` : (isLight ? `1px solid ${rule}` : `1px solid rgba(255,255,255,0.07)`),
+                  borderLeft: isSelected ? `3px solid ${'#C6FF00'}` : (isLight ? `1px solid ${rule}` : `1px solid rgba(255,255,255,0.07)`),
                   background: isSelected
                     ? (isLight ? 'rgba(10,10,10,0.05)' : 'rgba(198,255,0,0.04)')
                     : 'transparent',
@@ -443,7 +443,7 @@ export default function ProfilePage() {
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: 12, opacity: 0 }}
               style={{
-                background: isLight ? '#E8E8E1' : '#0D0D0D',
+                background: isLight ? '#D5D5CD' : '#0D0D0D',
                 color: ink,
                 padding: 28,
                 maxWidth: 360,
