@@ -1,7 +1,7 @@
 import { GraphQLClient } from 'graphql-request';
 import { getJWTToken } from '../auth';
 
-const HASURA_URL = import.meta.env.VITE_HASURA_GRAPHQL_URL || 'https://classic-boa-53.hasura.app/v1/graphql';
+const HASURA_URL = import.meta.env.VITE_HASURA_GRAPHQL_URL || 'https://pidyom.hasura.app/v1/graphql';
 const HASURA_ADMIN_SECRET = import.meta.env.VITE_HASURA_ADMIN_SECRET || '';
 
 const gqlClient = new GraphQLClient(HASURA_URL);
