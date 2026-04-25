@@ -1,34 +1,57 @@
 import { motion } from 'framer-motion';
 import { useStore } from '../../store/useStore';
-import { IconHome, IconDumbbell, IconCalendar, IconChart, IconUser } from '../icons/Icons';
+import { IconHome, IconDumbbell, IconUser } from '../icons/Icons';
+import Logo from './Logo';
+
+function IconArcMark({ size = 15 }: { size?: number }) {
+  return (
+    <svg viewBox="0 0 24 24" width={size} height={size}>
+      <circle cx={12} cy={12} r={5} fill="currentColor" />
+      <path d="M 3 12 A 9 9 0 0 0 21 12" stroke="currentColor" strokeWidth={2.4} fill="none" strokeLinecap="butt" />
+    </svg>
+  );
+}
 
 const tabs = [
   { id: 'home', label: 'HOME', num: '01', icon: IconHome },
-  { id: 'workouts', label: 'TRAIN', num: '02', icon: IconDumbbell },
-  { id: 'schedule', label: 'PLAN', num: '03', icon: IconCalendar },
-  { id: 'progress', label: 'INTEL', num: '04', icon: IconChart },
-  { id: 'profile', label: 'YOU', num: '05', icon: IconUser },
+  { id: 'club', label: 'CLUB', num: '02', icon: IconArcMark },
+  { id: 'workouts', label: 'TRAIN', num: '03', icon: IconDumbbell },
+  { id: 'profile', label: 'YOU', num: '04', icon: IconUser },
 ];
 
 export default function DesktopSidebar() {
   const currentTab = useStore(s => s.currentTab);
   const setCurrentTab = useStore(s => s.setCurrentTab);
   const theme = useStore(s => s.theme);
+  const setTheme = useStore(s => s.setTheme);
   const isLight = theme === 'light';
+  const ink = isLight ? '#0A0A0A' : '#E8E8E1';
 
   return (
     <nav className="desktop-sidebar desktop-only">
-      {/* Logo */}
+      {/* Lockup: arc-mark + wordmark */}
       <div className="px-6 mb-10">
-        <div
-          style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: 22, letterSpacing: '0.05em', color: isLight ? '#0A0A0A' : '#E8E8E1', textTransform: 'uppercase' }}
-        >
-          PIDYOM
+        <div className="flex items-center gap-2.5">
+          <span style={{ color: ink, display: 'inline-flex' }}>
+            <Logo size={28} animate={false} />
+          </span>
+          <div
+            style={{
+              fontFamily: "'Barlow Condensed', sans-serif",
+              fontWeight: 900,
+              fontSize: 22,
+              letterSpacing: '0.02em',
+              color: ink,
+              textTransform: 'uppercase',
+              lineHeight: 1,
+            }}
+          >
+            PIDYOM
+          </div>
         </div>
-        <div style={{ fontSize: 9, letterSpacing: '0.2em', color: isLight ? '#6A6A62' : '#9A9A90', textTransform: 'uppercase', marginTop: 3 }}>
-          Movement Framework
+        <div style={{ fontSize: 9, letterSpacing: '0.2em', color: isLight ? '#6A6A62' : '#9A9A90', textTransform: 'uppercase', marginTop: 8 }}>
+          Pick up · Rise · ПІДЙОМ
         </div>
-        {/* Acid rule */}
         <div style={{ height: 1, background: '#C6FF00', width: 24, marginTop: 10 }} />
       </div>
 
@@ -37,7 +60,7 @@ export default function DesktopSidebar() {
         {tabs.map((tab) => {
           const isActive = currentTab === tab.id;
           const Icon = tab.icon;
-          const activeColor = isLight ? '#0A0A0A' : '#E8E8E1';
+          const activeColor = ink;
           const inactiveColor = '#9A9A90';
           const hoverColor = isLight ? 'rgba(10,10,10,0.6)' : 'rgba(232,232,225,0.6)';
           return (
@@ -47,14 +70,13 @@ export default function DesktopSidebar() {
               className="relative flex items-center gap-3 px-6 py-3.5 text-left transition-all duration-200"
               style={{
                 color: isActive ? activeColor : inactiveColor,
-                background: isActive ? ('rgba(198,255,0,0.04)') : 'transparent',
+                background: isActive ? 'rgba(198,255,0,0.04)' : 'transparent',
               }}
               onMouseEnter={e => { if (!isActive) (e.currentTarget as HTMLButtonElement).style.color = hoverColor; }}
               onMouseLeave={e => { if (!isActive) (e.currentTarget as HTMLButtonElement).style.color = inactiveColor; }}
               aria-current={isActive ? 'page' : undefined}
               aria-label={tab.label}
             >
-              {/* Acid left bar */}
               {isActive && (
                 <motion.div
                   layoutId="sidebar-indicator"
@@ -64,13 +86,12 @@ export default function DesktopSidebar() {
                 />
               )}
 
-              {/* Number */}
               <span
                 style={{
                   fontFamily: "'Barlow Condensed', sans-serif",
                   fontWeight: 700,
                   fontSize: 11,
-                  color: isActive ? ('#C6FF00') : (isLight ? 'rgba(10,10,10,0.2)' : '#2a2a2a'),
+                  color: isActive ? '#C6FF00' : (isLight ? 'rgba(10,10,10,0.2)' : '#2a2a2a'),
                   letterSpacing: '0.05em',
                   width: 20,
                   flexShrink: 0,
@@ -92,8 +113,26 @@ export default function DesktopSidebar() {
         })}
       </div>
 
-      {/* Footer */}
-      <div className="px-6 pt-6 border-t" style={{ borderColor: isLight ? 'rgba(10,10,10,0.08)' : 'rgba(255,255,255,0.05)' }}>
+      {/* Footer — theme toggle + coord */}
+      <div className="px-6 pt-6 border-t flex flex-col gap-3" style={{ borderColor: isLight ? 'rgba(10,10,10,0.08)' : 'rgba(255,255,255,0.05)' }}>
+        <button
+          onClick={() => setTheme(isLight ? 'dark' : 'light')}
+          className="flex items-center justify-between"
+          style={{
+            fontSize: 10,
+            letterSpacing: '0.18em',
+            textTransform: 'uppercase',
+            color: isLight ? 'rgba(10,10,10,0.5)' : 'rgba(232,232,225,0.5)',
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            padding: 0,
+          }}
+          aria-label={`Switch to ${isLight ? 'dark' : 'light'} theme`}
+        >
+          <span>{isLight ? 'Paper' : 'Void'}</span>
+          <span style={{ color: '#C6FF00' }}>↔</span>
+        </button>
         <div className="coord-stamp">SYS // NAV-0</div>
       </div>
     </nav>

@@ -13,11 +13,13 @@ import SchedulePage from './pages/SchedulePage';
 import ProgressPage from './pages/ProgressPage';
 import ProfilePage from './pages/ProfilePage';
 import AuthPage from './pages/AuthPage';
+import ClubPage from './pages/ClubPage';
 
 function CurrentPage() {
   const currentTab = useStore(s => s.currentTab);
   switch (currentTab) {
     case 'home': return <HomePage />;
+    case 'club': return <ClubPage />;
     case 'workouts': return <WorkoutsPage />;
     case 'schedule': return <SchedulePage />;
     case 'progress': return <ProgressPage />;
@@ -83,6 +85,7 @@ export default function App() {
     if (_preview === 'progress') return <ProgressPage />;
     if (_preview === 'workouts') return <WorkoutsPage />;
     if (_preview === 'home')     return <HomePage />;
+    if (_preview === 'club')     return <ClubPage />;
     if (_preview === 'schedule') return <SchedulePage />;
   }
 
