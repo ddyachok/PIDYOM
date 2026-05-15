@@ -1,17 +1,19 @@
 import { useEffect, useRef, useState } from 'react';
-import { format } from 'date-fns';
+import { format, differenceInMinutes } from 'date-fns';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import Logo from '../ui/Logo';
 import CoordStamp from '../brand/CoordStamp';
 import MassiveDate from './MassiveDate';
 import LetterScrambleReveal from '../motion/LetterScrambleReveal';
 import LocationMap from './LocationMap';
+import { ArcDivider, TimeToLift } from '../ui/ArcPrimitives';
 import type { PidyomSession } from '../../data/pidyomSessions';
 
 interface Props {
   session: PidyomSession;
 }
 
-// Pull "50.4439°N · 30.5108°E" → numeric pair for CoordStamp.
 function parseCoords(coords: string): { lat: number; lng: number } | null {
   const m = coords.match(/(-?\d+(?:\.\d+)?)[°\s]*([NS])\s*[·,]?\s*(-?\d+(?:\.\d+)?)[°\s]*([EW])/i);
   if (!m) return null;
@@ -21,21 +23,45 @@ function parseCoords(coords: string): { lat: number; lng: number } | null {
   };
 }
 
-// Dossier hero — three blocks separated by hairline rules:
-//   1. MassiveDate (Source Serif 4 Black, opsz 60)
-//   2. Time + duration meta line
-//   3. Location name + coords
-//
-// Replaces the inline implementation in DossierPage (C3 placeholder).
+function shortId(id: string): string {
+  const m = id.match(/(\d{1,4})/);
+  return m ? m[1].padStart(3, '0') : id.slice(-3).toUpperCase();
+}
+
+// `pct`: 1 = at session start, 0 = ≥5 days out.
+function timeToLiftPct(startsAt: Date): { pct: number; label: string } {
+  const minutes = differenceInMinutes(startsAt, new Date());
+  const windowMin = 5 * 24 * 60; // 7200
+  const pct = Math.max(0, Math.min(1, 1 - minutes / windowMin));
+  // Compact "IN 2D 4H" / "IN 45M" label.
+  const absMin = Math.max(0, minutes);
+  const days = Math.floor(absMin / (24 * 60));
+  const hours = Math.floor((absMin % (24 * 60)) / 60);
+  const mins = absMin % 60;
+  let label: string;
+  if (minutes <= 0) label = 'NOW';
+  else if (days > 0) label = `${days}D ${hours}H`;
+  else if (hours > 0) label = `${hours}H ${mins}M`;
+  else label = `${mins}M`;
+  return { pct, label };
+}
+
+const monoCap = (size = 9): React.CSSProperties => ({
+  fontFamily: 'var(--font-mono)',
+  fontWeight: 700,
+  fontSize: size,
+  letterSpacing: '0.28em',
+  textTransform: 'uppercase',
+  color: 'var(--stone-500)',
+  lineHeight: 1.1,
+});
+
 export default function DossierHero({ session }: Props) {
   const { t } = useTranslation();
   const date = new Date(session.startsAt);
   const parsed = parseCoords(session.coords);
+  const { pct, label: liftLabel } = timeToLiftPct(date);
 
-  // Play the letter-scramble reveal once per session arrival.
-  // The flag is keyed to session id so navigating to a different dossier
-  // re-plays it; navigating away and back to the same one within the same
-  // mount does not.
   const playedFor = useRef<string | null>(null);
   const [animateIn, setAnimateIn] = useState(true);
   useEffect(() => {
@@ -48,17 +74,75 @@ export default function DossierHero({ session }: Props) {
 
   return (
     <header style={{ marginBottom: 'var(--space-12)' }}>
-      {/* 1 · MassiveDate — the editorial gesture, scrambled in on arrival */}
+      {/* Top stripe — hairline mark + DOSSIER · NNN left, ↑ HOME right */}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: 'var(--space-6)',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <Logo size={18} variant="hairline" animate={false} />
+          <span style={monoCap(10)}>
+            {t('dossier.title')} · {shortId(session.id)}
+          </span>
+        </div>
+        <Link
+          to="/"
+          style={{
+            ...monoCap(10),
+            textDecoration: 'none',
+          }}
+        >
+          {t('dossier.back_home')}
+        </Link>
+      </div>
+
+      {/* Time-to-lift row */}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-end',
+          padding: '12px 0',
+          borderTop: '1px solid var(--ink-15)',
+          borderBottom: '1px solid var(--ink-15)',
+          marginBottom: 'var(--space-6)',
+        }}
+      >
+        <div>
+          <span style={monoCap(9)}>IN</span>
+          <div
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontVariationSettings: '"opsz" 32',
+              fontWeight: 700,
+              fontSize: 30,
+              lineHeight: 1,
+              letterSpacing: '-0.01em',
+              marginTop: 4,
+              color: 'var(--ink)',
+            }}
+          >
+            {liftLabel}
+          </div>
+        </div>
+        <TimeToLift pct={pct} width={132} />
+      </div>
+
+      {/* MassiveDate */}
       <MassiveDate date={date} monthDisplay="alpha" animateIn={animateIn} />
 
-      {/* 2 · Time + duration / location-kind */}
+      {/* Time + duration / location-kind */}
       <div
         style={{
           display: 'flex',
           alignItems: 'baseline',
           gap: 'var(--space-4)',
           marginTop: 'var(--space-4)',
-          marginBottom: 'var(--space-8)',
+          marginBottom: 'var(--space-6)',
           flexWrap: 'wrap',
         }}
       >
@@ -76,37 +160,16 @@ export default function DossierHero({ session }: Props) {
         >
           {format(date, 'HH:mm')}
         </span>
-        <span
-          style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: 'var(--text-2xs)',
-            letterSpacing: 'var(--tracking-widest)',
-            textTransform: 'uppercase',
-            color: 'var(--text-mono-cap)',
-          }}
-        >
+        <span style={monoCap(9)}>
           {t('dossier.duration_min', { n: session.durationMin })} · {session.locationKind}
         </span>
       </div>
 
-      {/* 3 · Location name + coords — bracketed by hairline rules */}
-      <section
-        style={{
-          borderTop: '1px solid var(--rule-default)',
-          borderBottom: '1px solid var(--rule-default)',
-          paddingBlock: 'var(--space-5)',
-        }}
-      >
-        <div
-          style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: 'var(--text-2xs)',
-            letterSpacing: 'var(--tracking-widest)',
-            textTransform: 'uppercase',
-            color: 'var(--text-mono-cap)',
-            marginBottom: 'var(--space-2)',
-          }}
-        >
+      <ArcDivider />
+
+      {/* Location block */}
+      <section style={{ paddingBlock: 'var(--space-5)' }}>
+        <div style={{ ...monoCap(9), marginBottom: 'var(--space-2)' }}>
           {t('dossier.location')}
         </div>
         {session.mapUrl ? (

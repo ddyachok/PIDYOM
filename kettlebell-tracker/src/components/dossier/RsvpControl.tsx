@@ -1,6 +1,7 @@
 import { format, differenceInMinutes } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { useStore } from '../../store/useStore';
+import { CapacityDial } from '../ui/ArcPrimitives';
 import type { PidyomSession } from '../../data/pidyomSessions';
 
 type RsvpState = 'going' | 'maybe' | 'declined' | 'waitlist';
@@ -60,33 +61,61 @@ export default function RsvpControl({ session, cutoffMinutesBefore = 60 }: Props
 
   return (
     <section style={{ display: 'grid', gap: 'var(--space-3)' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-        <span
-          style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: 'var(--text-2xs)',
-            letterSpacing: 'var(--tracking-widest)',
-            textTransform: 'uppercase',
-            color: 'var(--text-mono-cap)',
-          }}
-        >
-          {t('dossier.rsvp')}
-        </span>
-        <span
-          style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: 'var(--text-2xs)',
-            letterSpacing: 'var(--tracking-widest)',
-            textTransform: 'uppercase',
-            color: 'var(--text-mono-cap)',
-            fontVariantNumeric: 'tabular-nums',
-          }}
-        >
-          {locked
-            ? t('rsvp.going_count', { count: goingCount, capacity: session.capacity })
-            : t('rsvp.counts_full', { going: goingCount, maybe: maybeCount, waitlist: waitlistCount })}
-        </span>
-      </div>
+      <header
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-end',
+          gap: 'var(--space-4)',
+        }}
+      >
+        <div>
+          <span
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: 'var(--text-2xs)',
+              letterSpacing: 'var(--tracking-widest)',
+              textTransform: 'uppercase',
+              color: 'var(--text-mono-cap)',
+              display: 'block',
+              marginBottom: 4,
+            }}
+          >
+            {t('dossier.rsvp')} · CAPACITY
+          </span>
+          <div
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontVariationSettings: '"opsz" 32',
+              fontWeight: 700,
+              fontSize: 28,
+              lineHeight: 1,
+              fontVariantNumeric: 'tabular-nums',
+              color: 'var(--ink)',
+            }}
+          >
+            {goingCount}
+            <span style={{ color: 'var(--ink-50)', fontSize: 16 }}>/{session.capacity}</span>
+          </div>
+          {!locked && (
+            <span
+              style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: 'var(--text-2xs)',
+                letterSpacing: 'var(--tracking-widest)',
+                textTransform: 'uppercase',
+                color: 'var(--text-mono-cap)',
+                fontVariantNumeric: 'tabular-nums',
+                display: 'block',
+                marginTop: 6,
+              }}
+            >
+              {t('rsvp.counts_full', { going: goingCount, maybe: maybeCount, waitlist: waitlistCount })}
+            </span>
+          )}
+        </div>
+        <CapacityDial going={goingCount} capacity={session.capacity} size={92} locked={locked} />
+      </header>
 
       <div
         style={{

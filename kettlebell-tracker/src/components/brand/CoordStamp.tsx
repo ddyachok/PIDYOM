@@ -15,6 +15,8 @@ interface Props {
   style?: CSSProperties;
   /** Force a specific colour (otherwise resolves to `--text-mono-cap`). */
   color?: string;
+  /** Override the font size (px). Defaults to `--text-2xs`. */
+  size?: number;
 }
 
 function formatLat(lat: number, precision: number): string {
@@ -35,6 +37,7 @@ export default function CoordStamp({
   className,
   style,
   color,
+  size,
 }: Props) {
   const parts = [formatLat(lat, precision), formatLng(lng, precision)];
   if (time) parts.push(time);
@@ -44,7 +47,7 @@ export default function CoordStamp({
       className={className}
       style={{
         fontFamily: 'var(--font-mono)',
-        fontSize: 'var(--text-2xs)',
+        fontSize: size ? `${size}px` : 'var(--text-2xs)',
         letterSpacing: 'var(--tracking-widest)',
         textTransform: 'uppercase',
         color: color ?? 'var(--text-mono-cap)',

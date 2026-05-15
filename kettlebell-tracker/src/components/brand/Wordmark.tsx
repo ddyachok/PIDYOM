@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import type { CSSProperties } from 'react';
 
 type WordmarkSize = 'sm' | 'md' | 'lg' | 'xl';
@@ -24,8 +23,8 @@ const sizes: Record<WordmarkSize, { font: string; tracking: string }> = {
 };
 
 export default function Wordmark({ size = 'md', className, style, color, text }: Props) {
-  const { t } = useTranslation();
-  const label = text ?? t('brand.wordmark');
+  // The brand wordmark is always Latin `PIDYOM` across every locale.
+  const label = text ?? 'PIDYOM';
   const dim = sizes[size];
 
   return (

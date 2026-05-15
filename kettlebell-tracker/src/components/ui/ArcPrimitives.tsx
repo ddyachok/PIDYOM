@@ -1,140 +1,180 @@
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 
-interface ArcProgressProps {
-  /** 0–100 */
-  value: number;
-  size?: number;
-  /** Stroke width in viewBox units (100 base). */
-  thickness?: number;
-  /** Optional center label. */
-  label?: string;
+interface ArcDividerProps {
+  width?: number | string;
+  color?: string;
   className?: string;
-  /** Foreground (track) color. */
-  trackColor?: string;
-  /** Acid/active stroke color. */
-  fillColor?: string;
 }
 
-/**
- * Arc-based progress (open-bottom). Replaces the old conic-gradient ring
- * with the brand's "arc + circle" geometry — a single sweeping stroke
- * across the top half.
- */
-export function ArcProgress({
-  value,
-  size = 96,
-  thickness = 5,
-  label,
+// Hairline rule with the mark (circle + arc) suspended in the middle.
+// Replaces plain <hr/> between dossier sections.
+export function ArcDivider({
+  width = '100%',
+  color = 'var(--ink-22)',
   className,
-  trackColor = 'var(--c-fg-12)',
-  fillColor = 'var(--c-accent)',
-}: ArcProgressProps) {
-  const pct = Math.max(0, Math.min(100, value));
-  // Top-arc path from (10,50) → (90,50) sweeping over top.
-  // Arc length ≈ π * 40 ≈ 125.66
-  const arcLen = Math.PI * 40;
-  const dash = (pct / 100) * arcLen;
-
+}: ArcDividerProps) {
   return (
     <div
       className={className}
-      style={{ width: size, height: size, position: 'relative' }}
+      style={{ display: 'flex', alignItems: 'center', gap: 0, width, height: 16 }}
+      aria-hidden
     >
-      <svg viewBox="0 0 100 100" width={size} height={size}>
-        {/* Track */}
-        <path
-          d="M 10 50 A 40 40 0 0 1 90 50"
-          fill="none"
-          stroke={trackColor}
-          strokeWidth={thickness}
-          strokeLinecap="butt"
-        />
-        {/* Fill */}
-        <motion.path
-          d="M 10 50 A 40 40 0 0 1 90 50"
-          fill="none"
-          stroke={fillColor}
-          strokeWidth={thickness}
-          strokeLinecap="butt"
-          strokeDasharray={`${dash} ${arcLen}`}
-          initial={{ strokeDasharray: `0 ${arcLen}` }}
-          animate={{ strokeDasharray: `${dash} ${arcLen}` }}
-          transition={{ duration: 0.6, ease: [0.65, 0, 0.35, 1] }}
-        />
+      <span style={{ flex: 1, height: 1, background: color }} />
+      <svg viewBox="0 0 36 14" width={36} height={14} style={{ flexShrink: 0 }}>
+        <circle cx={18} cy={7} r={2.8} fill="var(--ink)" />
+        <path d="M 8 7 A 10 10 0 0 0 28 7" fill="none" stroke="var(--ink)" strokeWidth={1.4} />
       </svg>
-      {label && (
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            display: 'flex',
-            alignItems: 'flex-end',
-            justifyContent: 'center',
-            paddingBottom: '14%',
-            fontFamily: 'Barlow Condensed, sans-serif',
-            fontWeight: 900,
-            fontSize: size * 0.22,
-            letterSpacing: '-0.02em',
-            color: 'var(--c-fg)',
-          }}
-        >
-          {label}
-        </div>
-      )}
+      <span style={{ flex: 1, height: 1, background: color }} />
     </div>
   );
 }
 
-interface ArcRiseProps {
-  /** 0–100 — peak position. */
-  peak?: number;
-  width?: number;
-  height?: number;
+interface CapacityDialProps {
+  going: number;
+  capacity: number;
+  size?: number;
+  color?: string;
   trackColor?: string;
-  arcColor?: string;
-  capColor?: string;
+  /** Render a tick mark at the current fill end (locked state). */
+  locked?: boolean;
   className?: string;
-  animate?: boolean;
 }
 
-/**
- * Wide "rise" arc — used as a hero stat decoration.
- * A single curve from baseline-left → peak (centered) → baseline-right.
- */
-export function ArcRise({
-  width = 120,
-  height = 60,
-  trackColor = 'var(--c-fg-08)',
-  arcColor = 'var(--c-accent)',
-  capColor = 'var(--c-fg)',
+// Bottom-open arc, filled going/capacity of its length.
+// Arc spans (10,50) → (90,50) over the top. Length = π * 40.
+export function CapacityDial({
+  going,
+  capacity,
+  size = 88,
+  color = 'var(--ink)',
+  trackColor = 'var(--ink-15)',
+  locked = false,
   className,
-  animate = true,
-}: ArcRiseProps) {
+}: CapacityDialProps) {
+  const reduce = useReducedMotion();
+  const pct = capacity > 0 ? Math.max(0, Math.min(1, going / capacity)) : 0;
+  const arcLen = Math.PI * 40;
+  const dash = pct * arcLen;
+
+  // Tick at fill-end: parametrise the top arc (cx=50, cy=50, r=40).
+  // Arc starts at angle π (x=10) and sweeps to 0 (x=90), going through -π/2 (top).
+  const tickAngle = Math.PI - pct * Math.PI;
+  const tickCx = 50 + 40 * Math.cos(tickAngle);
+  const tickCy = 50 - 40 * Math.sin(tickAngle);
+
   return (
-    <svg viewBox="0 0 120 60" width={width} height={height} className={className}>
-      <line x1={6} y1={50} x2={6} y2={14} stroke={trackColor} strokeWidth={0.5} />
-      <line x1={114} y1={50} x2={114} y2={14} stroke={trackColor} strokeWidth={0.5} />
-      <motion.path
-        d="M 6 50 Q 60 6 114 50"
+    <svg
+      viewBox="0 0 100 60"
+      width={size}
+      height={size * 0.6}
+      className={className}
+      aria-label={`${going} of ${capacity}`}
+    >
+      <path
+        d="M 10 50 A 40 40 0 0 1 90 50"
         fill="none"
-        stroke={arcColor}
-        strokeWidth={2}
-        initial={animate ? { pathLength: 0, opacity: 0 } : undefined}
-        animate={animate ? { pathLength: 1, opacity: 1 } : undefined}
-        transition={animate ? { duration: 0.9, ease: [0.65, 0, 0.35, 1] } : undefined}
+        stroke={trackColor}
+        strokeWidth={4}
       />
-      <circle cx={6} cy={50} r={2.5} fill={capColor} />
-      <circle cx={114} cy={50} r={2.5} fill={capColor} />
-      <motion.circle
-        cx={60}
-        cy={14}
-        r={3.5}
-        fill={arcColor}
-        initial={animate ? { scale: 0 } : undefined}
-        animate={animate ? { scale: 1 } : undefined}
-        transition={animate ? { delay: 0.7, duration: 0.3 } : undefined}
-        style={{ transformOrigin: '60px 14px' }}
+      <motion.path
+        d="M 10 50 A 40 40 0 0 1 90 50"
+        fill="none"
+        stroke={color}
+        strokeWidth={4}
+        strokeLinecap="butt"
+        initial={reduce ? false : { strokeDasharray: `0 ${arcLen}` }}
+        animate={{ strokeDasharray: `${dash} ${arcLen}` }}
+        transition={
+          reduce
+            ? { duration: 0 }
+            : { duration: 0.32, ease: [0.65, 0.05, 0.36, 1] }
+        }
       />
+      {locked && (
+        <circle cx={tickCx} cy={tickCy} r={3} fill={color} />
+      )}
+    </svg>
+  );
+}
+
+interface TimeToLiftProps {
+  /** 0 = far from session, 1 = at session start. */
+  pct: number;
+  width?: number;
+  color?: string;
+  trackColor?: string;
+  className?: string;
+}
+
+// Wide arc rising L→R. Track is hairline; fill traces from left toward right.
+// A dot sits parametrically along the arc.
+export function TimeToLift({
+  pct,
+  width = 120,
+  color = 'var(--ink)',
+  trackColor = 'var(--ink-15)',
+  className,
+}: TimeToLiftProps) {
+  const reduce = useReducedMotion();
+  const clamped = Math.max(0, Math.min(1, pct));
+  const arcLen = Math.PI * 54;
+  const dash = clamped * arcLen;
+
+  // Dot position along the arc: parametric (cos θ, sin θ) with θ = π * (1 - pct)
+  const theta = Math.PI * (1 - clamped);
+  const cx = 60 + 54 * Math.cos(theta);
+  const cy = 54 - 54 * Math.sin(theta);
+
+  return (
+    <svg
+      viewBox="0 0 120 60"
+      width={width}
+      height={width * 0.5}
+      className={className}
+      aria-hidden
+    >
+      <path
+        d="M 6 54 A 54 54 0 0 1 114 54"
+        fill="none"
+        stroke={trackColor}
+        strokeWidth={1.4}
+      />
+      <motion.path
+        d="M 6 54 A 54 54 0 0 1 114 54"
+        fill="none"
+        stroke={color}
+        strokeWidth={2.2}
+        strokeLinecap="round"
+        initial={reduce ? false : { strokeDasharray: `0 ${arcLen}` }}
+        animate={{ strokeDasharray: `${dash} ${arcLen}` }}
+        transition={
+          reduce
+            ? { duration: 0 }
+            : { duration: 0.6, ease: [0.65, 0.05, 0.36, 1] }
+        }
+      />
+      <circle cx={cx} cy={cy} r={3} fill={color} />
+      <text
+        x={6}
+        y={59}
+        fontFamily="var(--font-mono)"
+        fontSize={6}
+        fill="var(--stone-500)"
+        letterSpacing="1"
+      >
+        NOW
+      </text>
+      <text
+        x={114}
+        y={59}
+        textAnchor="end"
+        fontFamily="var(--font-mono)"
+        fontSize={6}
+        fill="var(--stone-500)"
+        letterSpacing="1"
+      >
+        LIFT
+      </text>
     </svg>
   );
 }
@@ -143,20 +183,18 @@ interface AsemicStrokeProps {
   size?: number;
   color?: string;
   className?: string;
-  /** Animation duration in seconds. */
   duration?: number;
 }
 
-/**
- * Asemic ПІДЙОМ — a single brushstroke that resembles handwriting
- * without being literal. Used in loaders and completion moments only.
- */
+// Asemic ПІДЙОМ — a single brushstroke that resembles handwriting
+// without being literal. Used in loaders and completion moments only.
 export function AsemicStroke({
   size = 200,
   color = 'currentColor',
   className,
   duration = 1.4,
 }: AsemicStrokeProps) {
+  const reduce = useReducedMotion();
   return (
     <svg viewBox="0 0 200 80" width={size} height={size * 0.4} className={className}>
       <motion.path
@@ -165,12 +203,13 @@ export function AsemicStroke({
         stroke={color}
         strokeWidth={4.5}
         strokeLinecap="round"
-        initial={{ pathLength: 0, opacity: 0 }}
+        initial={reduce ? false : { pathLength: 0, opacity: 0 }}
         animate={{ pathLength: 1, opacity: 1 }}
-        transition={{
-          pathLength: { duration, ease: [0.65, 0, 0.35, 1] },
-          opacity: { duration: 0.2 },
-        }}
+        transition={
+          reduce
+            ? { duration: 0 }
+            : { pathLength: { duration, ease: [0.65, 0, 0.35, 1] }, opacity: { duration: 0.2 } }
+        }
       />
     </svg>
   );
