@@ -1,22 +1,58 @@
 @import "tailwindcss";
+@import "./tokens.css";
+
+/* ===== Field Manual @theme bridge (Rev 01) =================================
+   Two halves:
+     1. Static @theme — literal values exposed as Tailwind utilities
+        (`bg-paper`, `text-stone-500`, etc.). Tailwind v4 needs the
+        literals at build time to generate utilities + opacity variants.
+     2. tokens.css — `:root` + `[data-theme="dark"]` overrides for the
+        theme-aware tokens (`--ink`, `--bg-primary`). Custom components
+        use those `var(--*)` references directly when they need to flip
+        with theme.
+   For light/dark switching, components use `dark:` variants on Tailwind
+   utilities OR read theme-aware vars (e.g. `style={{ color: 'var(--ink)' }}`).
+   =========================================================================== */
+@theme inline {
+  --font-display: var(--font-display);
+  --font-body:    var(--font-body);
+  --font-mono:    var(--font-mono);
+}
 
 @theme {
-  --font-mono: 'Space Mono', monospace;
-  --font-display: 'Barlow Condensed', sans-serif;
+  /* Pigmented neutrals — literal values, mirrors src/tokens.css :root */
+  --color-paper:        #D7D6CC;
+  --color-paper-soft:   #CFCEC4;
+  --color-paper-deep:   #BFBEB4;
 
-  /* BRUTUS color tokens */
-  --color-void: #0D0D0D;
-  --color-paper: #D5D5CD;
-  --color-ink: #0A0A0A;
-  --color-acid: #C6FF00;
+  --color-void:         #0B0A09;
+  --color-void-soft:    #161513;
+  --color-void-deep:    #050402;
+
+  --color-stone-100:    #BFBEB4;
+  --color-stone-300:    #95948A;
+  --color-stone-500:    #6A6963;
+  --color-stone-700:    #3F3E39;
+
+  /* Ink utility — paper's near-black foreground (Tailwind utilities for
+     light mode). Use `dark:text-paper` for dark-mode flip. */
+  --color-ink:          #0B0A09;
+
+  /* Functional state colours (validation only) */
+  --color-status-error: #B83A2A;
+  --color-status-warn:  #B89A2A;
+  --color-status-ok:    #5C7A3A;
+}
+
+/* ===== Legacy @theme block (acid retired F3) ===============================
+   Acid + accent + Barlow display tokens stripped. Steel/rule/surface stay
+   as transient aliases — migrated component-by-component in the C-task
+   series, deleted then. */
+@theme {
   --color-steel: #9A9A90;
   --color-rule: #C0C0B8;
   --color-surface: #D0D0C8;
-
-  /* Legacy aliases */
   --color-bg: #0D0D0D;
-  --color-accent: #C6FF00;
-  --color-amber: #C6FF00;
   --color-success: #22c55e;
   --color-error: #ef4444;
 }
@@ -51,19 +87,8 @@ html, body, #root {
   --c-fg-06: rgba(255,255,255,0.06);
   --c-fg-05: rgba(255,255,255,0.05);
   --c-fg-04: rgba(255,255,255,0.04);
-  /* Acid / accent tokens (dark defaults) */
-  --c-acid-text: #C6FF00;
-  --c-acid-text-dim: rgba(198,255,0,0.6);
-  --c-acid-border: rgba(198,255,0,0.22);
-  --c-acid-bg: rgba(198,255,0,0.08);
-  --c-acid-line: rgba(198,255,0,0.15);
-  /* Accent highlight — visible pop on the background */
-  --c-accent: #C6FF00;
-  --c-accent-muted: rgba(198,255,0,0.5);
-  --c-accent-on: #0A0A0A;          /* text ON accent bg */
-  --c-accent-bar: #C6FF00;          /* progress bars */
-  --c-accent-dot: #C6FF00;          /* active dots / indicators */
-  --c-accent-glow: rgba(198,255,0,0.5);
+  /* Acid + accent tokens removed in F3. Components reading them now resolve
+     to empty; visual breakage tracked and migrated in the C-task series. */
 }
 
 /* Dot grid background (dark) */
@@ -805,19 +830,7 @@ html[data-theme="light"] #root {
   --c-fg-06: rgba(10,10,10,0.09);
   --c-fg-05: rgba(10,10,10,0.08);
   --c-fg-04: rgba(10,10,10,0.07);
-  /* Acid / accent tokens in light mode → deep ink instead of neon */
-  --c-acid-text: #0A0A0A;
-  --c-acid-text-dim: rgba(10,10,10,0.55);
-  --c-acid-border: rgba(10,10,10,0.22);
-  --c-acid-bg: rgba(10,10,10,0.07);
-  --c-acid-line: rgba(10,10,10,0.14);
-  /* Accent highlight — keep neon green, darker bg makes it pop */
-  --c-accent: #C6FF00;
-  --c-accent-muted: rgba(198,255,0,0.5);
-  --c-accent-on: #0A0A0A;           /* text ON accent bg */
-  --c-accent-bar: #C6FF00;          /* progress bars */
-  --c-accent-dot: #C6FF00;          /* active dots / indicators */
-  --c-accent-glow: rgba(198,255,0,0.5);
+  /* Acid + accent tokens removed in F3. */
 }
 
 html[data-theme="light"] body::before {

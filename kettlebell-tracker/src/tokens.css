@@ -1,0 +1,460 @@
+/* ============================================================================
+   PIDYOM · Design Tokens · Rev 01
+   ----------------------------------------------------------------------------
+   Source of truth for the *Field Manual* visual system.
+   Derived from DESIGN_BRIEF.md (Rev 03) + INFORMATION_ARCHITECTURE.md.
+   ----------------------------------------------------------------------------
+   Conventions
+     · Token names are semantic, never raw colour names.
+       (`--paper`, `--void`, `--ink`, never `--white`, `--green`.)
+     · Both light + dark palettes are intentional, not inverted.
+     · Light = paper (warm bone). Dark = void (warm carbon). Both are
+       *pigmented* neutrals, not IBM-grey.
+     · No UI accent colour (Rev 02). The brand carries no chroma in the UI.
+     · Functional state colours (validation only) are warm/desaturated so
+       they coexist with the neutrals without breaking the register.
+   ----------------------------------------------------------------------------
+   Loading
+     This file is the *authoritative* token file from Rev 01 forward.
+     The legacy `src/index.css` `@theme` block remains in place until Phase 6
+     migrates each component off it; the legacy `--c-*` and `--c-acid-*`
+     aliases will be deleted as components move over.
+   ============================================================================ */
+
+
+/* ----------------------------------------------------------------------------
+   FONT FACES — declared once, loaded via Google Fonts (no self-host yet).
+   In Phase 6 these `<link>` tags go into `index.html`:
+
+     <link rel="preconnect" href="https://fonts.googleapis.com" />
+     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+     <link
+       href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,200..900&family=Inter:wght@200..900&family=Space+Mono:wght@400;700&display=swap"
+       rel="stylesheet"
+     />
+   ---------------------------------------------------------------------------- */
+
+
+:root {
+  /* =========================================================================
+     1 · COLOUR — light mode (paper) is the default below.
+        Dark mode (void) overrides at the bottom of this section.
+     ========================================================================= */
+
+  /* --- Pigmented neutrals (Rev 03) ----------------------------------------
+     Paper: warm bone with a hint of yellow-green undertone (matches 28 Club
+     paper tones). Void: warm carbon with a hint of brown undertone (reads
+     as ink on heavy stock, not as an OLED test pattern). Stones: warm
+     mid-greys with olive undertone. */
+
+  --paper:           #D7D6CC;   /* warm bone, slightly yellower than D5D5CD */
+  --paper-soft:      #CFCEC4;   /* one shade darker — secondary surfaces, cards */
+  --paper-deep:      #BFBEB4;   /* deeper still — pressed / disabled surfaces */
+
+  --void:            #0B0A09;   /* warm carbon — was #0D0D0D / #0A0A0A; +brown */
+  --void-soft:       #161513;   /* one shade lighter — secondary surfaces */
+  --void-deep:       #050402;   /* deeper still — pressed / nested */
+
+  --stone-100:       #BFBEB4;   /* light stone, on paper */
+  --stone-300:       #95948A;   /* mid stone */
+  --stone-500:       #6A6963;   /* deep stone, mono small caps colour on paper */
+  --stone-700:       #3F3E39;   /* darkest stone, used in void's body copy */
+
+  /* --- Ink — semantic foreground & alpha ramp ---------------------------- */
+
+  /* In light mode (paper) `--ink` resolves to a warm near-black that rises
+     out of paper. The alpha ramp is used for typographic hierarchy and
+     hairlines. */
+
+  --ink:             #0B0A09;   /* same as --void: paper's text colour      */
+  --ink-92:          rgba(11,10,9,0.92);
+  --ink-80:          rgba(11,10,9,0.80);
+  --ink-65:          rgba(11,10,9,0.65);
+  --ink-50:          rgba(11,10,9,0.50);
+  --ink-35:          rgba(11,10,9,0.35);
+  --ink-22:          rgba(11,10,9,0.22);
+  --ink-15:          rgba(11,10,9,0.15);
+  --ink-10:          rgba(11,10,9,0.10);
+  --ink-06:          rgba(11,10,9,0.06);
+  --ink-03:          rgba(11,10,9,0.03);
+
+  /* --- Semantic colour aliases ------------------------------------------- */
+
+  --bg-primary:      var(--paper);
+  --bg-secondary:    var(--paper-soft);
+  --bg-tertiary:     var(--paper-deep);
+  --bg-inverse:      var(--void);
+
+  --text-primary:    var(--ink);
+  --text-secondary:  var(--ink-65);
+  --text-tertiary:   var(--ink-35);
+  --text-quaternary: var(--ink-22);     /* placeholder / disabled */
+  --text-inverse:    var(--paper);
+  --text-mono-cap:   var(--stone-500);  /* default mono small-caps colour */
+
+  --border-strong:   var(--ink-50);
+  --border-default:  var(--ink-22);
+  --border-subtle:   var(--ink-10);
+  --border-hairline: var(--ink-06);
+
+  --rule-default:    var(--ink-15);     /* horizontal rules between sections */
+  --rule-strong:     var(--ink-50);     /* heavy ledger rules */
+  --rule-hairline:   var(--ink-06);     /* almost-invisible separators */
+
+  --focus-ring:      var(--ink);        /* 1.5 px ink hairline ring */
+
+  /* --- State surfaces (no colour, just slabs) ---------------------------- */
+  /* The "going" state is a filled chip in --ink, with --paper as text.
+     There is *no* accent colour anywhere in the UI. */
+
+  --slab:            var(--ink);            /* the "filled" chip background */
+  --slab-text:       var(--paper);          /* text on a slab */
+  --slab-pressed:    var(--ink-92);
+  --slab-disabled:   var(--ink-22);
+  --slab-disabled-text: var(--paper-soft);
+
+  /* --- Functional state colours (validation only — never brand) ---------- */
+  /* Warm-desaturated. They coexist with the warm neutrals without breaking
+     the register. NOT used for "going" / "ok" success states (those are
+     slab + ink, see above) — only for actual validation errors and warnings
+     in form fields. */
+
+  --status-error:    #B83A2A;   /* warm desaturated red */
+  --status-error-bg: rgba(184,58,42,0.06);
+  --status-warn:     #B89A2A;   /* warm desaturated amber-olive */
+  --status-warn-bg:  rgba(184,154,42,0.06);
+  --status-ok:       #5C7A3A;   /* warm desaturated moss-green */
+  --status-ok-bg:    rgba(92,122,58,0.06);
+
+  /* --- Overlay / backdrop ------------------------------------------------ */
+
+  --overlay-strong:  rgba(11,10,9,0.78);   /* modal backdrop on paper */
+  --overlay-mid:     rgba(11,10,9,0.45);
+
+
+  /* =========================================================================
+     2 · TYPOGRAPHY
+     -------------------------------------------------------------------------
+     Trio system: editorial serif + modern sans + mono.
+     Source Serif 4 (display) · Inter (body / UI) · Space Mono (technical).
+     Barlow Condensed is RETIRED in Rev 02.
+     ========================================================================= */
+
+  --font-display:    'Source Serif 4', 'Source Serif Pro', Georgia, serif;
+  --font-body:       'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono:       'Space Mono', 'IBM Plex Mono', ui-monospace, monospace;
+
+  /* Type scale — editorial-paced, paired with a ~1.25 modular ratio.
+     12 / 14 / 16 / 18 / 22 / 28 / 36 / 48 / 64 / 96 / 144 / 220 px */
+
+  --text-2xs:        12px;   /* mono small caps · coords · counts          */
+  --text-xs:         14px;   /* dense UI · pills · labels                   */
+  --text-sm:         16px;   /* body / default reading                      */
+  --text-base:       18px;   /* generous body (Source Serif 4 italic)       */
+  --text-md:         22px;   /* sub-headlines (Inter 500)                   */
+  --text-lg:         28px;   /* section openers                             */
+  --text-xl:         36px;   /* small display                               */
+  --text-2xl:        48px;   /* medium display                              */
+  --text-3xl:        64px;   /* large display                               */
+  --text-4xl:        96px;   /* mobile dossier hero (clamp lower bound)     */
+  --text-5xl:        144px;  /* tablet / dossier hero                       */
+  --text-6xl:        220px;  /* desktop dossier massive date (clamp upper)  */
+
+  --text-massive-date: clamp(96px, 18vw, 220px);   /* MassiveDate primitive */
+
+  /* Weights ---------------------------------------------------------------- */
+
+  --weight-light:    300;    /* Inter body                                   */
+  --weight-regular:  400;    /* default Inter / Source Serif body            */
+  --weight-medium:   500;    /* Inter UI labels                              */
+  --weight-semibold: 600;    /* Inter emphasis                               */
+  --weight-bold:     700;    /* Inter strong / Space Mono bold               */
+  --weight-black:    900;    /* Source Serif 4 hero (massive date)           */
+
+  /* Line-height ------------------------------------------------------------ */
+
+  --leading-display: 0.92;   /* massive date set tight                       */
+  --leading-tight:   1.10;   /* sub-headlines                                */
+  --leading-snug:    1.30;   /* UI body                                      */
+  --leading-normal:  1.50;   /* reading body                                 */
+  --leading-relaxed: 1.70;   /* coach note / journal essays                  */
+
+  /* Letter-spacing --------------------------------------------------------- */
+
+  --tracking-display: -0.025em;  /* Source Serif 4 large display, set tight */
+  --tracking-tight:   -0.01em;
+  --tracking-normal:   0em;
+  --tracking-wide:     0.10em;
+  --tracking-wider:    0.18em;   /* Space Mono small caps                   */
+  --tracking-widest:   0.28em;   /* coord stamp · "REV 02" markers          */
+
+  /* Optical-size for Source Serif 4 (variable axis) ------------------------ */
+
+  --opsz-body:        12;
+  --opsz-headline:    32;
+  --opsz-display:     60;        /* dossier MassiveDate                    */
+
+
+  /* =========================================================================
+     3 · SPACING
+     -------------------------------------------------------------------------
+     4 px base unit (Tailwind-compatible). Editorial pacing comes from
+     larger multipliers, not a different base.
+     ========================================================================= */
+
+  --space-0:         0;
+  --space-px:        1px;
+  --space-1:         4px;
+  --space-2:         8px;
+  --space-3:         12px;
+  --space-4:         16px;
+  --space-5:         20px;
+  --space-6:         24px;
+  --space-8:         32px;
+  --space-10:        40px;
+  --space-12:        48px;
+  --space-16:        64px;
+  --space-20:        80px;
+  --space-24:        96px;
+  --space-32:        128px;
+  --space-40:        160px;
+  --space-48:        192px;
+  --space-56:        224px;     /* very generous editorial gutter           */
+
+
+  /* =========================================================================
+     4 · LAYOUT
+     ========================================================================= */
+
+  --max-content:     720px;   /* reading width · single column              */
+  --max-wide:        880px;   /* desktop main · same as legacy desktop-main */
+  --max-page:        1080px;  /* large desktop ceiling                      */
+  --max-prose:       65ch;    /* long-form body (coach note / journal)      */
+
+  /* Gutters & rails ----------------------------------------------------- */
+  --rail-mobile:     20px;    /* page side padding on mobile                */
+  --rail-tablet:     48px;
+  --rail-desktop:    64px;
+
+  /* Sidebar -------------------------------------------------------------- */
+  --sidebar-width:   220px;   /* DesktopSidebar — unchanged                 */
+
+  /* Bottom nav ----------------------------------------------------------- */
+  --nav-bottom-h:    56px;
+
+  /* Border radius — minimal. Field Manual = sharp corners. */
+  --radius-none:     0;
+  --radius-sm:       1px;     /* tap-feedback edge softening only           */
+  --radius-md:       2px;
+  --radius-pill:     999px;   /* avatar dot · status dot                    */
+
+  /* Border weights ------------------------------------------------------- */
+  --stroke-hairline: 1px;
+  --stroke-rule:     1px;
+  --stroke-medium:   1.5px;
+  --stroke-heavy:    2px;
+
+  /* Shadows — used sparingly. Field Manual rejects elevation gradients. */
+  --shadow-none:     none;
+  --shadow-focus:    0 0 0 2px var(--paper), 0 0 0 3.5px var(--ink);
+                                /* focus ring: ink hairline at 2 px offset  */
+
+
+  /* =========================================================================
+     5 · MOTION
+     -------------------------------------------------------------------------
+     Editorial timing: fewer, slower, more deliberate. Letter-scramble is
+     the brand's signature transition.
+     ========================================================================= */
+
+  --duration-instant: 60ms;
+  --duration-fast:    140ms;
+  --duration-normal:  240ms;
+  --duration-slow:    400ms;
+  --duration-slower:  600ms;
+  --duration-scramble:480ms;   /* MassiveDate letter-scramble per character */
+  --duration-page:    900ms;   /* Home → Dossier full transition           */
+
+  --ease-default:     cubic-bezier(0.32, 0.08, 0.24, 1);   /* editorial out */
+  --ease-in:          cubic-bezier(0.40, 0.00, 1.00, 1);
+  --ease-out:         cubic-bezier(0.00, 0.00, 0.20, 1);
+  --ease-soft:        cubic-bezier(0.65, 0.05, 0.36, 1);   /* dossier reveal */
+
+
+  /* =========================================================================
+     6 · BREAKPOINTS — informational; Tailwind v4 handles the actual queries.
+     ========================================================================= */
+
+  --bp-sm:           375px;
+  --bp-md:           768px;
+  --bp-lg:           1200px;
+  --bp-xl:           1440px;
+
+
+  /* =========================================================================
+     7 · Z-INDEX — minimal stack, named.
+     ========================================================================= */
+
+  --z-base:          0;
+  --z-grid:          1;       /* dot-grid background overlay              */
+  --z-content:       2;
+  --z-nav:           40;
+  --z-overlay:       80;
+  --z-modal:         90;
+  --z-toast:         100;
+}
+
+
+/* ============================================================================
+   DARK MODE — VOID
+   ----------------------------------------------------------------------------
+   Triggered by:
+     · `[data-theme="dark"]` (manual toggle from /you/settings)
+     · `prefers-color-scheme: dark` when no manual preference is set
+     · default fallback when system preference is unknown (Q9 → A: void)
+   ============================================================================ */
+
+[data-theme="dark"] {
+  --bg-primary:      var(--void);
+  --bg-secondary:    var(--void-soft);
+  --bg-tertiary:     var(--void-deep);
+  --bg-inverse:      var(--paper);
+
+  /* In dark mode `--ink` flips to paper. Alpha ramp re-derives. */
+  --ink:             var(--paper);
+  --ink-92:          rgba(215,214,204,0.92);
+  --ink-80:          rgba(215,214,204,0.80);
+  --ink-65:          rgba(215,214,204,0.65);
+  --ink-50:          rgba(215,214,204,0.50);
+  --ink-35:          rgba(215,214,204,0.35);
+  --ink-22:          rgba(215,214,204,0.22);
+  --ink-15:          rgba(215,214,204,0.15);
+  --ink-10:          rgba(215,214,204,0.10);
+  --ink-06:          rgba(215,214,204,0.06);
+  --ink-03:          rgba(215,214,204,0.03);
+
+  --text-primary:    var(--ink);
+  --text-secondary:  var(--ink-65);
+  --text-tertiary:   var(--ink-35);
+  --text-quaternary: var(--ink-22);
+  --text-inverse:    var(--void);
+  --text-mono-cap:   var(--stone-300);
+
+  --border-strong:   var(--ink-50);
+  --border-default:  var(--ink-22);
+  --border-subtle:   var(--ink-10);
+  --border-hairline: var(--ink-06);
+
+  --rule-default:    var(--ink-15);
+  --rule-strong:     var(--ink-50);
+  --rule-hairline:   var(--ink-06);
+
+  --focus-ring:      var(--ink);
+
+  --slab:            var(--ink);
+  --slab-text:       var(--void);
+  --slab-pressed:    var(--ink-92);
+  --slab-disabled:   var(--ink-22);
+  --slab-disabled-text: var(--ink-50);
+
+  --overlay-strong:  rgba(11,10,9,0.88);
+  --overlay-mid:     rgba(11,10,9,0.55);
+
+  --shadow-focus:    0 0 0 2px var(--void), 0 0 0 3.5px var(--ink);
+}
+
+/* System preference — respects user's choice unless they manually picked
+   light from /you/settings. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg-primary:      var(--void);
+    --bg-secondary:    var(--void-soft);
+    --bg-tertiary:     var(--void-deep);
+    --bg-inverse:      var(--paper);
+
+    --ink:             var(--paper);
+    --ink-92:          rgba(215,214,204,0.92);
+    --ink-80:          rgba(215,214,204,0.80);
+    --ink-65:          rgba(215,214,204,0.65);
+    --ink-50:          rgba(215,214,204,0.50);
+    --ink-35:          rgba(215,214,204,0.35);
+    --ink-22:          rgba(215,214,204,0.22);
+    --ink-15:          rgba(215,214,204,0.15);
+    --ink-10:          rgba(215,214,204,0.10);
+    --ink-06:          rgba(215,214,204,0.06);
+    --ink-03:          rgba(215,214,204,0.03);
+
+    --text-primary:    var(--ink);
+    --text-secondary:  var(--ink-65);
+    --text-tertiary:   var(--ink-35);
+    --text-quaternary: var(--ink-22);
+    --text-inverse:    var(--void);
+    --text-mono-cap:   var(--stone-300);
+
+    --border-strong:   var(--ink-50);
+    --border-default:  var(--ink-22);
+    --border-subtle:   var(--ink-10);
+    --border-hairline: var(--ink-06);
+
+    --rule-default:    var(--ink-15);
+    --rule-strong:     var(--ink-50);
+    --rule-hairline:   var(--ink-06);
+
+    --focus-ring:      var(--ink);
+
+    --slab:            var(--ink);
+    --slab-text:       var(--void);
+
+    --overlay-strong:  rgba(11,10,9,0.88);
+    --overlay-mid:     rgba(11,10,9,0.55);
+
+    --shadow-focus:    0 0 0 2px var(--void), 0 0 0 3.5px var(--ink);
+  }
+}
+
+
+/* ============================================================================
+   REDUCED-MOTION FALLBACK
+   ----------------------------------------------------------------------------
+   Letter-scramble + asemic stroke draw-on collapse to a 120 ms cross-fade.
+   Phase 6 components read these tokens; we don't need a media query here
+   because each component already respects `prefers-reduced-motion: reduce`.
+   ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-scramble: 120ms;
+    --duration-page:     120ms;
+    --duration-slow:     120ms;
+    --duration-slower:   120ms;
+  }
+}
+
+
+/* ============================================================================
+   TAILWIND v4 @theme bridge — moved to src/index.css
+   ----------------------------------------------------------------------------
+   The `@theme inline { ... }` block lives in `src/index.css` so it sits in
+   the same processing context as `@import "tailwindcss";`. The `inline`
+   keyword maps utilities (`bg-paper`, `text-ink-65`) to the `var(--paper)`
+   references declared above without re-emitting duplicate custom properties.
+   ============================================================================ */
+
+
+/* ============================================================================
+   DELETED IN REV 02 (do not reintroduce)
+   ----------------------------------------------------------------------------
+   The following tokens existed in the legacy `src/index.css` and are
+   intentionally absent from this file. Re-adding them is an explicit
+   rejection of the brief.
+
+     --c-accent              (#C6FF00 acid yellow-green)
+     --c-accent-muted, --c-accent-on, --c-accent-bar, --c-accent-dot,
+     --c-accent-glow
+     --c-acid-text, --c-acid-text-dim, --c-acid-border, --c-acid-bg,
+     --c-acid-line
+     --color-acid
+
+   In the legacy file these are still present as *aliases*; Phase 6 deletes
+   them as components migrate off them.
+   ============================================================================ */

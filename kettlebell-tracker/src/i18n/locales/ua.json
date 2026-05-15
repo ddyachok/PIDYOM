@@ -1,0 +1,51 @@
+{
+  "brand": {
+    "wordmark": "PIDYOM",
+    "tagline": "Pick up · Rise"
+  },
+  "home": {
+    "standby": "— · —",
+    "tap_hint": "ПІДЙОМ · наступний підйом · {{date}} · {{location}} · {{time}}. Натисніть, щоб відкрити досьє."
+  },
+  "dossier": {
+    "title": "ДОСЬЄ",
+    "back_home": "↑ ДОДОМУ",
+    "edit": "РЕДАГУВАТИ",
+    "save": "ЗБЕРЕГТИ",
+    "in_label": "ЧЕРЕЗ {{distance}}",
+    "duration_min": "{{n}} ХВ",
+    "location": "ЛОКАЦІЯ",
+    "focus": "ФОКУС",
+    "bring": "ВЗЯТИ З СОБОЮ",
+    "coach_note": "НОТАТКА ТРЕНЕРА",
+    "rsvp": "ВІДПОВІДЬ",
+    "roster": "СКЛАД",
+    "rack_preview": "СТІЙКА · ПОПЕРЕДНЯ",
+    "gallery": "ГАЛЕРЕЯ",
+    "community": "СПІЛЬНОТА",
+    "copy_to_history": "↳ ДО МОЄЇ ІСТОРІЇ",
+    "locked_at": "ЗАКРИТО · {{time}}",
+    "locked_label": "ЗАКРИТО"
+  },
+  "rsvp": {
+    "going": "Я ЙДУ",
+    "maybe": "МОЖЛИВО",
+    "declined": "НЕ ЗМОЖУ",
+    "waitlist_add": "+ ВАЙТ-ЛИСТ",
+    "going_count": "{{count}} / {{capacity}} ЙДУТЬ",
+    "counts_full": "{{going}} ЙДУТЬ · {{maybe}} МОЖЛИВО · {{waitlist}} ВАЙТ-ЛИСТ",
+    "promoted_toast": "ПРОМОУТНУТО · ВИ ЙДЕТЕ"
+  },
+  "auth": {
+    "redirect_notice": "Увійдіть, щоб побачити деталі сесії"
+  },
+  "settings": {
+    "theme": "ТЕМА",
+    "theme_system": "СИСТЕМА",
+    "theme_paper": "ПАПІР",
+    "theme_void": "ПОРОЖНЕЧА",
+    "lang": "МОВА",
+    "lang_ua": "УКР",
+    "lang_en": "АНГ"
+  }
+}
