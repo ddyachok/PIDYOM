@@ -1,0 +1,51 @@
+{
+  "brand": {
+    "wordmark": "PIDYOM",
+    "tagline": "Pick up · Rise"
+  },
+  "home": {
+    "standby": "— · —",
+    "tap_hint": "PIDYOM · next lift · {{date}} · {{location}} · {{time}}. Tap to open the dossier."
+  },
+  "dossier": {
+    "title": "DOSSIER",
+    "back_home": "↑ HOME",
+    "edit": "EDIT",
+    "save": "SAVE",
+    "in_label": "IN {{distance}}",
+    "duration_min": "{{n}} MIN",
+    "location": "LOCATION",
+    "focus": "FOCUS",
+    "bring": "BRING",
+    "coach_note": "COACH NOTE",
+    "rsvp": "RSVP",
+    "roster": "ROSTER",
+    "rack_preview": "RACK PREVIEW",
+    "gallery": "GALLERY",
+    "community": "COMMUNITY",
+    "copy_to_history": "↳ COPY TO MY HISTORY",
+    "locked_at": "LOCKED · {{time}}",
+    "locked_label": "LOCKED"
+  },
+  "rsvp": {
+    "going": "I'M GOING",
+    "maybe": "MAYBE",
+    "declined": "CAN'T MAKE IT",
+    "waitlist_add": "+ WAITLIST",
+    "going_count": "{{count}} / {{capacity}} GOING",
+    "counts_full": "{{going}} GOING · {{maybe}} MAYBE · {{waitlist}} WAITLIST",
+    "promoted_toast": "PROMOTED · YOU'RE GOING"
+  },
+  "auth": {
+    "redirect_notice": "Sign in to see session details"
+  },
+  "settings": {
+    "theme": "THEME",
+    "theme_system": "SYSTEM",
+    "theme_paper": "PAPER",
+    "theme_void": "VOID",
+    "lang": "LANGUAGE",
+    "lang_ua": "UA",
+    "lang_en": "EN"
+  }
+}

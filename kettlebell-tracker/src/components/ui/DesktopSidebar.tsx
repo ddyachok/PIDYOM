@@ -1,7 +1,9 @@
 import { motion } from 'framer-motion';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useStore } from '../../store/useStore';
 import { IconHome, IconDumbbell, IconUser } from '../icons/Icons';
 import Logo from './Logo';
+import Wordmark from '../brand/Wordmark';
 
 function IconArcMark({ size = 15 }: { size?: number }) {
   return (
@@ -13,15 +15,20 @@ function IconArcMark({ size = 15 }: { size?: number }) {
 }
 
 const tabs = [
-  { id: 'home', label: 'HOME', num: '01', icon: IconHome },
-  { id: 'club', label: 'CLUB', num: '02', icon: IconArcMark },
-  { id: 'workouts', label: 'TRAIN', num: '03', icon: IconDumbbell },
-  { id: 'profile', label: 'YOU', num: '04', icon: IconUser },
+  { path: '/', label: 'HOME', num: '01', icon: IconHome },
+  { path: '/club', label: 'CLUB', num: '02', icon: IconArcMark },
+  { path: '/train', label: 'TRAIN', num: '03', icon: IconDumbbell },
+  { path: '/you', label: 'YOU', num: '04', icon: IconUser },
 ];
 
+function isActive(tabPath: string, currentPath: string): boolean {
+  if (tabPath === '/') return currentPath === '/';
+  return currentPath === tabPath || currentPath.startsWith(tabPath + '/');
+}
+
 export default function DesktopSidebar() {
-  const currentTab = useStore(s => s.currentTab);
-  const setCurrentTab = useStore(s => s.setCurrentTab);
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
   const theme = useStore(s => s.theme);
   const setTheme = useStore(s => s.setTheme);
   const isLight = theme === 'light';
@@ -33,66 +40,54 @@ export default function DesktopSidebar() {
       <div className="px-6 mb-10">
         <div className="flex items-center gap-2.5">
           <span style={{ color: ink, display: 'inline-flex' }}>
-            <Logo size={28} animate={false} />
+            <Logo size={26} animate={false} />
           </span>
-          <div
-            style={{
-              fontFamily: "'Barlow Condensed', sans-serif",
-              fontWeight: 900,
-              fontSize: 22,
-              letterSpacing: '0.02em',
-              color: ink,
-              textTransform: 'uppercase',
-              lineHeight: 1,
-            }}
-          >
-            PIDYOM
-          </div>
+          <Wordmark size="md" color={ink} />
         </div>
-        <div style={{ fontSize: 9, letterSpacing: '0.2em', color: isLight ? '#6A6A62' : '#9A9A90', textTransform: 'uppercase', marginTop: 8 }}>
+        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: 'var(--tracking-widest)', color: 'var(--text-mono-cap)', textTransform: 'uppercase', marginTop: 8 }}>
           Pick up · Rise · ПІДЙОМ
         </div>
-        <div style={{ height: 1, background: '#C6FF00', width: 24, marginTop: 10 }} />
+        <div style={{ height: 1, background: 'var(--ink)', width: 24, marginTop: 10 }} />
       </div>
 
       {/* Navigation */}
       <div className="flex flex-col flex-1">
         {tabs.map((tab) => {
-          const isActive = currentTab === tab.id;
+          const active = isActive(tab.path, pathname);
           const Icon = tab.icon;
           const activeColor = ink;
           const inactiveColor = '#9A9A90';
           const hoverColor = isLight ? 'rgba(10,10,10,0.6)' : 'rgba(232,232,225,0.6)';
           return (
             <button
-              key={tab.id}
-              onClick={() => setCurrentTab(tab.id)}
+              key={tab.path}
+              onClick={() => navigate(tab.path)}
               className="relative flex items-center gap-3 px-6 py-3.5 text-left transition-all duration-200"
               style={{
-                color: isActive ? activeColor : inactiveColor,
-                background: isActive ? 'rgba(198,255,0,0.04)' : 'transparent',
+                color: active ? activeColor : inactiveColor,
+                background: active ? (isLight ? 'rgba(10,10,10,0.04)' : 'rgba(255,255,255,0.04)') : 'transparent',
               }}
-              onMouseEnter={e => { if (!isActive) (e.currentTarget as HTMLButtonElement).style.color = hoverColor; }}
-              onMouseLeave={e => { if (!isActive) (e.currentTarget as HTMLButtonElement).style.color = inactiveColor; }}
-              aria-current={isActive ? 'page' : undefined}
+              onMouseEnter={e => { if (!active) (e.currentTarget as HTMLButtonElement).style.color = hoverColor; }}
+              onMouseLeave={e => { if (!active) (e.currentTarget as HTMLButtonElement).style.color = inactiveColor; }}
+              aria-current={active ? 'page' : undefined}
               aria-label={tab.label}
             >
-              {isActive && (
+              {active && (
                 <motion.div
                   layoutId="sidebar-indicator"
                   className="absolute left-0 top-0 bottom-0 w-[2px]"
-                  style={{ background: '#C6FF00' }}
+                  style={{ background: 'var(--ink)' }}
                   transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                 />
               )}
 
               <span
                 style={{
-                  fontFamily: "'Barlow Condensed', sans-serif",
+                  fontFamily: 'var(--font-mono)',
                   fontWeight: 700,
-                  fontSize: 11,
-                  color: isActive ? '#C6FF00' : (isLight ? 'rgba(10,10,10,0.2)' : '#2a2a2a'),
-                  letterSpacing: '0.05em',
+                  fontSize: 10,
+                  color: active ? ink : (isLight ? 'rgba(10,10,10,0.25)' : 'rgba(255,255,255,0.2)'),
+                  letterSpacing: '0.18em',
                   width: 20,
                   flexShrink: 0,
                   transition: 'color 0.2s',
@@ -131,7 +126,7 @@ export default function DesktopSidebar() {
           aria-label={`Switch to ${isLight ? 'dark' : 'light'} theme`}
         >
           <span>{isLight ? 'Paper' : 'Void'}</span>
-          <span style={{ color: '#C6FF00' }}>↔</span>
+          <span style={{ color: 'var(--ink)' }}>↔</span>
         </button>
         <div className="coord-stamp">SYS // NAV-0</div>
       </div>

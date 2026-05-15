@@ -1,5 +1,15 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+
+// Field Manual: resolve a theme preference to an applied light/dark value.
+// `system` reads `prefers-color-scheme`; defaults to dark (void) when the
+// system preference is unknown — per Phase 1 grill Q9.
+function resolveTheme(pref: 'system' | 'paper' | 'void'): 'light' | 'dark' {
+  if (pref === 'paper') return 'light';
+  if (pref === 'void') return 'dark';
+  if (typeof window === 'undefined') return 'dark';
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
 import { Workout, ScheduleEntry, Equipment, Exercise, WorkoutExercise, ExerciseSet, WorkoutType } from '../lib/types';
 import type { WorkoutSection, ExerciseType, WarmupDefaults } from '../lib/types';
 import { migrateWorkout } from '../lib/migrations';
@@ -94,9 +104,24 @@ interface AppState {
   currentTab: string;
   setCurrentTab: (tab: string) => void;
 
-  // Theme
+  // RSVP per session — keyed by session id.
+  rsvps: Record<string, 'going' | 'maybe' | 'declined' | 'waitlist'>;
+  setRsvp: (sessionId: string, state: 'going' | 'maybe' | 'declined' | 'waitlist' | null) => void;
+
+  // Theme — Field Manual vocabulary (Rev 03)
+  // `themePref` is the user's intent (persisted); `theme` is the resolved
+  // applied value (derived from themePref + system preference).
+  themePref: 'system' | 'paper' | 'void';
+  setThemePref: (pref: 'system' | 'paper' | 'void') => void;
+
+  // Backwards-compat: legacy components still read `theme === 'light' | 'dark'`.
+  // Computed at every set; matches data-theme on <html>.
   theme: 'dark' | 'light';
   setTheme: (theme: 'dark' | 'light') => void;
+
+  // Language
+  lang: 'ua' | 'en';
+  setLang: (lang: 'ua' | 'en') => void;
 
   // Glitch
   glitchActive: boolean;
@@ -458,9 +483,27 @@ export const useStore = create<AppState>()(
         set({ currentTab: tab });
       },
 
-      // Theme
-      theme: 'dark',
-      setTheme: (theme) => set({ theme }),
+      // RSVP map (per-session)
+      rsvps: {},
+      setRsvp: (sessionId, state) => set(s => {
+        const next = { ...s.rsvps };
+        if (state === null) delete next[sessionId];
+        else next[sessionId] = state;
+        return { rsvps: next };
+      }),
+
+      // Theme — Field Manual (system-aware, void fallback per Q9)
+      themePref: 'system',
+      theme: resolveTheme('system'),
+      setThemePref: (pref) => set({ themePref: pref, theme: resolveTheme(pref) }),
+      setTheme: (theme) => set({
+        themePref: theme === 'light' ? 'paper' : 'void',
+        theme,
+      }),
+
+      // Language
+      lang: 'ua',
+      setLang: (lang) => set({ lang }),
 
       // Glitch (deprecated — no-op)
       glitchActive: false,
@@ -468,6 +511,21 @@ export const useStore = create<AppState>()(
     }),
     {
       name: 'pidyom-storage',
+      version: 2,
+      migrate: (persisted: unknown, fromVersion: number) => {
+        // v1 → v2: introduce themePref + lang. Map legacy theme strings.
+        const s = persisted as Record<string, unknown> | null;
+        if (!s) return s;
+        if (fromVersion < 2) {
+          const legacyTheme = s.theme as string | undefined;
+          s.themePref =
+            legacyTheme === 'light' ? 'paper' :
+            legacyTheme === 'dark' ? 'void' :
+            'system';
+          if (!s.lang) s.lang = 'ua';
+        }
+        return s;
+      },
       partialize: (state) => ({
         userName: state.userName,
         userEmail: state.userEmail,
@@ -478,12 +536,17 @@ export const useStore = create<AppState>()(
         exercises: state.exercises,
         workouts: state.workouts,
         schedule: state.schedule,
-        theme: state.theme,
+        themePref: state.themePref,
+        lang: state.lang,
+        rsvps: state.rsvps,
         sectionCollapseState: state.sectionCollapseState,
       }),
       onRehydrateStorage: () => (state) => {
         if (state) {
           state.workouts = state.workouts.map(migrateWorkout);
+          // Resolve themePref → theme on hydrate (system pref may have
+          // changed since last persist).
+          state.theme = resolveTheme(state.themePref);
         }
       },
     }

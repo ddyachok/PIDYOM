@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useStore } from '../../store/useStore';
 import { IconHome, IconDumbbell, IconUser } from '../icons/Icons';
 
@@ -14,15 +15,20 @@ function IconArcMark({ size = 18 }: { size?: number }) {
 }
 
 const tabs = [
-  { id: 'home', label: 'HOME', icon: IconHome },
-  { id: 'club', label: 'CLUB', icon: IconArcMark },
-  { id: 'workouts', label: 'TRAIN', icon: IconDumbbell },
-  { id: 'profile', label: 'YOU', icon: IconUser },
+  { path: '/', label: 'HOME', icon: IconHome },
+  { path: '/club', label: 'CLUB', icon: IconArcMark },
+  { path: '/train', label: 'TRAIN', icon: IconDumbbell },
+  { path: '/you', label: 'YOU', icon: IconUser },
 ];
 
+function isActive(tabPath: string, currentPath: string): boolean {
+  if (tabPath === '/') return currentPath === '/';
+  return currentPath === tabPath || currentPath.startsWith(tabPath + '/');
+}
+
 export default function BottomNav() {
-  const currentTab = useStore(s => s.currentTab);
-  const setCurrentTab = useStore(s => s.setCurrentTab);
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
   const theme = useStore(s => s.theme);
   const isLight = theme === 'light';
 
@@ -36,22 +42,22 @@ export default function BottomNav() {
     >
       <div className="flex items-stretch justify-around h-14">
         {tabs.map((tab) => {
-          const isActive = currentTab === tab.id;
+          const active = isActive(tab.path, pathname);
           const Icon = tab.icon;
           return (
             <button
-              key={tab.id}
-              onClick={() => setCurrentTab(tab.id)}
+              key={tab.path}
+              onClick={() => navigate(tab.path)}
               className="relative flex flex-col items-center justify-center gap-1 flex-1 transition-colors"
-              style={{ color: isActive ? (isLight ? '#0A0A0A' : '#C6FF00') : (isLight ? 'rgba(10,10,10,0.4)' : '#6A6A62') }}
-              aria-current={isActive ? 'page' : undefined}
+              style={{ color: active ? (isLight ? '#0A0A0A' : '#E8E8E1') : (isLight ? 'rgba(10,10,10,0.4)' : 'rgba(232,232,225,0.4)') }}
+              aria-current={active ? 'page' : undefined}
               aria-label={tab.label}
             >
-              {isActive && (
+              {active && (
                 <motion.div
                   layoutId="bottom-nav-indicator"
                   className="absolute top-0 left-2 right-2 h-[2px]"
-                  style={{ background: '#C6FF00' }}
+                  style={{ background: 'var(--ink)' }}
                   transition={{ type: 'spring', stiffness: 500, damping: 35 }}
                 />
               )}

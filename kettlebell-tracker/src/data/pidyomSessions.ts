@@ -90,6 +90,16 @@ export const PIDYOM_LOCATIONS = [
   { id: 'gym-rivne', name: 'Гімнастичний зал · Рівне', kind: 'Indoor', coords: '50.6199°N · 26.2516°E' },
 ];
 
+/** Returns every known session (next + past), used by Club index + Dossier lookup. */
+export function getAllSessions(): PidyomSession[] {
+  return [NEXT_PIDYOM_SESSION, ...PAST_PIDYOM_SESSIONS];
+}
+
+/** Look up a single session by id. Returns null when unknown. */
+export function getSessionById(id: string): PidyomSession | null {
+  return getAllSessions().find(s => s.id === id) ?? null;
+}
+
 export function formatSessionDate(iso: string) {
   const d = new Date(iso);
   return {
