@@ -52,7 +52,7 @@ export default function Logo({
         fill="none"
         initial={animate ? { pathLength: 0, opacity: 0 } : undefined}
         animate={animate ? { pathLength: 1, opacity: 1 } : undefined}
-        transition={animate ? { pathLength: { duration: 0.9, ease: [0.65, 0, 0.35, 1] }, opacity: { duration: 0.2 } } : undefined}
+        transition={animate ? { pathLength: { duration: 0.18, ease: 'linear' }, opacity: { duration: 0.06 } } : undefined}
       />
       {hairline ? (
         <circle
@@ -69,10 +69,9 @@ export default function Logo({
           cy={100}
           r={46}
           fill={color}
-          initial={animate ? { scale: 0, opacity: 0 } : undefined}
-          animate={animate ? { scale: 1, opacity: 1 } : undefined}
-          transition={animate ? { delay: 0.65, duration: 0.4, ease: [0.34, 1.4, 0.64, 1] } : undefined}
-          style={{ transformOrigin: '100px 100px' }}
+          initial={animate ? { opacity: 0 } : undefined}
+          animate={animate ? { opacity: 1 } : undefined}
+          transition={animate ? { delay: 0.14, duration: 0.06, ease: 'linear' } : undefined}
         />
       )}
     </svg>

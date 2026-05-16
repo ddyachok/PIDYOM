@@ -1,5 +1,10 @@
 import { motion, useReducedMotion } from 'framer-motion';
 
+// Discrete-step easing — `n` evenly spaced jumps from 0→1. Gives arcs a
+// gauge-indexing feel instead of a smooth glide.
+const stepsEase = (n: number) => (t: number) => Math.min(Math.ceil(t * n) / n, 1);
+const HARD_EASE: [number, number, number, number] = [0.85, 0, 0.15, 1];
+
 interface ArcDividerProps {
   width?: number | string;
   color?: string;
@@ -87,7 +92,7 @@ export function CapacityDial({
         transition={
           reduce
             ? { duration: 0 }
-            : { duration: 0.32, ease: [0.65, 0.05, 0.36, 1] }
+            : { duration: 0.24, ease: stepsEase(12) }
         }
       />
       {locked && (
@@ -150,7 +155,7 @@ export function TimeToLift({
         transition={
           reduce
             ? { duration: 0 }
-            : { duration: 0.6, ease: [0.65, 0.05, 0.36, 1] }
+            : { duration: 0.32, ease: stepsEase(12) }
         }
       />
       <circle cx={cx} cy={cy} r={3} fill={color} />
@@ -192,7 +197,7 @@ export function AsemicStroke({
   size = 200,
   color = 'currentColor',
   className,
-  duration = 1.4,
+  duration = 0.6,
 }: AsemicStrokeProps) {
   const reduce = useReducedMotion();
   return (
@@ -208,7 +213,7 @@ export function AsemicStroke({
         transition={
           reduce
             ? { duration: 0 }
-            : { pathLength: { duration, ease: [0.65, 0, 0.35, 1] }, opacity: { duration: 0.2 } }
+            : { pathLength: { duration, ease: HARD_EASE }, opacity: { duration: 0.1 } }
         }
       />
     </svg>

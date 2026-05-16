@@ -63,7 +63,7 @@ export default function CallingCard({ session, onTap, style }: Props) {
 
   useEffect(() => {
     if (!exiting) return;
-    const id = window.setTimeout(() => onTapRef.current?.(), 720);
+    const id = window.setTimeout(() => onTapRef.current?.(), 200);
     return () => window.clearTimeout(id);
   }, [exiting]);
 
@@ -207,7 +207,7 @@ export default function CallingCard({ session, onTap, style }: Props) {
                 lineHeight: 1,
               }}
             >
-              <LetterScrambleReveal text="PIDYOM" reverse duration={700} stagger={28} />
+              <LetterScrambleReveal text="PIDYOM" reverse duration={180} />
             </span>
           ) : (
             <Wordmark
@@ -262,8 +262,7 @@ export default function CallingCard({ session, onTap, style }: Props) {
                 <LetterScrambleReveal
                   text={`${dateLabel} · ${time}`}
                   reverse
-                  duration={700}
-                  stagger={16}
+                  duration={180}
                 />
               </span>
             ) : (

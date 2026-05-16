@@ -68,7 +68,7 @@ export default function DossierHero({ session }: Props) {
     if (playedFor.current === session.id) return;
     playedFor.current = session.id;
     setAnimateIn(true);
-    const id = window.setTimeout(() => setAnimateIn(false), 1200);
+    const id = window.setTimeout(() => setAnimateIn(false), 260);
     return () => window.clearTimeout(id);
   }, [session.id]);
 
@@ -197,7 +197,7 @@ export default function DossierHero({ session }: Props) {
               }}
             >
               {animateIn
-                ? <LetterScrambleReveal text={session.locationName} duration={950} stagger={18} />
+                ? <LetterScrambleReveal text={session.locationName} duration={200} />
                 : session.locationName}
             </span>
             <span
@@ -224,7 +224,7 @@ export default function DossierHero({ session }: Props) {
             }}
           >
             {animateIn
-              ? <LetterScrambleReveal text={session.locationName} duration={950} stagger={18} />
+              ? <LetterScrambleReveal text={session.locationName} duration={200} />
               : session.locationName}
           </div>
         )}

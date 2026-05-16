@@ -44,11 +44,11 @@ export default function MassiveDate({
       : format(date, 'MMM').toUpperCase();
 
   const dayNode = animateIn
-    ? <LetterScrambleReveal text={dayPart} duration={700} stagger={40} />
+    ? <LetterScrambleReveal text={dayPart} duration={160} />
     : <span>{dayPart}</span>;
 
   const monthNode = animateIn
-    ? <LetterScrambleReveal text={monthPart} duration={900} stagger={50} />
+    ? <LetterScrambleReveal text={monthPart} duration={200} />
     : <span>{monthPart}</span>;
 
   return (
